@@ -5,14 +5,15 @@ import { log } from "./log.ts";
 import type { Args } from "@std/cli";
 import SchemaBuilder from "@pothos/core";
 import { setLogLevel } from "@joyautomation/coral";
+import { type Db, getDb } from "./db/db.ts";
 
 const flatten =
   <T extends { [id: string]: any }>(key: keyof T) =>
   (parent: T): T[keyof T][] => Object.values(parent[key]);
 
-export function runServer(args: Args) {
-  console.log("args", args);
+export async function runServer(args: Args) {
   setLogLevel(log, args.logLevel);
+  const db = await getDb(args);
   const builder = new SchemaBuilder({});
 
   builder.queryType({
@@ -24,7 +25,7 @@ export function runServer(args: Args) {
   });
 
   const host = getHost(args);
-  addHistoryEvents(host);
+  addHistoryEvents(db, host);
   addHostToSchema(host, builder);
   const schema = builder.toSchema();
   const yoga = createYoga({
