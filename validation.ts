@@ -20,46 +20,47 @@ export function validate<T>(
   input: T | undefined,
   defaultValue: T,
   validator: (input: T | undefined) => boolean,
-  symbolName: string
+  symbolName: string,
 ): T {
   if (input != null && validator(input)) {
     return input;
   } else {
-    if (input != null)
+    if (input != null) {
       log.info(
-        `${symbolName} with value "${input}" is not a valid hostname, using default "${defaultValue}"`
+        `${symbolName} with value "${input}" is not a valid hostname, using default "${defaultValue}"`,
       );
+    }
     return defaultValue;
   }
 }
 
 export function makeNumberOrUndefined(
-  input: string | number | undefined
+  input: string | number | undefined,
 ): number | undefined {
   return input == null ? undefined : Number(input);
 }
 
 export function validateHost(input: string | undefined) {
-  return validate(input, "0.0.0.0", isValidHost, "SQUID_HOST");
+  return validate(input, "0.0.0.0", isValidHost, "MANTLE_HOST");
 }
 
 export function validatePort(input: string | number | undefined) {
   return validate(
     makeNumberOrUndefined(input),
-    4000,
+    4001,
     isValidPort,
-    "SQUID_PORT"
+    "MANTLE_PORT",
   );
 }
 
 export function validateScanRate(
   input: string | number | undefined,
-  defaultValue: number
+  defaultValue: number,
 ) {
   return validate(
     makeNumberOrUndefined(input),
     defaultValue,
     isValidScanRate,
-    "SQUID_SCANRATE"
+    "MANTLE_SCANRATE",
   );
 }

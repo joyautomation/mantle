@@ -1,0 +1,169 @@
+{
+  "scriptId": "400",
+  "url": "file:///home/joyja/.cache/deno/npm/registry.npmjs.org/drizzle-orm/0.33.0/pg-core/columns/common.js",
+  "functions": [
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 0, "endOffset": 5959, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<instance_members_initializer>",
+      "ranges": [{ "startOffset": 420, "endOffset": 442, "count": 9 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<static_initializer>",
+      "ranges": [{ "startOffset": 446, "endOffset": 485, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "array",
+      "ranges": [{ "startOffset": 489, "endOffset": 567, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "references",
+      "ranges": [{ "startOffset": 570, "endOffset": 673, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "unique",
+      "ranges": [{ "startOffset": 676, "endOffset": 831, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "generatedAlwaysAs",
+      "ranges": [{ "startOffset": 834, "endOffset": 968, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "buildForeignKeys",
+      "ranges": [{ "startOffset": 990, "endOffset": 1613, "count": 9 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 1062, "endOffset": 1607, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "buildExtraConfigColumn",
+      "ranges": [{ "startOffset": 1635, "endOffset": 1724, "count": 9 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "PgColumn",
+      "ranges": [
+        { "startOffset": 1761, "endOffset": 1942, "count": 18 },
+        { "startOffset": 1818, "endOffset": 1888, "count": 9 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<static_initializer>",
+      "ranges": [{ "startOffset": 1945, "endOffset": 1977, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<static_initializer>",
+      "ranges": [{ "startOffset": 2026, "endOffset": 2067, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "getSQLType",
+      "ranges": [{ "startOffset": 2071, "endOffset": 2119, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "<instance_members_initializer>",
+      "ranges": [{ "startOffset": 2122, "endOffset": 2335, "count": 9 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "asc",
+      "ranges": [{ "startOffset": 2339, "endOffset": 2403, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "desc",
+      "ranges": [{ "startOffset": 2406, "endOffset": 2472, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "nullsFirst",
+      "ranges": [{ "startOffset": 2475, "endOffset": 2548, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "nullsLast",
+      "ranges": [{ "startOffset": 2551, "endOffset": 2622, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "op",
+      "ranges": [{ "startOffset": 4252, "endOffset": 4326, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "<static_initializer>",
+      "ranges": [{ "startOffset": 4353, "endOffset": 4390, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "IndexedColumn",
+      "ranges": [{ "startOffset": 4394, "endOffset": 4516, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "<instance_members_initializer>",
+      "ranges": [{ "startOffset": 4519, "endOffset": 4546, "count": 0 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<static_initializer>",
+      "ranges": [{ "startOffset": 4599, "endOffset": 4637, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "PgArrayBuilder",
+      "ranges": [{ "startOffset": 4641, "endOffset": 4792, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "build",
+      "ranges": [{ "startOffset": 4814, "endOffset": 4973, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "PgArray",
+      "ranges": [{ "startOffset": 5011, "endOffset": 5175, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "<instance_members_initializer>",
+      "ranges": [{ "startOffset": 5178, "endOffset": 5182, "count": 0 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<static_initializer>",
+      "ranges": [{ "startOffset": 5186, "endOffset": 5217, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "getSQLType",
+      "ranges": [{ "startOffset": 5221, "endOffset": 5336, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "mapFromDriverValue",
+      "ranges": [{ "startOffset": 5339, "endOffset": 5516, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "mapToDriverValue",
+      "ranges": [{ "startOffset": 5519, "endOffset": 5813, "count": 0 }],
+      "isBlockCoverage": false
+    }
+  ]
+}

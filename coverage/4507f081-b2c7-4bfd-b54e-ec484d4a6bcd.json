@@ -1,0 +1,20 @@
+{
+  "scriptId": "356",
+  "url": "file:///home/joyja/.cache/deno/npm/registry.npmjs.org/date-fns/3.6.0/toDate.mjs",
+  "functions": [
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 0, "endOffset": 1767, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "toDate",
+      "ranges": [
+        { "startOffset": 1052, "endOffset": 1705, "count": 2 },
+        { "startOffset": 1196, "endOffset": 1263, "count": 0 },
+        { "startOffset": 1404, "endOffset": 1703, "count": 0 }
+      ],
+      "isBlockCoverage": true
+    }
+  ]
+}

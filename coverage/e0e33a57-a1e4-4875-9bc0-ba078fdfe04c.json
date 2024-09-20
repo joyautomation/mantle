@@ -1,0 +1,11 @@
+{
+  "scriptId": "385",
+  "url": "file:///home/joyja/.cache/deno/npm/registry.npmjs.org/drizzle-orm/0.33.0/pg-core/view-common.js",
+  "functions": [
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 0, "endOffset": 123, "count": 1 }],
+      "isBlockCoverage": true
+    }
+  ]
+}

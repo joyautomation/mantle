@@ -1,0 +1,16 @@
+{
+  "scriptId": "322",
+  "url": "file:///home/joyja/.cache/deno/npm/registry.npmjs.org/date-fns/3.6.0/getUnixTime.mjs",
+  "functions": [
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 0, "endOffset": 775, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "getUnixTime",
+      "ranges": [{ "startOffset": 635, "endOffset": 708, "count": 2 }],
+      "isBlockCoverage": true
+    }
+  ]
+}

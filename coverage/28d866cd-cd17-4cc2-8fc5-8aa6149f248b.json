@@ -1,0 +1,26 @@
+{
+  "scriptId": "432",
+  "url": "file:///home/joyja/.cache/deno/npm/registry.npmjs.org/drizzle-orm/0.33.0/pg-core/query-builders/refresh-materialized-view.js",
+  "functions": [
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 0, "endOffset": 1564, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "PgRefreshMaterializedView",
+      "ranges": [{ "startOffset": 201, "endOffset": 339, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "<static_initializer>",
+      "ranges": [{ "startOffset": 342, "endOffset": 391, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<instance_members_initializer>",
+      "ranges": [{ "startOffset": 395, "endOffset": 1467, "count": 0 }],
+      "isBlockCoverage": true
+    }
+  ]
+}

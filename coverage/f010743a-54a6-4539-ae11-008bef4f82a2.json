@@ -1,0 +1,51 @@
+{
+  "scriptId": "460",
+  "url": "file:///home/joyja/.cache/deno/npm/registry.npmjs.org/drizzle-orm/0.33.0/sql/functions/aggregate.js",
+  "functions": [
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 0, "endOffset": 1028, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "count",
+      "ranges": [{ "startOffset": 113, "endOffset": 211, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "countDistinct",
+      "ranges": [{ "startOffset": 212, "endOffset": 311, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "avg",
+      "ranges": [{ "startOffset": 312, "endOffset": 390, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "avgDistinct",
+      "ranges": [{ "startOffset": 391, "endOffset": 486, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "sum",
+      "ranges": [{ "startOffset": 487, "endOffset": 565, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "sumDistinct",
+      "ranges": [{ "startOffset": 566, "endOffset": 661, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "max",
+      "ranges": [{ "startOffset": 662, "endOffset": 778, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "min",
+      "ranges": [{ "startOffset": 779, "endOffset": 895, "count": 0 }],
+      "isBlockCoverage": false
+    }
+  ]
+}

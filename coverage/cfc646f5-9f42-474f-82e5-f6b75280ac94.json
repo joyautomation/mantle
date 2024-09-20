@@ -1,0 +1,41 @@
+{
+  "scriptId": "411",
+  "url": "file:///home/joyja/.cache/deno/npm/registry.npmjs.org/drizzle-orm/0.33.0/pg-core/columns/macaddr.js",
+  "functions": [
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 0, "endOffset": 621, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<static_initializer>",
+      "ranges": [{ "startOffset": 154, "endOffset": 194, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "PgMacaddrBuilder",
+      "ranges": [{ "startOffset": 198, "endOffset": 261, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "build",
+      "ranges": [{ "startOffset": 283, "endOffset": 347, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "<static_initializer>",
+      "ranges": [{ "startOffset": 387, "endOffset": 420, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "getSQLType",
+      "ranges": [{ "startOffset": 424, "endOffset": 464, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "macaddr",
+      "ranges": [{ "startOffset": 467, "endOffset": 530, "count": 0 }],
+      "isBlockCoverage": false
+    }
+  ]
+}

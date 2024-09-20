@@ -1,0 +1,72 @@
+{
+  "scriptId": "394",
+  "url": "file:///home/joyja/.cache/deno/npm/registry.npmjs.org/postgres/3.4.4/src/bytes.js",
+  "functions": [
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 0, "endOffset": 1362, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 107, "endOffset": 229, "count": 14 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "acc.<computed>",
+      "ranges": [{ "startOffset": 160, "endOffset": 214, "count": 4 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "inc",
+      "ranges": [{ "startOffset": 318, "endOffset": 356, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "str",
+      "ranges": [{ "startOffset": 360, "endOffset": 489, "count": 3 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "i16",
+      "ranges": [{ "startOffset": 493, "endOffset": 575, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "i32",
+      "ranges": [
+        { "startOffset": 579, "endOffset": 742, "count": 3 },
+        { "startOffset": 613, "endOffset": 668, "count": 0 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "z",
+      "ranges": [{ "startOffset": 746, "endOffset": 826, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "raw",
+      "ranges": [{ "startOffset": 830, "endOffset": 936, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "end",
+      "ranges": [{ "startOffset": 940, "endOffset": 1101, "count": 5 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "fit",
+      "ranges": [
+        { "startOffset": 1124, "endOffset": 1318, "count": 6 },
+        { "startOffset": 1173, "endOffset": 1316, "count": 0 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "reset",
+      "ranges": [{ "startOffset": 1320, "endOffset": 1361, "count": 5 }],
+      "isBlockCoverage": true
+    }
+  ]
+}

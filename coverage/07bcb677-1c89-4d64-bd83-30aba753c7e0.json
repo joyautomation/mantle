@@ -1,0 +1,41 @@
+{
+  "scriptId": "399",
+  "url": "file:///home/joyja/.cache/deno/npm/registry.npmjs.org/drizzle-orm/0.33.0/pg-core/columns/cidr.js",
+  "functions": [
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 0, "endOffset": 582, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<static_initializer>",
+      "ranges": [{ "startOffset": 151, "endOffset": 188, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "PgCidrBuilder",
+      "ranges": [{ "startOffset": 192, "endOffset": 252, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "build",
+      "ranges": [{ "startOffset": 274, "endOffset": 335, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "<static_initializer>",
+      "ranges": [{ "startOffset": 372, "endOffset": 402, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "getSQLType",
+      "ranges": [{ "startOffset": 406, "endOffset": 443, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "cidr",
+      "ranges": [{ "startOffset": 446, "endOffset": 503, "count": 0 }],
+      "isBlockCoverage": false
+    }
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "scriptId": "401",
+  "url": "file:///home/joyja/.cache/deno/npm/registry.npmjs.org/drizzle-orm/0.33.0/pg-core/columns/custom.js",
+  "functions": [
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 0, "endOffset": 1394, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<static_initializer>",
+      "ranges": [{ "startOffset": 159, "endOffset": 204, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "PgCustomColumnBuilder",
+      "ranges": [{ "startOffset": 208, "endOffset": 403, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "build",
+      "ranges": [{ "startOffset": 425, "endOffset": 512, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "<static_initializer>",
+      "ranges": [{ "startOffset": 557, "endOffset": 595, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<instance_members_initializer>",
+      "ranges": [{ "startOffset": 599, "endOffset": 626, "count": 0 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "PgCustomColumn",
+      "ranges": [{ "startOffset": 630, "endOffset": 867, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "getSQLType",
+      "ranges": [{ "startOffset": 870, "endOffset": 913, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "mapFromDriverValue",
+      "ranges": [{ "startOffset": 916, "endOffset": 1024, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "mapToDriverValue",
+      "ranges": [{ "startOffset": 1027, "endOffset": 1129, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "customType",
+      "ranges": [{ "startOffset": 1132, "endOffset": 1291, "count": 0 }],
+      "isBlockCoverage": false
+    }
+  ]
+}

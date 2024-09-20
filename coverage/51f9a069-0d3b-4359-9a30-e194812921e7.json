@@ -1,0 +1,46 @@
+{
+  "scriptId": "423",
+  "url": "file:///home/joyja/.cache/deno/npm/registry.npmjs.org/drizzle-orm/0.33.0/pg-core/columns/uuid.js",
+  "functions": [
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 0, "endOffset": 771, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<static_initializer>",
+      "ranges": [{ "startOffset": 191, "endOffset": 228, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "PgUUIDBuilder",
+      "ranges": [{ "startOffset": 232, "endOffset": 292, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "defaultRandom",
+      "ranges": [{ "startOffset": 371, "endOffset": 441, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "build",
+      "ranges": [{ "startOffset": 463, "endOffset": 524, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "<static_initializer>",
+      "ranges": [{ "startOffset": 561, "endOffset": 591, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "getSQLType",
+      "ranges": [{ "startOffset": 595, "endOffset": 632, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "uuid",
+      "ranges": [{ "startOffset": 635, "endOffset": 692, "count": 0 }],
+      "isBlockCoverage": false
+    }
+  ]
+}

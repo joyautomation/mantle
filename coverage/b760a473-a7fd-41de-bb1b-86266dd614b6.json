@@ -1,0 +1,21 @@
+{
+  "scriptId": "453",
+  "url": "file:///home/joyja/.cache/deno/npm/registry.npmjs.org/drizzle-orm/0.33.0/pg-core/columns/date.common.js",
+  "functions": [
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 0, "endOffset": 377, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<static_initializer>",
+      "ranges": [{ "startOffset": 191, "endOffset": 238, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "defaultNow",
+      "ranges": [{ "startOffset": 242, "endOffset": 297, "count": 1 }],
+      "isBlockCoverage": true
+    }
+  ]
+}

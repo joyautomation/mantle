@@ -1,0 +1,56 @@
+{
+  "scriptId": "415",
+  "url": "file:///home/joyja/.cache/deno/npm/registry.npmjs.org/drizzle-orm/0.33.0/pg-core/columns/real.js",
+  "functions": [
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 0, "endOffset": 825, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<static_initializer>",
+      "ranges": [{ "startOffset": 151, "endOffset": 188, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "PgRealBuilder",
+      "ranges": [{ "startOffset": 192, "endOffset": 293, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "build",
+      "ranges": [{ "startOffset": 315, "endOffset": 376, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<static_initializer>",
+      "ranges": [{ "startOffset": 413, "endOffset": 443, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "PgReal",
+      "ranges": [{ "startOffset": 447, "endOffset": 505, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "getSQLType",
+      "ranges": [{ "startOffset": 508, "endOffset": 545, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "<instance_members_initializer>",
+      "ranges": [{ "startOffset": 548, "endOffset": 685, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "mapFromDriverValue",
+      "ranges": [{ "startOffset": 569, "endOffset": 685, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "real",
+      "ranges": [{ "startOffset": 689, "endOffset": 746, "count": 1 }],
+      "isBlockCoverage": true
+    }
+  ]
+}

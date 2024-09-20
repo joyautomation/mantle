@@ -1,0 +1,186 @@
+{
+  "scriptId": "386",
+  "url": "file:///home/joyja/.cache/deno/npm/registry.npmjs.org/drizzle-orm/0.33.0/pg-core/view.js",
+  "functions": [
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 0, "endOffset": 6640, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "DefaultViewBuilderCore",
+      "ranges": [{ "startOffset": 384, "endOffset": 463, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "<static_initializer>",
+      "ranges": [{ "startOffset": 466, "endOffset": 514, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<instance_members_initializer>",
+      "ranges": [{ "startOffset": 518, "endOffset": 529, "count": 0 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "with",
+      "ranges": [{ "startOffset": 533, "endOffset": 599, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "<static_initializer>",
+      "ranges": [{ "startOffset": 655, "endOffset": 692, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "as",
+      "ranges": [{ "startOffset": 696, "endOffset": 1331, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "<static_initializer>",
+      "ranges": [{ "startOffset": 1393, "endOffset": 1436, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<instance_members_initializer>",
+      "ranges": [{ "startOffset": 1440, "endOffset": 1447, "count": 0 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "ManualViewBuilder",
+      "ranges": [{ "startOffset": 1451, "endOffset": 1576, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "existing",
+      "ranges": [{ "startOffset": 1579, "endOffset": 1999, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "as",
+      "ranges": [{ "startOffset": 2002, "endOffset": 2440, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "MaterializedViewBuilderCore",
+      "ranges": [{ "startOffset": 2481, "endOffset": 2560, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "<static_initializer>",
+      "ranges": [{ "startOffset": 2563, "endOffset": 2616, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<instance_members_initializer>",
+      "ranges": [{ "startOffset": 2620, "endOffset": 2631, "count": 0 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "using",
+      "ranges": [{ "startOffset": 2635, "endOffset": 2701, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "with",
+      "ranges": [{ "startOffset": 2704, "endOffset": 2770, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "tablespace",
+      "ranges": [{ "startOffset": 2773, "endOffset": 2859, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "withNoData",
+      "ranges": [{ "startOffset": 2862, "endOffset": 2932, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "<static_initializer>",
+      "ranges": [{ "startOffset": 3005, "endOffset": 3054, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "as",
+      "ranges": [{ "startOffset": 3058, "endOffset": 3866, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "<static_initializer>",
+      "ranges": [{ "startOffset": 3945, "endOffset": 4000, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<instance_members_initializer>",
+      "ranges": [{ "startOffset": 4004, "endOffset": 4011, "count": 0 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "ManualMaterializedViewBuilder",
+      "ranges": [{ "startOffset": 4015, "endOffset": 4140, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "existing",
+      "ranges": [{ "startOffset": 4143, "endOffset": 4575, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "as",
+      "ranges": [{ "startOffset": 4578, "endOffset": 5023, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "<static_initializer>",
+      "ranges": [{ "startOffset": 5062, "endOffset": 5092, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<instance_members_initializer>",
+      "ranges": [{ "startOffset": 5096, "endOffset": 5110, "count": 0 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "PgView",
+      "ranges": [{ "startOffset": 5114, "endOffset": 5264, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "<static_initializer>",
+      "ranges": [{ "startOffset": 5396, "endOffset": 5438, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<instance_members_initializer>",
+      "ranges": [{ "startOffset": 5442, "endOffset": 5468, "count": 0 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "PgMaterializedView",
+      "ranges": [{ "startOffset": 5472, "endOffset": 5713, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "pgViewWithSchema",
+      "ranges": [{ "startOffset": 5716, "endOffset": 5892, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "pgMaterializedViewWithSchema",
+      "ranges": [{ "startOffset": 5893, "endOffset": 6105, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "pgView",
+      "ranges": [{ "startOffset": 6106, "endOffset": 6190, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "pgMaterializedView",
+      "ranges": [{ "startOffset": 6191, "endOffset": 6299, "count": 0 }],
+      "isBlockCoverage": false
+    }
+  ]
+}

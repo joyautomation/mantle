@@ -1,0 +1,36 @@
+{
+  "scriptId": "455",
+  "url": "file:///home/joyja/.cache/deno/npm/registry.npmjs.org/drizzle-orm/0.33.0/query-promise.js",
+  "functions": [
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 0, "endOffset": 579, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<static_initializer>",
+      "ranges": [{ "startOffset": 65, "endOffset": 101, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<instance_members_initializer>",
+      "ranges": [{ "startOffset": 105, "endOffset": 142, "count": 0 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "catch",
+      "ranges": [{ "startOffset": 146, "endOffset": 211, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "finally",
+      "ranges": [{ "startOffset": 214, "endOffset": 413, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "then",
+      "ranges": [{ "startOffset": 416, "endOffset": 508, "count": 0 }],
+      "isBlockCoverage": false
+    }
+  ]
+}

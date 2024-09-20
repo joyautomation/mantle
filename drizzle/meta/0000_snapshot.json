@@ -1,0 +1,94 @@
+{
+  "id": "f1aba70e-4071-4bc3-b222-506481049abb",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.history": {
+      "name": "history",
+      "schema": "",
+      "columns": {
+        "group_id": {
+          "name": "group_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "node_id": {
+          "name": "node_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "device_id": {
+          "name": "device_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "''"
+        },
+        "metric_id": {
+          "name": "metric_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "int_value": {
+          "name": "int_value",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "float_value": {
+          "name": "float_value",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "string_value": {
+          "name": "string_value",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "bool_value": {
+          "name": "bool_value",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "timestamp": {
+          "name": "timestamp",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "history_group_id_node_id_device_id_metric_id_timestamp_unique": {
+          "name": "history_group_id_node_id_device_id_metric_id_timestamp_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "group_id",
+            "node_id",
+            "device_id",
+            "metric_id",
+            "timestamp"
+          ]
+        }
+      }
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "sequences": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

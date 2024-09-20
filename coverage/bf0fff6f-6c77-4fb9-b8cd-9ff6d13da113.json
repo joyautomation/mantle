@@ -1,0 +1,56 @@
+{
+  "scriptId": "408",
+  "url": "file:///home/joyja/.cache/deno/npm/registry.npmjs.org/drizzle-orm/0.33.0/pg-core/columns/json.js",
+  "functions": [
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 0, "endOffset": 894, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<static_initializer>",
+      "ranges": [{ "startOffset": 151, "endOffset": 188, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "PgJsonBuilder",
+      "ranges": [{ "startOffset": 192, "endOffset": 250, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "build",
+      "ranges": [{ "startOffset": 272, "endOffset": 333, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "<static_initializer>",
+      "ranges": [{ "startOffset": 370, "endOffset": 400, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "PgJson",
+      "ranges": [{ "startOffset": 404, "endOffset": 462, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "getSQLType",
+      "ranges": [{ "startOffset": 465, "endOffset": 502, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "mapToDriverValue",
+      "ranges": [{ "startOffset": 505, "endOffset": 568, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "mapFromDriverValue",
+      "ranges": [{ "startOffset": 571, "endOffset": 755, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "json",
+      "ranges": [{ "startOffset": 758, "endOffset": 815, "count": 0 }],
+      "isBlockCoverage": false
+    }
+  ]
+}

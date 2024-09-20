@@ -1,0 +1,41 @@
+{
+  "scriptId": "419",
+  "url": "file:///home/joyja/.cache/deno/npm/registry.npmjs.org/drizzle-orm/0.33.0/pg-core/columns/smallserial.js",
+  "functions": [
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 0, "endOffset": 758, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<static_initializer>",
+      "ranges": [{ "startOffset": 158, "endOffset": 202, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "PgSmallSerialBuilder",
+      "ranges": [{ "startOffset": 206, "endOffset": 340, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "build",
+      "ranges": [{ "startOffset": 362, "endOffset": 448, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "<static_initializer>",
+      "ranges": [{ "startOffset": 492, "endOffset": 529, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "getSQLType",
+      "ranges": [{ "startOffset": 533, "endOffset": 577, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "smallserial",
+      "ranges": [{ "startOffset": 580, "endOffset": 651, "count": 0 }],
+      "isBlockCoverage": false
+    }
+  ]
+}

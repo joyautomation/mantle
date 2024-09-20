@@ -1,0 +1,101 @@
+{
+  "scriptId": "380",
+  "url": "file:///home/joyja/.cache/deno/npm/registry.npmjs.org/drizzle-orm/0.33.0/pg-core/dialect.js",
+  "functions": [
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 0, "endOffset": 41643, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<static_initializer>",
+      "ranges": [{ "startOffset": 948, "endOffset": 981, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "migrate",
+      "ranges": [{ "startOffset": 985, "endOffset": 2424, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "escapeName",
+      "ranges": [{ "startOffset": 2427, "endOffset": 2473, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "escapeParam",
+      "ranges": [{ "startOffset": 2476, "endOffset": 2524, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "escapeString",
+      "ranges": [{ "startOffset": 2527, "endOffset": 2593, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "buildWithCTE",
+      "ranges": [{ "startOffset": 2596, "endOffset": 2988, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "buildDeleteQuery",
+      "ranges": [{ "startOffset": 2991, "endOffset": 3357, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "buildUpdateSet",
+      "ranges": [{ "startOffset": 3360, "endOffset": 3977, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "buildUpdateQuery",
+      "ranges": [{ "startOffset": 3980, "endOffset": 4412, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "buildSelection",
+      "ranges": [{ "startOffset": 4672, "endOffset": 5863, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "buildSelectQuery",
+      "ranges": [{ "startOffset": 5866, "endOffset": 10865, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "buildSetOperations",
+      "ranges": [{ "startOffset": 10868, "endOffset": 11296, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "buildSetOperationQuery",
+      "ranges": [{ "startOffset": 11299, "endOffset": 12656, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "buildInsertQuery",
+      "ranges": [{ "startOffset": 12659, "endOffset": 14467, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "buildRefreshMaterializedViewQuery",
+      "ranges": [{ "startOffset": 14470, "endOffset": 14770, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "prepareTyping",
+      "ranges": [{ "startOffset": 14773, "endOffset": 15291, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "sqlToQuery",
+      "ranges": [{ "startOffset": 15294, "endOffset": 15535, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "buildRelationalQueryWithoutPK",
+      "ranges": [{ "startOffset": 33679, "endOffset": 41581, "count": 0 }],
+      "isBlockCoverage": false
+    }
+  ]
+}

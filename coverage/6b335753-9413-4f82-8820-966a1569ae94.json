@@ -1,0 +1,31 @@
+{
+  "scriptId": "429",
+  "url": "file:///home/joyja/.cache/deno/npm/registry.npmjs.org/drizzle-orm/0.33.0/selection-proxy.js",
+  "functions": [
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 0, "endOffset": 2301, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<static_initializer>",
+      "ranges": [{ "startOffset": 329, "endOffset": 374, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<instance_members_initializer>",
+      "ranges": [{ "startOffset": 378, "endOffset": 384, "count": 0 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "SelectionProxyHandler",
+      "ranges": [{ "startOffset": 388, "endOffset": 446, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "get",
+      "ranges": [{ "startOffset": 449, "endOffset": 2219, "count": 0 }],
+      "isBlockCoverage": false
+    }
+  ]
+}

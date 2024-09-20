@@ -1,0 +1,51 @@
+{
+  "scriptId": "437",
+  "url": "file:///home/joyja/.cache/deno/npm/registry.npmjs.org/drizzle-orm/0.33.0/pg-core/query-builders/query-builder.js",
+  "functions": [
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 0, "endOffset": 2207, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<static_initializer>",
+      "ranges": [{ "startOffset": 275, "endOffset": 313, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<instance_members_initializer>",
+      "ranges": [{ "startOffset": 317, "endOffset": 324, "count": 0 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "$with",
+      "ranges": [{ "startOffset": 328, "endOffset": 716, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "with",
+      "ranges": [{ "startOffset": 719, "endOffset": 1445, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "select",
+      "ranges": [{ "startOffset": 1448, "endOffset": 1597, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "selectDistinct",
+      "ranges": [{ "startOffset": 1600, "endOffset": 1779, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "selectDistinctOn",
+      "ranges": [{ "startOffset": 1782, "endOffset": 1969, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "getDialect",
+      "ranges": [{ "startOffset": 2024, "endOffset": 2136, "count": 0 }],
+      "isBlockCoverage": false
+    }
+  ]
+}

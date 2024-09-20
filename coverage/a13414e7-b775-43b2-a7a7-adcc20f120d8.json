@@ -1,0 +1,66 @@
+{
+  "scriptId": "372",
+  "url": "file:///home/joyja/.cache/deno/npm/registry.npmjs.org/drizzle-orm/0.33.0/pg-core/foreign-keys.js",
+  "functions": [
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 0, "endOffset": 1937, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<static_initializer>",
+      "ranges": [{ "startOffset": 109, "endOffset": 152, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<instance_members_initializer>",
+      "ranges": [{ "startOffset": 175, "endOffset": 276, "count": 0 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "ForeignKeyBuilder",
+      "ranges": [{ "startOffset": 280, "endOffset": 602, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "onUpdate",
+      "ranges": [{ "startOffset": 605, "endOffset": 707, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "onDelete",
+      "ranges": [{ "startOffset": 710, "endOffset": 812, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "build",
+      "ranges": [{ "startOffset": 834, "endOffset": 892, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "ForeignKey",
+      "ranges": [{ "startOffset": 916, "endOffset": 1091, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "<static_initializer>",
+      "ranges": [{ "startOffset": 1094, "endOffset": 1130, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<instance_members_initializer>",
+      "ranges": [{ "startOffset": 1134, "endOffset": 1167, "count": 0 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "getName",
+      "ranges": [{ "startOffset": 1171, "endOffset": 1602, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "foreignKey",
+      "ranges": [{ "startOffset": 1605, "endOffset": 1836, "count": 0 }],
+      "isBlockCoverage": false
+    }
+  ]
+}

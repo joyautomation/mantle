@@ -1,0 +1,86 @@
+{
+  "scriptId": "381",
+  "url": "file:///home/joyja/.cache/deno/npm/registry.npmjs.org/drizzle-orm/0.33.0/pg-core/unique-constraint.js",
+  "functions": [
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 0, "endOffset": 1559, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "unique",
+      "ranges": [{ "startOffset": 81, "endOffset": 152, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "uniqueKeyName",
+      "ranges": [{ "startOffset": 153, "endOffset": 265, "count": 9 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "UniqueConstraintBuilder",
+      "ranges": [{ "startOffset": 300, "endOffset": 382, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "<static_initializer>",
+      "ranges": [{ "startOffset": 385, "endOffset": 434, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<instance_members_initializer>",
+      "ranges": [{ "startOffset": 457, "endOffset": 517, "count": 0 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "nullsNotDistinct",
+      "ranges": [{ "startOffset": 521, "endOffset": 602, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "build",
+      "ranges": [{ "startOffset": 624, "endOffset": 736, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "<static_initializer>",
+      "ranges": [{ "startOffset": 775, "endOffset": 826, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<instance_members_initializer>",
+      "ranges": [{ "startOffset": 849, "endOffset": 853, "count": 0 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "UniqueOnConstraintBuilder",
+      "ranges": [{ "startOffset": 857, "endOffset": 902, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "on",
+      "ranges": [{ "startOffset": 905, "endOffset": 985, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "UniqueConstraint",
+      "ranges": [{ "startOffset": 1015, "endOffset": 1264, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "<static_initializer>",
+      "ranges": [{ "startOffset": 1267, "endOffset": 1309, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<instance_members_initializer>",
+      "ranges": [{ "startOffset": 1313, "endOffset": 1356, "count": 0 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "getName",
+      "ranges": [{ "startOffset": 1360, "endOffset": 1397, "count": 0 }],
+      "isBlockCoverage": false
+    }
+  ]
+}

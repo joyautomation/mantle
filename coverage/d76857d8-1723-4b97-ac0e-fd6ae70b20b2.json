@@ -1,0 +1,141 @@
+{
+  "scriptId": "440",
+  "url": "file:///home/joyja/.cache/deno/npm/registry.npmjs.org/drizzle-orm/0.33.0/pg-core/query-builders/select.js",
+  "functions": [
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 0, "endOffset": 23737, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<static_initializer>",
+      "ranges": [{ "startOffset": 697, "endOffset": 736, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<instance_members_initializer>",
+      "ranges": [{ "startOffset": 740, "endOffset": 797, "count": 0 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "PgSelectBuilder",
+      "ranges": [{ "startOffset": 801, "endOffset": 1038, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "from",
+      "ranges": [{ "startOffset": 1266, "endOffset": 1977, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "<static_initializer>",
+      "ranges": [{ "startOffset": 2041, "endOffset": 2085, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<instance_members_initializer>",
+      "ranges": [{ "startOffset": 2089, "endOffset": 15316, "count": 0 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "addSetOperators",
+      "ranges": [{ "startOffset": 15339, "endOffset": 15443, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "where",
+      "ranges": [{ "startOffset": 16447, "endOffset": 16734, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "having",
+      "ranges": [{ "startOffset": 17415, "endOffset": 17709, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "groupBy",
+      "ranges": [{ "startOffset": 17712, "endOffset": 18119, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "orderBy",
+      "ranges": [{ "startOffset": 18122, "endOffset": 18887, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "limit",
+      "ranges": [{ "startOffset": 19308, "endOffset": 19495, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "offset",
+      "ranges": [{ "startOffset": 19926, "endOffset": 20119, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "for",
+      "ranges": [{ "startOffset": 20523, "endOffset": 20626, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "getSQL",
+      "ranges": [{ "startOffset": 20648, "endOffset": 20717, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "toSQL",
+      "ranges": [{ "startOffset": 20720, "endOffset": 20833, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "as",
+      "ranges": [{ "startOffset": 20836, "endOffset": 21036, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "getSelectedFields",
+      "ranges": [{ "startOffset": 21058, "endOffset": 21248, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "$dynamic",
+      "ranges": [{ "startOffset": 21251, "endOffset": 21284, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "<static_initializer>",
+      "ranges": [{ "startOffset": 21343, "endOffset": 21375, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "_prepare",
+      "ranges": [{ "startOffset": 21398, "endOffset": 21932, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "prepare",
+      "ranges": [{ "startOffset": 22244, "endOffset": 22295, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "<instance_members_initializer>",
+      "ranges": [{ "startOffset": 22298, "endOffset": 22464, "count": 0 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "createSetOperator",
+      "ranges": [{ "startOffset": 22511, "endOffset": 23124, "count": 6 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 22562, "endOffset": 23121, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "getPgSetOperators",
+      "ranges": [{ "startOffset": 23151, "endOffset": 23234, "count": 0 }],
+      "isBlockCoverage": false
+    }
+  ]
+}

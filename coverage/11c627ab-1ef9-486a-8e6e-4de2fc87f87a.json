@@ -1,0 +1,46 @@
+{
+  "scriptId": "407",
+  "url": "file:///home/joyja/.cache/deno/npm/registry.npmjs.org/drizzle-orm/0.33.0/pg-core/columns/interval.js",
+  "functions": [
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 0, "endOffset": 963, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<static_initializer>",
+      "ranges": [{ "startOffset": 155, "endOffset": 196, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "PgIntervalBuilder",
+      "ranges": [{ "startOffset": 200, "endOffset": 329, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "build",
+      "ranges": [{ "startOffset": 351, "endOffset": 416, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "<static_initializer>",
+      "ranges": [{ "startOffset": 457, "endOffset": 491, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<instance_members_initializer>",
+      "ranges": [{ "startOffset": 495, "endOffset": 589, "count": 0 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "getSQLType",
+      "ranges": [{ "startOffset": 593, "endOffset": 779, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "interval",
+      "ranges": [{ "startOffset": 782, "endOffset": 868, "count": 0 }],
+      "isBlockCoverage": false
+    }
+  ]
+}

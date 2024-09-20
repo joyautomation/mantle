@@ -1,0 +1,26 @@
+{
+  "scriptId": "454",
+  "url": "file:///home/joyja/.cache/deno/npm/registry.npmjs.org/drizzle-orm/0.33.0/pg-core/columns/postgis_extension/utils.js",
+  "functions": [
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 0, "endOffset": 1066, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "hexToBytes",
+      "ranges": [{ "startOffset": 0, "endOffset": 186, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "bytesToFloat64",
+      "ranges": [{ "startOffset": 187, "endOffset": 415, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "parseEWKB",
+      "ranges": [{ "startOffset": 416, "endOffset": 1008, "count": 0 }],
+      "isBlockCoverage": false
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "scriptId": "321",
+  "url": "file:///home/joyja/dev/deno/mantle/log.ts",
+  "functions": [
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 0, "endOffset": 122, "count": 1 }],
+      "isBlockCoverage": true
+    }
+  ]
+}

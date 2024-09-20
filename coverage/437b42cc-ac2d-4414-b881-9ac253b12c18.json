@@ -1,0 +1,46 @@
+{
+  "scriptId": "436",
+  "url": "file:///home/joyja/.cache/deno/npm/registry.npmjs.org/drizzle-orm/0.33.0/pg-core/query-builders/insert.js",
+  "functions": [
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 0, "endOffset": 5433, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "PgInsertBuilder",
+      "ranges": [{ "startOffset": 334, "endOffset": 496, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "<static_initializer>",
+      "ranges": [{ "startOffset": 499, "endOffset": 538, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "values",
+      "ranges": [{ "startOffset": 542, "endOffset": 1171, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "PgInsertBase",
+      "ranges": [{ "startOffset": 1218, "endOffset": 1394, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "<static_initializer>",
+      "ranges": [{ "startOffset": 1397, "endOffset": 1429, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<instance_members_initializer>",
+      "ranges": [{ "startOffset": 1433, "endOffset": 5313, "count": 0 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "$dynamic",
+      "ranges": [{ "startOffset": 5317, "endOffset": 5350, "count": 0 }],
+      "isBlockCoverage": false
+    }
+  ]
+}

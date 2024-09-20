@@ -1,0 +1,60 @@
+{
+  "scriptId": "314",
+  "url": "file:///home/joyja/dev/deno/mantle/validation.ts",
+  "functions": [
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 0, "endOffset": 1187, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "isValidPort",
+      "ranges": [
+        { "startOffset": 39, "endOffset": 153, "count": 12 },
+        { "startOffset": 92, "endOffset": 118, "count": 10 },
+        { "startOffset": 119, "endOffset": 132, "count": 7 },
+        { "startOffset": 133, "endOffset": 150, "count": 5 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "isValidHost",
+      "ranges": [{ "startOffset": 161, "endOffset": 275, "count": 9 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "isValidScanRate",
+      "ranges": [
+        { "startOffset": 283, "endOffset": 383, "count": 11 },
+        { "startOffset": 340, "endOffset": 366, "count": 9 },
+        { "startOffset": 367, "endOffset": 380, "count": 6 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "validate",
+      "ranges": [{ "startOffset": 391, "endOffset": 700, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "makeNumberOrUndefined",
+      "ranges": [{ "startOffset": 708, "endOffset": 801, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "validateHost",
+      "ranges": [{ "startOffset": 809, "endOffset": 906, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "validatePort",
+      "ranges": [{ "startOffset": 914, "endOffset": 1029, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "validateScanRate",
+      "ranges": [{ "startOffset": 1037, "endOffset": 1186, "count": 0 }],
+      "isBlockCoverage": false
+    }
+  ]
+}

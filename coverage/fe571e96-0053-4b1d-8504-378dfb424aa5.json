@@ -1,0 +1,81 @@
+{
+  "scriptId": "430",
+  "url": "file:///home/joyja/.cache/deno/npm/registry.npmjs.org/drizzle-orm/0.33.0/alias.js",
+  "functions": [
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 0, "endOffset": 3151, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "ColumnAliasProxyHandler",
+      "ranges": [{ "startOffset": 246, "endOffset": 294, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "<static_initializer>",
+      "ranges": [{ "startOffset": 297, "endOffset": 344, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "get",
+      "ranges": [{ "startOffset": 348, "endOffset": 461, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "TableAliasProxyHandler",
+      "ranges": [{ "startOffset": 497, "endOffset": 618, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "<static_initializer>",
+      "ranges": [{ "startOffset": 621, "endOffset": 667, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "get",
+      "ranges": [{ "startOffset": 671, "endOffset": 1658, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "RelationTableAliasProxyHandler",
+      "ranges": [{ "startOffset": 1702, "endOffset": 1750, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "<static_initializer>",
+      "ranges": [{ "startOffset": 1753, "endOffset": 1807, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "get",
+      "ranges": [{ "startOffset": 1811, "endOffset": 1958, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "aliasedTable",
+      "ranges": [{ "startOffset": 1961, "endOffset": 2079, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "aliasedRelation",
+      "ranges": [{ "startOffset": 2080, "endOffset": 2208, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "aliasedTableColumn",
+      "ranges": [{ "startOffset": 2209, "endOffset": 2401, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "mapColumnsInAliasedSQLToAlias",
+      "ranges": [{ "startOffset": 2402, "endOffset": 2544, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "mapColumnsInSQLToAlias",
+      "ranges": [{ "startOffset": 2545, "endOffset": 2903, "count": 0 }],
+      "isBlockCoverage": false
+    }
+  ]
+}

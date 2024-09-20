@@ -1,0 +1,86 @@
+{
+  "scriptId": "360",
+  "url": "file:///home/joyja/.cache/deno/npm/registry.npmjs.org/drizzle-orm/0.33.0/postgres-js/session.js",
+  "functions": [
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 0, "endOffset": 4693, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "PostgresJsPreparedQuery",
+      "ranges": [{ "startOffset": 399, "endOffset": 794, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "<static_initializer>",
+      "ranges": [{ "startOffset": 797, "endOffset": 844, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "execute",
+      "ranges": [{ "startOffset": 848, "endOffset": 2010, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "all",
+      "ranges": [{ "startOffset": 2013, "endOffset": 2681, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "isResponseInArrayMode",
+      "ranges": [{ "startOffset": 2703, "endOffset": 2772, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "PostgresJsSession",
+      "ranges": [{ "startOffset": 2821, "endOffset": 3031, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<static_initializer>",
+      "ranges": [{ "startOffset": 3034, "endOffset": 3075, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<instance_members_initializer>",
+      "ranges": [{ "startOffset": 3079, "endOffset": 3085, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "prepareQuery",
+      "ranges": [{ "startOffset": 3089, "endOffset": 3361, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "query",
+      "ranges": [{ "startOffset": 3364, "endOffset": 3486, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "queryObjects",
+      "ranges": [{ "startOffset": 3489, "endOffset": 3568, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "transaction",
+      "ranges": [{ "startOffset": 3571, "endOffset": 3979, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "PostgresJsTransaction",
+      "ranges": [{ "startOffset": 4036, "endOffset": 4174, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "<static_initializer>",
+      "ranges": [{ "startOffset": 4177, "endOffset": 4222, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "transaction",
+      "ranges": [{ "startOffset": 4226, "endOffset": 4571, "count": 0 }],
+      "isBlockCoverage": false
+    }
+  ]
+}

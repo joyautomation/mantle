@@ -17,8 +17,6 @@ Optional Flags:
   -b, --brokerUrl     Set the URL for MQTT Broker (i.e. https://mqtt3.anywherescada.com:8883)
   -u, --username      Set the username for MQTT Broker
   -p, --password      Set the password for MQTT Broker
-  -g, --groupId       Set the Sparkplug B Group ID
-  -n, --nodeId        Set the Sparkplug B Node ID
   -c, --clientId      Set the MQTT Client ID (a random ID will be appended to this)
   -l, --logLevel      Set the log level (default: info)
   -h, --help          Show help
@@ -65,14 +63,6 @@ const argDictionary: { [key: string]: ArgDictionaryItem } = {
   },
   password: {
     short: "p",
-    type: "string",
-  },
-  groupId: {
-    short: "g",
-    type: "string",
-  },
-  nodeId: {
-    short: "n",
     type: "string",
   },
   clientId: {

@@ -1,0 +1,51 @@
+{
+  "scriptId": "387",
+  "url": "file:///home/joyja/.cache/deno/npm/registry.npmjs.org/drizzle-orm/0.33.0/logger.js",
+  "functions": [
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 0, "endOffset": 842, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<static_initializer>",
+      "ranges": [{ "startOffset": 69, "endOffset": 109, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "write",
+      "ranges": [{ "startOffset": 113, "endOffset": 159, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "<static_initializer>",
+      "ranges": [{ "startOffset": 186, "endOffset": 223, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<instance_members_initializer>",
+      "ranges": [{ "startOffset": 227, "endOffset": 233, "count": 0 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "DefaultLogger",
+      "ranges": [{ "startOffset": 237, "endOffset": 322, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "logQuery",
+      "ranges": [{ "startOffset": 325, "endOffset": 665, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "<static_initializer>",
+      "ranges": [{ "startOffset": 689, "endOffset": 723, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "logQuery",
+      "ranges": [{ "startOffset": 727, "endOffset": 743, "count": 0 }],
+      "isBlockCoverage": false
+    }
+  ]
+}

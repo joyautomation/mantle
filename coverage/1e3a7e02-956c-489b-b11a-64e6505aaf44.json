@@ -1,0 +1,46 @@
+{
+  "scriptId": "418",
+  "url": "file:///home/joyja/.cache/deno/npm/registry.npmjs.org/drizzle-orm/0.33.0/pg-core/columns/smallint.js",
+  "functions": [
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 0, "endOffset": 812, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<static_initializer>",
+      "ranges": [{ "startOffset": 203, "endOffset": 244, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "PgSmallIntBuilder",
+      "ranges": [{ "startOffset": 248, "endOffset": 312, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "build",
+      "ranges": [{ "startOffset": 334, "endOffset": 399, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "<static_initializer>",
+      "ranges": [{ "startOffset": 440, "endOffset": 474, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "getSQLType",
+      "ranges": [{ "startOffset": 478, "endOffset": 519, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "<instance_members_initializer>",
+      "ranges": [{ "startOffset": 522, "endOffset": 648, "count": 0 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "smallint",
+      "ranges": [{ "startOffset": 652, "endOffset": 717, "count": 0 }],
+      "isBlockCoverage": false
+    }
+  ]
+}

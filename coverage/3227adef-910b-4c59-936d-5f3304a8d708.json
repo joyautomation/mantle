@@ -1,0 +1,51 @@
+{
+  "scriptId": "422",
+  "url": "file:///home/joyja/.cache/deno/npm/registry.npmjs.org/drizzle-orm/0.33.0/pg-core/columns/time.js",
+  "functions": [
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 0, "endOffset": 1182, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "PgTimeBuilder",
+      "ranges": [{ "startOffset": 202, "endOffset": 441, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "<static_initializer>",
+      "ranges": [{ "startOffset": 444, "endOffset": 481, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "build",
+      "ranges": [{ "startOffset": 504, "endOffset": 565, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "<static_initializer>",
+      "ranges": [{ "startOffset": 602, "endOffset": 632, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<instance_members_initializer>",
+      "ranges": [{ "startOffset": 636, "endOffset": 661, "count": 0 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "PgTime",
+      "ranges": [{ "startOffset": 665, "endOffset": 807, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "getSQLType",
+      "ranges": [{ "startOffset": 810, "endOffset": 982, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "time",
+      "ranges": [{ "startOffset": 985, "endOffset": 1103, "count": 0 }],
+      "isBlockCoverage": false
+    }
+  ]
+}

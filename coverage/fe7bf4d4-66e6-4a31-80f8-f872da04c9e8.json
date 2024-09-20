@@ -1,0 +1,86 @@
+{
+  "scriptId": "414",
+  "url": "file:///home/joyja/.cache/deno/npm/registry.npmjs.org/drizzle-orm/0.33.0/pg-core/columns/point.js",
+  "functions": [
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 0, "endOffset": 1780, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<static_initializer>",
+      "ranges": [{ "startOffset": 157, "endOffset": 200, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "PgPointTupleBuilder",
+      "ranges": [{ "startOffset": 204, "endOffset": 269, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "build",
+      "ranges": [{ "startOffset": 291, "endOffset": 376, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "<static_initializer>",
+      "ranges": [{ "startOffset": 419, "endOffset": 455, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "getSQLType",
+      "ranges": [{ "startOffset": 459, "endOffset": 497, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "mapFromDriverValue",
+      "ranges": [{ "startOffset": 500, "endOffset": 716, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "mapToDriverValue",
+      "ranges": [{ "startOffset": 719, "endOffset": 788, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "<static_initializer>",
+      "ranges": [{ "startOffset": 846, "endOffset": 890, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "PgPointObjectBuilder",
+      "ranges": [{ "startOffset": 894, "endOffset": 959, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "build",
+      "ranges": [{ "startOffset": 981, "endOffset": 1067, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "<static_initializer>",
+      "ranges": [{ "startOffset": 1111, "endOffset": 1148, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "getSQLType",
+      "ranges": [{ "startOffset": 1152, "endOffset": 1190, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "mapFromDriverValue",
+      "ranges": [{ "startOffset": 1193, "endOffset": 1404, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "mapToDriverValue",
+      "ranges": [{ "startOffset": 1407, "endOffset": 1474, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "point",
+      "ranges": [{ "startOffset": 1477, "endOffset": 1646, "count": 0 }],
+      "isBlockCoverage": false
+    }
+  ]
+}

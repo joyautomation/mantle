@@ -1,0 +1,36 @@
+{
+  "scriptId": "362",
+  "url": "file:///home/joyja/.cache/deno/npm/registry.npmjs.org/postgres/3.4.4/src/errors.js",
+  "functions": [
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 0, "endOffset": 1155, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "PostgresError",
+      "ranges": [{ "startOffset": 45, "endOffset": 151, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "connection",
+      "ranges": [{ "startOffset": 234, "endOffset": 607, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "postgres",
+      "ranges": [{ "startOffset": 609, "endOffset": 728, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "generic",
+      "ranges": [{ "startOffset": 730, "endOffset": 896, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "notSupported",
+      "ranges": [{ "startOffset": 922, "endOffset": 1154, "count": 0 }],
+      "isBlockCoverage": false
+    }
+  ]
+}

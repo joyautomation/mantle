@@ -1,0 +1,96 @@
+{
+  "scriptId": "373",
+  "url": "file:///home/joyja/.cache/deno/npm/registry.npmjs.org/drizzle-orm/0.33.0/pg-core/indexes.js",
+  "functions": [
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 0, "endOffset": 3057, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "IndexBuilderOn",
+      "ranges": [{ "startOffset": 161, "endOffset": 240, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "<static_initializer>",
+      "ranges": [{ "startOffset": 243, "endOffset": 283, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "on",
+      "ranges": [{ "startOffset": 287, "endOffset": 706, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "onOnly",
+      "ranges": [{ "startOffset": 709, "endOffset": 1103, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "using",
+      "ranges": [{ "startOffset": 1670, "endOffset": 2113, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "<static_initializer>",
+      "ranges": [{ "startOffset": 2139, "endOffset": 2177, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<instance_members_initializer>",
+      "ranges": [{ "startOffset": 2200, "endOffset": 2206, "count": 0 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "IndexBuilder",
+      "ranges": [{ "startOffset": 2210, "endOffset": 2367, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "concurrently",
+      "ranges": [{ "startOffset": 2370, "endOffset": 2444, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "with",
+      "ranges": [{ "startOffset": 2447, "endOffset": 2507, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "where",
+      "ranges": [{ "startOffset": 2510, "endOffset": 2584, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "build",
+      "ranges": [{ "startOffset": 2606, "endOffset": 2666, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "<static_initializer>",
+      "ranges": [{ "startOffset": 2685, "endOffset": 2716, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<instance_members_initializer>",
+      "ranges": [{ "startOffset": 2720, "endOffset": 2726, "count": 0 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "Index",
+      "ranges": [{ "startOffset": 2730, "endOffset": 2802, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "index",
+      "ranges": [{ "startOffset": 2805, "endOffset": 2871, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "uniqueIndex",
+      "ranges": [{ "startOffset": 2872, "endOffset": 2943, "count": 0 }],
+      "isBlockCoverage": false
+    }
+  ]
+}

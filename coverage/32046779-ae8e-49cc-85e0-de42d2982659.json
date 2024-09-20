@@ -1,0 +1,46 @@
+{
+  "scriptId": "403",
+  "url": "file:///home/joyja/.cache/deno/npm/registry.npmjs.org/drizzle-orm/0.33.0/pg-core/columns/double-precision.js",
+  "functions": [
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 0, "endOffset": 879, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<static_initializer>",
+      "ranges": [{ "startOffset": 162, "endOffset": 210, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "PgDoublePrecisionBuilder",
+      "ranges": [{ "startOffset": 214, "endOffset": 285, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "build",
+      "ranges": [{ "startOffset": 307, "endOffset": 397, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "<static_initializer>",
+      "ranges": [{ "startOffset": 445, "endOffset": 486, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "getSQLType",
+      "ranges": [{ "startOffset": 490, "endOffset": 539, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "mapFromDriverValue",
+      "ranges": [{ "startOffset": 542, "endOffset": 673, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "doublePrecision",
+      "ranges": [{ "startOffset": 676, "endOffset": 755, "count": 0 }],
+      "isBlockCoverage": false
+    }
+  ]
+}

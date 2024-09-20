@@ -1,0 +1,11 @@
+{
+  "scriptId": "449",
+  "url": "file:///home/joyja/.cache/deno/npm/registry.npmjs.org/drizzle-orm/0.33.0/version.js",
+  "functions": [
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 0, "endOffset": 149, "count": 1 }],
+      "isBlockCoverage": true
+    }
+  ]
+}

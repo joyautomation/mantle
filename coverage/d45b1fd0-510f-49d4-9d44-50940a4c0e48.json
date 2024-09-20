@@ -1,0 +1,11 @@
+{
+  "scriptId": "379",
+  "url": "file:///home/joyja/.cache/deno/npm/registry.npmjs.org/drizzle-orm/0.33.0/pg-core/subquery.js",
+  "functions": [
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 0, "endOffset": 36, "count": 1 }],
+      "isBlockCoverage": true
+    }
+  ]
+}

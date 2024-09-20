@@ -1,0 +1,90 @@
+{
+  "scriptId": "371",
+  "url": "file:///home/joyja/.cache/deno/npm/registry.npmjs.org/drizzle-orm/0.33.0/pg-core/db.js",
+  "functions": [
+    {
+      "functionName": "",
+      "ranges": [{ "startOffset": 0, "endOffset": 9383, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "PgDatabase",
+      "ranges": [
+        { "startOffset": 515, "endOffset": 1248, "count": 1 },
+        { "startOffset": 631, "endOffset": 763, "count": 0 },
+        { "startOffset": 902, "endOffset": 1244, "count": 0 }
+      ],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<static_initializer>",
+      "ranges": [{ "startOffset": 1251, "endOffset": 1285, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "<instance_members_initializer>",
+      "ranges": [{ "startOffset": 1289, "endOffset": 1294, "count": 1 }],
+      "isBlockCoverage": true
+    },
+    {
+      "functionName": "$with",
+      "ranges": [{ "startOffset": 2533, "endOffset": 2896, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "with",
+      "ranges": [{ "startOffset": 3539, "endOffset": 4692, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "select",
+      "ranges": [{ "startOffset": 4695, "endOffset": 4845, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "selectDistinct",
+      "ranges": [{ "startOffset": 4848, "endOffset": 5028, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "selectDistinctOn",
+      "ranges": [{ "startOffset": 5031, "endOffset": 5219, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "update",
+      "ranges": [{ "startOffset": 6035, "endOffset": 6121, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "insert",
+      "ranges": [{ "startOffset": 6782, "endOffset": 6868, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "delete",
+      "ranges": [{ "startOffset": 7551, "endOffset": 7634, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "refreshMaterializedView",
+      "ranges": [{ "startOffset": 7637, "endOffset": 7748, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "execute",
+      "ranges": [{ "startOffset": 7751, "endOffset": 8110, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "transaction",
+      "ranges": [{ "startOffset": 8113, "endOffset": 8209, "count": 0 }],
+      "isBlockCoverage": false
+    },
+    {
+      "functionName": "withReplicas",
+      "ranges": [{ "startOffset": 8233, "endOffset": 9310, "count": 0 }],
+      "isBlockCoverage": false
+    }
+  ]
+}
