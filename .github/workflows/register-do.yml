@@ -1,9 +1,11 @@
+name: Register Mantle to the private DO Container Registry
 on:
   push:
     branches:
       - main
     tags:
-      - 'v[0-9]+.[0-9]+.[0-9]+'
+      - '*'  # Trigger on any tag
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -11,15 +13,47 @@ jobs:
       run:
         working-directory: .
     steps:
-      - name: Checkout master
-        uses: actions/checkout@main
+      - name: Checkout main
+        uses: actions/checkout@v3
+
+      # Step to extract the tag name
+      - id: get_tag
+        run: |
+          echo "Tag: ${GITHUB_REF#refs/tags/}"
+
+      # Step to check if the tag is a valid semantic version number
+      - name: Check if tag is semantic version
+        id: semver_check
+        run: |
+          TAG=${GITHUB_REF#refs/tags/}
+          if [[ $TAG =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Tag is a semantic version: $TAG"
+            echo "::set-output name=IS_SEMVER::true"
+          else
+            echo "Tag is not a semantic version: $TAG"
+            echo "::set-output name=IS_SEMVER::false"
+          fi
+
+      # Build and push only if the tag is a valid semantic version
       - name: Install doctl
+        if: steps.semver_check.outputs.IS_SEMVER == 'true'
         uses: digitalocean/action-doctl@v2
         with:
-          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN  }}
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+
       - name: Build container image
-        run: docker build -t registry.digitalocean.com/jar-containers/@joyautomation/mantle:$(echo $GITHUB_SHA | head -c7) .
+        if: steps.semver_check.outputs.IS_SEMVER == 'true'
+        run: docker build -t registry.digitalocean.com/jar-containers/joyautomation/mantle:${GITHUB_REF#refs/tags/} .
+
       - name: Log in to DigitalOcean Container Registry with short-lived credentials
+        if: steps.semver_check.outputs.IS_SEMVER == 'true'
         run: doctl registry login --expiry-seconds 1200
+
       - name: Push image to DigitalOcean Container Registry
-        run: docker push registry.digitalocean.com/jar-containers/@joyautomation/mantle:$(echo $GITHUB_SHA | head -c7)
+        if: steps.semver_check.outputs.IS_SEMVER == 'true'
+        run: docker push registry.digitalocean.com/jar-containers/joyautomation/mantle:${GITHUB_REF#refs/tags/}
+
+      # Stop if the tag is not a valid semantic version
+      - name: Stop if not a semantic version
+        if: steps.semver_check.outputs.IS_SEMVER == 'false'
+        run: echo "This is not a valid semantic version. Skipping build and push."
