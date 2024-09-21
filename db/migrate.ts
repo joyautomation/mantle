@@ -1,10 +1,13 @@
 import { migrate } from "drizzle-orm/postgres-js/migrator";
-import { connection, createConnectionString, db } from "./db.ts";
+import { createConnectionString, getDb } from "./db.ts";
+
+const { db, connection } = await getDb();
 
 import postgres from "postgres";
+import { Args } from "@std/cli";
 
 const rootConnection = postgres(
-  await createConnectionString(true),
+  await createConnectionString({} as Args, true),
   { max: 1 },
 );
 

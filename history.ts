@@ -1,5 +1,5 @@
 import type { SparkplugMetric, SparkplugTopic } from "@joyautomation/neuron";
-import type { getDb } from "./db/db.ts";
+import type { Db, getDb } from "./db/db.ts";
 import { history } from "./db/schema.ts";
 import type { HistoryRecord } from "./db/schema.ts";
 import type {
@@ -41,7 +41,7 @@ export function calcTimestamp(
 }
 
 export async function recordValues(
-  db: Awaited<ReturnType<typeof getDb>>,
+  db: Db,
   topic: SparkplugTopic,
   message: UPayload,
 ) {

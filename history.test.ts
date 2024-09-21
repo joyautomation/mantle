@@ -92,7 +92,7 @@ const mockArgs = parseArguments([
   "-N",
   "test",
 ]);
-const db = await getDb(mockArgs);
+const { db } = await getDb(mockArgs);
 describe("recordValues", () => {
   const insertStub = stub(db, "insert", () => ({
     values: () => spy(),
