@@ -1,14 +1,14 @@
 import { Args, parseArgs } from "@std/cli";
 
 /**
- * Prints the current version of squid to the console.
+ * Prints the current version of mantle to the console.
  */
 export function printVersion(): void {
   console.log(`mantle v0.0.0`);
 }
 
 /**
- * Prints the help message for squid, including usage instructions and available options.
+ * Prints the help message for mantle, including usage instructions and available options.
  */
 export function printHelp(): void {
   console.log(`Usage: mantle [OPTIONS...]
@@ -120,4 +120,32 @@ export function parseArguments(args: string[]): Args {
     string: stringArgs,
     "--": true,
   });
+}
+
+export const _internal = {
+  printHelp: printHelp,
+  printVersion: printVersion,
+  parseArguments: parseArguments,
+};
+/**
+ * The main function that runs the mantle application.
+ * It parses command-line arguments, handles help and version flags,
+ * and starts the server if no special flags are provided.
+ * We use dynamic import to defer the server start until we have parsed the arguments.
+ * This prevents the SparkplugHost from being created if we're not going to run the server yet.
+ * @async
+ * @returns {Promise<void>}
+ */
+export async function main(): Promise<void> {
+  const args = _internal.parseArguments(Deno.args);
+  if (args.help) {
+    _internal.printHelp();
+    Deno.exit(0);
+  } else if (args.version) {
+    _internal.printVersion();
+    Deno.exit(0);
+  } else {
+    const { runServer } = await import("./server.ts");
+    runServer(args);
+  }
 }

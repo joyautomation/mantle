@@ -1,6 +1,13 @@
 import { describe, it } from "jsr:@std/testing/bdd";
 import { expect } from "jsr:@std/expect";
-import { isValidHost, isValidPort, isValidScanRate } from "./validation.ts";
+import {
+  isValidHost,
+  isValidPort,
+  isValidScanRate,
+  validate,
+} from "./validation.ts";
+import { assertSpyCalls, stub } from "@std/testing/mock";
+import { makeNumberOrUndefined } from "./validation.ts";
 
 describe("isValidHost", () => {
   it("should return true for valid hostnames", () => {
@@ -61,5 +68,35 @@ describe("isValidScanRate", () => {
     expect(isValidScanRate(null as any)).toBe(false);
     expect(isValidScanRate(undefined as any)).toBe(false);
     expect(isValidScanRate({} as any)).toBe(false);
+  });
+});
+
+describe("validate", () => {
+  it("should throw an error for invalid host", () => {
+    expect(validate(null, null, () => false, "MANTLE_HOST")).toEqual(null);
+  });
+  it("should return default value for invalid host", () => {
+    using infoStub = stub(console, "info");
+    expect(validate("invalid", "hostname", () => false, "MANTLE_HOST")).toEqual(
+      "hostname",
+    );
+    assertSpyCalls(infoStub, 1);
+  });
+  it("should return the input if it is valid", () => {
+    expect(validate("valid", "hostname", () => true, "MANTLE_HOST")).toEqual(
+      "valid",
+    );
+  });
+});
+
+describe("makeNumberOrUndefined", () => {
+  it("should return undefined for null", () => {
+    expect(makeNumberOrUndefined(null as any)).toEqual(undefined);
+  });
+  it("should return undefined for undefined", () => {
+    expect(makeNumberOrUndefined(undefined)).toEqual(undefined);
+  });
+  it("should return a number for a valid number", () => {
+    expect(makeNumberOrUndefined("123")).toEqual(123);
   });
 });

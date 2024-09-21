@@ -13,22 +13,32 @@ import type { Args } from "@std/cli";
 import { recordValues } from "./history.ts";
 import type { Db } from "./db/db.ts";
 
+/**
+ * Creates and returns a SparkplugHost instance based on the provided arguments or environment variables.
+ * @param {Args} args - The command-line arguments object.
+ * @returns {SparkplugHost} The created SparkplugHost instance.
+ */
 export function getHost(args: Args) {
   const config: SparkplugCreateHostInput = {
-    brokerUrl: args.brokerUrl || Deno.env.get("SQUID_MQTT_BROKER_URL") ||
+    brokerUrl: args.brokerUrl || Deno.env.get("MANTLE_MQTT_BROKER_URL") ||
       "ssl://mqtt3.anywherescada.com:8883",
-    username: args.username || Deno.env.get("SQUID_MQTT_USERNAME") || "",
-    password: args.password || Deno.env.get("SQUID_MQTT_PASSWORD") || "",
-    id: args.nodeId || Deno.env.get("SQUID_MQTT_NODE_ID") || "test",
+    username: args.username || Deno.env.get("MANTLE_MQTT_USERNAME") || "",
+    password: args.password || Deno.env.get("MANTLE_MQTT_PASSWORD") || "",
+    id: args.nodeId || Deno.env.get("MANTLE_MQTT_NODE_ID") || "test",
     clientId: args.clientId ||
-      `${Deno.env.get("SQUID_MQTT_CLIENT_ID")}-${nanoid(7)}`,
+      `${Deno.env.get("MANTLE_MQTT_CLIENT_ID")}-${nanoid(7)}`,
     version: "spBv1.0",
     primaryHostId: args.primaryHostId ||
-      Deno.env.get("SQUID_MQTT_PRIMARY_HOST_ID") || "test",
+      Deno.env.get("MANTLE_MQTT_PRIMARY_HOST_ID") || "test",
   };
   return createHost(config);
 }
 
+/**
+ * Adds event listeners to the SparkplugHost for recording history events.
+ * @param {Db} db - The database instance.
+ * @param {SparkplugHost} host - The SparkplugHost instance.
+ */
 export function addHistoryEvents(db: Db, host: SparkplugHost) {
   host.events.on("ndata", (topic, message) => {
     recordValues(db, topic, message);
@@ -38,6 +48,11 @@ export function addHistoryEvents(db: Db, host: SparkplugHost) {
   });
 }
 
+/**
+ * Adds the SparkplugHost and related types to the GraphQL schema.
+ * @param {SparkplugHost} host - The SparkplugHost instance.
+ * @param {PothosSchemaTypes.SchemaBuilder<PothosSchemaTypes.ExtendDefaultTypes<{}>>} builder - The schema builder instance.
+ */
 export function addHostToSchema(
   host: SparkplugHost,
   builder: PothosSchemaTypes.SchemaBuilder<

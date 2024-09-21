@@ -4,7 +4,7 @@ import { createConnectionString, getDb } from "./db.ts";
 const { db, connection } = await getDb();
 
 import postgres from "postgres";
-import { Args } from "@std/cli";
+import type { Args } from "@std/cli";
 
 const rootConnection = postgres(
   await createConnectionString({} as Args, true),
