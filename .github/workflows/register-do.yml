@@ -17,9 +17,9 @@ jobs:
         uses: actions/checkout@v3
 
       # Step to extract the tag name
-      - name: Get current tag
-        id: get_tag
-        run: echo "Tag: ${GITHUB_REF#refs/tags/}"
+      - id: get_tag
+        run: |
+          echo "Tag: ${GITHUB_REF#refs/tags/}"
 
       # Step to check if the tag is a valid semantic version number
       - name: Check if tag is semantic version
