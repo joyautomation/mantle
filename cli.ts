@@ -14,15 +14,16 @@ export function printHelp(): void {
   console.log(`Usage: mantle [OPTIONS...]
 
 Optional Flags:
-  -b, --broker-url         Set the URL for MQTT Broker (i.e. https://mqtt3.anywherescada.com:8883)
+  -b, --broker-url        Set the URL for MQTT Broker (i.e. https://mqtt3.anywherescada.com:8883)
   -u, --username          Set the username for MQTT Broker
   -p, --password          Set the password for MQTT Broker
-  -c, --client-id          Set the MQTT Client ID (a random ID will be appended to this)
-  -l, --log-level          Set the log level (default: info)
-  -D, --db-host      Set the database host (default: localhost)
-  -U, --db-user      Set the database user (default: postgres)
-  -P, --db-password  Set the database password (default: postgres)
-  -N, --db-name      Set the database name (default: mantl)
+  -c, --client-id         Set the MQTT Client ID (a random ID will be appended to this)
+  -l, --log-level         Set the log level (default: info)
+  -D, --db-host           Set the database host (default: localhost)
+  -U, --db-user           Set the database user (default: postgres)
+  -P, --db-password       Set the database password (default: postgres)
+  -N, --db-name           Set the database name (default: mantl)
+  -m, --migrate           Run the database migrations
   -h, --help              Show help
   -v, --version           Show version
 
@@ -49,6 +50,10 @@ export const argDictionary: { [key: string]: ArgDictionaryItem } = {
   },
   version: {
     short: "v",
+    type: "boolean",
+  },
+  migrate: {
+    short: "m",
     type: "boolean",
   },
   "log-level": {
@@ -143,6 +148,10 @@ export async function main(): Promise<void> {
     Deno.exit(0);
   } else if (args.version) {
     _internal.printVersion();
+    Deno.exit(0);
+  } else if (args.migrate) {
+    const { runMigrations } = await import("./db/migration.ts");
+    await runMigrations();
     Deno.exit(0);
   } else {
     const { runServer } = await import("./server.ts");
