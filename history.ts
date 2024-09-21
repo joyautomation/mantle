@@ -9,6 +9,11 @@ import type {
 import Long from "long";
 import { log } from "./log.ts";
 
+/**
+ * Determines the value type of a SparkplugMetric.
+ * @param {SparkplugMetric} metric - The SparkplugMetric to analyze.
+ * @returns {string} The determined value type as a string.
+ */
 export function getValueType(metric: SparkplugMetric) {
   if (
     metric.type.toLowerCase().startsWith("int") ||
@@ -27,6 +32,11 @@ export function getValueType(metric: SparkplugMetric) {
   }
 }
 
+/**
+ * Calculates a timestamp from various input types.
+ * @param {number | UMetric["timestamp"] | null | undefined} timestamp - The input timestamp.
+ * @returns {Date | null} The calculated Date object or null if input is invalid.
+ */
 export function calcTimestamp(
   timestamp: number | UMetric["timestamp"] | null | undefined,
 ): Date | null {
@@ -40,6 +50,13 @@ export function calcTimestamp(
   return null;
 }
 
+/**
+ * Records metric values to the database.
+ * @param {Db} db - The database instance.
+ * @param {SparkplugTopic} topic - The SparkplugTopic object.
+ * @param {UPayload} message - The UPayload object containing metrics.
+ * @returns {Promise<void>}
+ */
 export async function recordValues(
   db: Db,
   topic: SparkplugTopic,

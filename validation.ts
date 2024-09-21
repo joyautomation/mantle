@@ -27,7 +27,7 @@ export function validate<T>(
   } else {
     if (input != null) {
       log.info(
-        `${symbolName} with value "${input}" is not a valid hostname, using default "${defaultValue}"`,
+        `${symbolName} with value "${input}" is not valid, using default "${defaultValue}"`,
       );
     }
     return defaultValue;
@@ -50,17 +50,5 @@ export function validatePort(input: string | number | undefined) {
     4001,
     isValidPort,
     "MANTLE_PORT",
-  );
-}
-
-export function validateScanRate(
-  input: string | number | undefined,
-  defaultValue: number,
-) {
-  return validate(
-    makeNumberOrUndefined(input),
-    defaultValue,
-    isValidScanRate,
-    "MANTLE_SCANRATE",
   );
 }

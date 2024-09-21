@@ -7,13 +7,21 @@ import SchemaBuilder from "@pothos/core";
 import { setLogLevel } from "@joyautomation/coral";
 import { type Db, getDb } from "./db/db.ts";
 
+export const _internal = {
+  getDb,
+  getHost,
+};
+
 const flatten =
   <T extends { [id: string]: any }>(key: keyof T) =>
   (parent: T): T[keyof T][] => Object.values(parent[key]);
 
 export async function runServer(args: Args) {
-  setLogLevel(log, args.logLevel);
-  const db = await getDb(args);
+  setLogLevel(
+    log,
+    args["log-level"] || Deno.env.get("MANTLE_LOG_LEVEL") || "info",
+  );
+  const { db } = await _internal.getDb(args);
   const builder = new SchemaBuilder({});
 
   builder.queryType({
@@ -24,7 +32,7 @@ export async function runServer(args: Args) {
     }),
   });
 
-  const host = getHost(args);
+  const host = _internal.getHost(args);
   addHistoryEvents(db, host);
   addHostToSchema(host, builder);
   const schema = builder.toSchema();
