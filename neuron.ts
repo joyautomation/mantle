@@ -11,6 +11,7 @@ import {
 } from "@joyautomation/neuron";
 import type { Args } from "@std/cli";
 import { recordValues } from "./history.ts";
+import type { Db } from "./db/db.ts";
 
 export function getHost(args: Args) {
   const config: SparkplugCreateHostInput = {
@@ -28,12 +29,12 @@ export function getHost(args: Args) {
   return createHost(config);
 }
 
-export function addHistoryEvents(host: SparkplugHost) {
+export function addHistoryEvents(db: Db, host: SparkplugHost) {
   host.events.on("ndata", (topic, message) => {
-    recordValues(topic, message);
+    recordValues(db, topic, message);
   });
   host.events.on("ddata", (topic, message) => {
-    recordValues(topic, message);
+    recordValues(db, topic, message);
   });
 }
 

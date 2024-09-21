@@ -7,8 +7,9 @@ import Long from "long";
 import { getUnixTime } from "npm:date-fns@^3.6.0/getUnixTime";
 import { recordValues } from "./history.ts";
 import { assertSpyCalls, spy, stub } from "@std/testing/mock";
-import { db } from "./db/db.ts";
-import { TypeStr } from "sparkplug-payload/lib/sparkplugbpayload.js";
+import { getDb } from "./db/db.ts";
+import type { TypeStr } from "sparkplug-payload/lib/sparkplugbpayload.js";
+import { parseArguments } from "./cli.ts";
 
 describe("getValueType", () => {
   function makeMetric(type: string) {
@@ -81,6 +82,17 @@ describe("calcTimestamp", () => {
   });
 });
 
+const mockArgs = parseArguments([
+  "-D",
+  "test",
+  "-U",
+  "test",
+  "-P",
+  "test",
+  "-N",
+  "test",
+]);
+const { db } = await getDb(mockArgs);
 describe("recordValues", () => {
   const insertStub = stub(db, "insert", () => ({
     values: () => spy(),
@@ -103,7 +115,7 @@ describe("recordValues", () => {
         },
       ],
     };
-    recordValues(topic, message);
+    recordValues(db, topic, message);
     assertSpyCalls(insertStub, 1);
   });
 });
