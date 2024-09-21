@@ -4,8 +4,7 @@ on:
     branches:
       - main
     tags:
-      - '*'  # Trigger on any tag
-
+      - [12].[0-9]+.[0-9]+
 jobs:
   build:
     runs-on: ubuntu-latest
