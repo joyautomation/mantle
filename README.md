@@ -20,5 +20,3 @@ mantle --help
 You'll need a PostgreSQL database with the timescaledb extension installed.
 Please see the the [timescaledb docs](https://docs.timescale.com/) for more
 information.
-
-## Usage
