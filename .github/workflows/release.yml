@@ -4,8 +4,7 @@ on:
     types: [created]
 jobs:
   release:
-    permissions:
-      contents: write
+    permissions: write-all
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
