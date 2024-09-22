@@ -16,9 +16,12 @@ jobs:
         uses: digitalocean/action-doctl@v2
         with:
           token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN  }}
+      - name: Get release tag
+        id: get_tag
+        run: echo "VERSION_TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
       - name: Build container image
-        run: docker build -t registry.digitalocean.com/jar-containers/joyautomation/mantle:$(echo $GITHUB_SHA | head -c7) .
+        run: docker build -t registry.digitalocean.com/jar-containers/joyautomation/mantle:${{ steps.get_tag.outputs.VERSION_TAG }} .
       - name: Log in to DigitalOcean Container Registry with short-lived credentials
         run: doctl registry login --expiry-seconds 1200
       - name: Push image to DigitalOcean Container Registry
-        run: docker push registry.digitalocean.com/jar-containers/joyautomation/mantle:$(echo $GITHUB_SHA | head -c7)
+        run: docker push registry.digitalocean.com/jar-containers/joyautomation/mantle:${{ steps.get_tag.outputs.VERSION_TAG }}
