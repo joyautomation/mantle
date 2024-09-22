@@ -1,10 +1,12 @@
 import { Args, parseArgs } from "@std/cli";
 
+const VERSION = "__GIT_TAG__";
+
 /**
  * Prints the current version of mantle to the console.
  */
 export function printVersion(): void {
-  console.log(`mantle v0.0.0`);
+  console.log(`mantle v${VERSION}`);
 }
 
 /**
