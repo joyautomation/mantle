@@ -1,0 +1,29 @@
+name: Do a release
+on:
+  release:
+    types: [created]
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Set up Deno
+        uses: denoland/setup-deno@v1
+        with:
+          deno-version: v1.x
+      - name: Get release tag
+        id: get_tag
+        run: echo "RELEASE_TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+      - name: Compile Deno file
+        run: |
+          deno compile --output mantle-${{ steps.get_tag.outputs.RELEASE_TAG }} ./main.ts
+      - name: Upload compiled binary as release asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ./mantle-${{ steps.get_tag.outputs.RELEASE_TAG }}
+          asset_name: mantle-${{ steps.get_tag.outputs.RELEASE_TAG }}
+          asset_content_type: application/octet-stream
