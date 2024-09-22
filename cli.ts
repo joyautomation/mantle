@@ -19,24 +19,19 @@ export function printHelp(): void {
   console.log(`Usage: mantle [OPTIONS...]
 
 Optional Flags:
-  -b, --broker-url        Set the URL for MQTT Broker (i.e. https://mqtt3.anywherescada.com:8883)
-  -u, --username          Set the username for MQTT Broker
-  -p, --password          Set the password for MQTT Broker
-  -c, --client-id         Set the MQTT Client ID (a random ID will be appended to this)
-  -l, --log-level         Set the log level (default: info)
-  -D, --db-host           Set the database host (default: localhost)
-  -U, --db-user           Set the database user (default: postgres)
-  -P, --db-password       Set the database password (default: postgres)
-  -N, --db-name           Set the database name (default: mantl)
-  -m, --migrate           Run the database migrations
-  -h, --help              Show help
-  -v, --version           Show version
-
-Note: If not provided, these options can also be set by the corresponding environment variables:
-  MANTLE_MQTT_BROKER_URL, MANTLE_MQTT_USERNAME, MANTLE_MQTT_PASSWORD,
-  MANTLE_MQTT_GROUP_ID, MANTLE_MQTT_NODE_ID, MANTLE_MQTT_CLIENT_ID,
-  MANTLE_DATABASE_HOST, MANTLE_DATABASE_USER, MANTLE_DATABASE_PASSWORD,
-  MANTLE_DATABASE_NAME`);
+  -b, --broker-url   MANTLE_MQTT_BROKER_URL    Set the URL for MQTT Broker (i.e. https://mqtt3.anywherescada.com:8883)
+  -u, --username     MANTLE_MQTT_USERNAME      Set the username for MQTT Broker
+  -p, --password     MANTLE_MQTT_PASSWORD      Set the password for MQTT Broker
+  -c, --client-id    MANTLE_MQTT_CLIENT_ID     Set the MQTT Client ID (a random ID will be appended to this)
+  -l, --log-level    MANTLE_LOG_LEVEL          Set the log level (default: info)
+  -D, --db-host      MANTLE_DATABASE_HOST      Set the database host (default: localhost)
+  -U, --db-user      MANTLE_DATABASE_USER      Set the database user (default: postgres)
+  -P, --db-password  MANTLE_DATABASE_PASSWORD  Set the database password (default: postgres)
+  -N, --db-name      MANTLE_DATABASE_NAME      Set the database name (default: mantl)
+  -m, --migrate                                Run the database migrations
+  -h, --help                                   Show help
+  -v, --version                                Show version
+`);
 }
 
 export type ArgDictionaryItem = {
