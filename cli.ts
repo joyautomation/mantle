@@ -1,12 +1,15 @@
-import { Args, parseArgs } from "@std/cli";
+import { type Args, parseArgs } from "@std/cli";
 
-const VERSION = "eeceb6c";
+function getVersion(): string {
+  const config = Deno.readTextFileSync("./deno.json");
+  return JSON.parse(config).version;
+}
 
 /**
  * Prints the current version of mantle to the console.
  */
 export function printVersion(): void {
-  console.log(`mantle v${VERSION}`);
+  console.log(`mantle v${getVersion()}`);
 }
 
 /**
