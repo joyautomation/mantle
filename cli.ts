@@ -1,6 +1,6 @@
 import { Args, parseArgs } from "@std/cli";
 
-const VERSION = "__GIT_TAG__";
+const VERSION = "eeceb6c";
 
 /**
  * Prints the current version of mantle to the console.

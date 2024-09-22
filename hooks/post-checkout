@@ -1,8 +1,6 @@
 #!/bin/sh
 
-ls
-
 # Reset the placeholder in cli.ts
-sed -i '' "s/$(git rev-parse --short HEAD)/__GIT_TAG__/g" cli.ts
+sed -i "s/$(git rev-parse --short HEAD)/__GIT_TAG__/g" cli.ts
 
 # Don't stage this change

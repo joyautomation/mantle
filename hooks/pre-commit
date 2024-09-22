@@ -1,10 +1,14 @@
 #!/bin/sh
 
+echo "Current directory: $(pwd)"
+echo "Contents of current directory:"
+ls -la
+
 # Get the version (tag or commit SHA)
 VERSION=$(git describe --tags --exact-match 2>/dev/null || git rev-parse --short HEAD)
 
 # Update the version in cli.ts
-sed -i '' "s/__GIT_TAG__/$VERSION/g" ./cli.ts
+sed -i "s/__GIT_TAG__/$VERSION/g" cli.ts
 
 # Stage the modified file
-git add ./cli.ts
+git add cli.ts
