@@ -1,6 +1,6 @@
 import { createYoga } from "graphql-yoga";
 import { validateHost, validatePort } from "./validation.ts";
-import { addHistoryEvents, addHostToSchema, getHost } from "./neuron.ts";
+import { addHistoryEvents, addHostToSchema, getHost } from "./synapse.ts";
 import { log } from "./log.ts";
 import type { Args } from "@std/cli";
 import SchemaBuilder from "@pothos/core";
