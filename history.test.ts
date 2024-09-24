@@ -1,7 +1,7 @@
 import { describe, it } from "@std/testing/bdd";
 import { expect } from "@std/expect";
 import { getValueType } from "./history.ts";
-import type { SparkplugMetric, SparkplugTopic } from "@joyautomation/neuron";
+import type { SparkplugMetric, SparkplugTopic } from "@joyautomation/synapse";
 import { calcTimestamp } from "./history.ts";
 import Long from "long";
 import { getUnixTime } from "npm:date-fns@^3.6.0/getUnixTime";

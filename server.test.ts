@@ -5,7 +5,7 @@ import { describe, it } from "@std/testing/bdd";
 import { _internal } from "./server.ts";
 import type postgres from "postgres";
 import type { Db } from "./db/db.ts";
-import type { SparkplugHost } from "@joyautomation/neuron";
+import type { SparkplugHost } from "@joyautomation/synapse";
 import { EventEmitter } from "node:events";
 
 describe("server", () => {

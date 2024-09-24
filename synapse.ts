@@ -9,14 +9,14 @@ import {
   type SparkplugMetric,
   type SparkplugNodeFlat,
   type SparkplugTopic,
-} from "@joyautomation/neuron";
+} from "@joyautomation/synapse";
 import type { Args } from "@std/cli";
 import { recordValues } from "./history.ts";
 import type { Db } from "./db/db.ts";
 import { pubsub } from "./pubsub.ts";
 import type { UPayload } from "sparkplug-payload/lib/sparkplugbpayload.js";
 import { calcTimestamp } from "./history.ts";
-import { Builder } from "./db/graphql.ts";
+import type { Builder } from "./db/graphql.ts";
 
 /**
  * Creates and returns a SparkplugHost instance based on the provided arguments or environment variables.

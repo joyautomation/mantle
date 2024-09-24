@@ -1,5 +1,5 @@
-import type { SparkplugMetric, SparkplugTopic } from "@joyautomation/neuron";
-import type { Db, getDb } from "./db/db.ts";
+import type { SparkplugMetric, SparkplugTopic } from "@joyautomation/synapse";
+import type { Db } from "./db/db.ts";
 import { history } from "./db/schema.ts";
 import type { HistoryRecord } from "./db/schema.ts";
 import type {
