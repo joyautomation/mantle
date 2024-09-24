@@ -8,10 +8,15 @@ import {
   type SparkplugHost,
   type SparkplugMetric,
   type SparkplugNodeFlat,
+  type SparkplugTopic,
 } from "@joyautomation/neuron";
 import type { Args } from "@std/cli";
 import { recordValues } from "./history.ts";
 import type { Db } from "./db/db.ts";
+import { pubsub } from "./pubsub.ts";
+import type { UPayload } from "sparkplug-payload/lib/sparkplugbpayload.js";
+import { calcTimestamp } from "./history.ts";
+import { Builder } from "./db/graphql.ts";
 
 /**
  * Creates and returns a SparkplugHost instance based on the provided arguments or environment variables.
@@ -40,11 +45,19 @@ export function getHost(args: Args) {
  * @param {SparkplugHost} host - The SparkplugHost instance.
  */
 export function addHistoryEvents(db: Db, host: SparkplugHost) {
-  host.events.on("ndata", (topic, message) => {
-    recordValues(db, topic, message);
-  });
-  host.events.on("ddata", (topic, message) => {
-    recordValues(db, topic, message);
+  ["ndata", "ddata"].forEach((topic) => {
+    host.events.on(topic, (topic: SparkplugTopic, message: UPayload) => {
+      recordValues(db, topic, message);
+      pubsub.publish(
+        "metricUpdate",
+        message.metrics?.map((metric) => ({
+          ...metric,
+          groupId: topic.groupId,
+          nodeId: topic.edgeNode,
+          deviceId: topic.deviceId,
+        })),
+      );
+    });
   });
 }
 
@@ -55,9 +68,7 @@ export function addHistoryEvents(db: Db, host: SparkplugHost) {
  */
 export function addHostToSchema(
   host: SparkplugHost,
-  builder: PothosSchemaTypes.SchemaBuilder<
-    PothosSchemaTypes.ExtendDefaultTypes<{}>
-  >,
+  builder: Builder,
 ) {
   const SparkplugHostRef = builder.objectRef<SparkplugHost>(
     "SparkplugHost",
@@ -73,6 +84,14 @@ export function addHostToSchema(
   );
   const SparkplugMetricRef = builder.objectRef<SparkplugMetric>(
     "SparkplugMetric",
+  );
+  type SparkplugMetricUpdate = SparkplugMetric & {
+    groupId: string;
+    nodeId: string;
+    deviceId: string;
+  };
+  const SparkplugMetricUpdateRef = builder.objectRef<SparkplugMetricUpdate>(
+    "SparkplugMetricUpdate",
   );
 
   SparkplugHostRef.implement({
@@ -104,6 +123,26 @@ export function addHostToSchema(
         resolve: (parent) => parent.value?.toString(),
       }),
       type: t.exposeString("type"),
+      timestamp: t.field({
+        type: "Date",
+        resolve: (parent) => calcTimestamp(parent.timestamp),
+      }),
+    }),
+  });
+  SparkplugMetricUpdateRef.implement({
+    fields: (t) => ({
+      groupId: t.exposeString("groupId"),
+      nodeId: t.exposeString("nodeId"),
+      deviceId: t.exposeString("deviceId"),
+      name: t.exposeString("name"),
+      value: t.string({
+        resolve: (parent) => parent.value?.toString(),
+      }),
+      type: t.exposeString("type"),
+      timestamp: t.field({
+        type: "Date",
+        resolve: (parent) => calcTimestamp(parent.timestamp),
+      }),
     }),
   });
   SparkplugDeviceRef.implement({
@@ -116,5 +155,11 @@ export function addHostToSchema(
     t.field({
       type: SparkplugHostRef,
       resolve: () => host,
+    }));
+  builder.subscriptionField("metrics", (t) =>
+    t.field({
+      type: [SparkplugMetricUpdateRef],
+      subscribe: () => pubsub.subscribe("metricUpdate"),
+      resolve: (payload) => payload,
     }));
 }

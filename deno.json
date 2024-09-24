@@ -1,6 +1,6 @@
 {
   "name": "@joyautomation/mantle",
-  "version": "0.0.15",
+  "version": "0.0.16",
   "description": "Mantle consumes and logs Sparkplug B data",
   "author": "Joy Automation",
   "license": "GPL-3.0-or-later",
@@ -21,6 +21,7 @@
     "@std/testing": "jsr:@std/testing@^1.0.2",
     "drizzle-kit": "npm:drizzle-kit@^0.24.2",
     "drizzle-orm": "npm:drizzle-orm@^0.33.0",
+    "graphql-scalars": "npm:graphql-scalars@^1.23.0",
     "graphql-yoga": "npm:graphql-yoga@^5.7.0",
     "long": "npm:long@^5.2.3",
     "nanoid": "npm:nanoid@^5.0.7",

@@ -6,6 +6,7 @@ import type { Args } from "@std/cli";
 import SchemaBuilder from "@pothos/core";
 import { setLogLevel } from "@joyautomation/coral";
 import { type Db, getDb } from "./db/db.ts";
+import { getBuilder, initialize } from "./db/graphql.ts";
 
 export const _internal = {
   getDb,
@@ -22,16 +23,7 @@ export async function runServer(args: Args) {
     args["log-level"] || Deno.env.get("MANTLE_LOG_LEVEL") || "info",
   );
   const { db } = await _internal.getDb(args);
-  const builder = new SchemaBuilder({});
-
-  builder.queryType({
-    fields: (t) => ({
-      info: t.string({
-        resolve: () => `Mantle Sparkplug B Data Aggregator.`,
-      }),
-    }),
-  });
-
+  const builder = getBuilder();
   const host = _internal.getHost(args);
   addHistoryEvents(db, host);
   addHostToSchema(host, builder);
