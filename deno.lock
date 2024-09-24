@@ -26,6 +26,7 @@
       "npm:drizzle-kit": "npm:drizzle-kit@0.24.2_esbuild@0.19.12",
       "npm:drizzle-kit@^0.24.2": "npm:drizzle-kit@0.24.2_esbuild@0.19.12",
       "npm:drizzle-orm@^0.33.0": "npm:drizzle-orm@0.33.0_postgres@3.4.4",
+      "npm:graphql-scalars@^1.23.0": "npm:graphql-scalars@1.23.0_graphql@16.9.0",
       "npm:graphql-yoga@^5.7.0": "npm:graphql-yoga@5.7.0_graphql@16.9.0",
       "npm:long@^5.2.3": "npm:long@5.2.3",
       "npm:mqtt@^5.10.1": "npm:mqtt@5.10.1",
@@ -714,6 +715,13 @@
           "resolve-pkg-maps": "resolve-pkg-maps@1.0.0"
         }
       },
+      "graphql-scalars@1.23.0_graphql@16.9.0": {
+        "integrity": "sha512-YTRNcwitkn8CqYcleKOx9IvedA8JIERn8BRq21nlKgOr4NEcTaWEG0sT+H92eF3ALTFbPgsqfft4cw+MGgv0Gg==",
+        "dependencies": {
+          "graphql": "graphql@16.9.0",
+          "tslib": "tslib@2.7.0"
+        }
+      },
       "graphql-yoga@5.7.0_graphql@16.9.0": {
         "integrity": "sha512-QyGVvFAvGhMrzjJvhjsxsyoE+e4lNrj5f5qOsRYJuWIjyw7tHfbBvybZIwzNOGY0aB5sgA8BlVvu5hxjdKJ5tQ==",
         "dependencies": {
@@ -987,6 +995,7 @@
       "npm:@pothos/core@^4.2.0",
       "npm:drizzle-kit@^0.24.2",
       "npm:drizzle-orm@^0.33.0",
+      "npm:graphql-scalars@^1.23.0",
       "npm:graphql-yoga@^5.7.0",
       "npm:long@^5.2.3",
       "npm:nanoid@^5.0.7",
