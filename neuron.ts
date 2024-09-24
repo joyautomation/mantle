@@ -48,7 +48,15 @@ export function addHistoryEvents(db: Db, host: SparkplugHost) {
   ["ndata", "ddata"].forEach((topic) => {
     host.events.on(topic, (topic: SparkplugTopic, message: UPayload) => {
       recordValues(db, topic, message);
-      pubsub.publish("metricUpdate", message.metrics);
+      pubsub.publish(
+        "metricUpdate",
+        message.metrics?.map((metric) => ({
+          ...metric,
+          groupId: topic.groupId,
+          nodeId: topic.edgeNode,
+          deviceId: topic.deviceId,
+        })),
+      );
     });
   });
 }
@@ -76,6 +84,14 @@ export function addHostToSchema(
   );
   const SparkplugMetricRef = builder.objectRef<SparkplugMetric>(
     "SparkplugMetric",
+  );
+  type SparkplugMetricUpdate = SparkplugMetric & {
+    groupId: string;
+    nodeId: string;
+    deviceId: string;
+  };
+  const SparkplugMetricUpdateRef = builder.objectRef<SparkplugMetricUpdate>(
+    "SparkplugMetricUpdate",
   );
 
   SparkplugHostRef.implement({
@@ -113,6 +129,22 @@ export function addHostToSchema(
       }),
     }),
   });
+  SparkplugMetricUpdateRef.implement({
+    fields: (t) => ({
+      groupId: t.exposeString("groupId"),
+      nodeId: t.exposeString("nodeId"),
+      deviceId: t.exposeString("deviceId"),
+      name: t.exposeString("name"),
+      value: t.string({
+        resolve: (parent) => parent.value?.toString(),
+      }),
+      type: t.exposeString("type"),
+      timestamp: t.field({
+        type: "Date",
+        resolve: (parent) => calcTimestamp(parent.timestamp),
+      }),
+    }),
+  });
   SparkplugDeviceRef.implement({
     fields: (t) => ({
       id: t.exposeString("id"),
@@ -126,7 +158,7 @@ export function addHostToSchema(
     }));
   builder.subscriptionField("metrics", (t) =>
     t.field({
-      type: [SparkplugMetricRef],
+      type: [SparkplugMetricUpdateRef],
       subscribe: () => pubsub.subscribe("metricUpdate"),
       resolve: (payload) => payload,
     }));
