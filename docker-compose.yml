@@ -2,6 +2,7 @@ services:
   mantle:
     container_name: mantle
     image: mantle-debian:latest
+    command: ['./mantle', '-m']
     ports:
       - "4001:4001"
     env_file:
