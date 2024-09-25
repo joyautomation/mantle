@@ -22,6 +22,7 @@ FROM debian:bookworm-slim
 WORKDIR /app
 
 # Copy only the compiled binary from the builder stage
+COPY --from=builder /app/drizzle ./drizzle
 COPY --from=builder /app/mantle .
 
 # Make sure the binary is executable
