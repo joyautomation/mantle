@@ -21,7 +21,6 @@ describe("server", () => {
       _internal,
       "getHost",
       () => {
-        console.log("getHostStub");
         return { events: new EventEmitter() } as SparkplugHost;
       },
     );
