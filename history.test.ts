@@ -9,7 +9,8 @@ import { recordValues } from "./history.ts";
 import { assertSpyCalls, spy, stub } from "@std/testing/mock";
 import { getDb } from "./db/db.ts";
 import type { TypeStr } from "sparkplug-payload/lib/sparkplugbpayload.js";
-import { parseArguments } from "./cli.ts";
+import { parseArguments } from "@joyautomation/conch";
+import { argDictionary } from "./cli.ts";
 
 describe("getValueType", () => {
   function makeMetric(type: string) {
@@ -91,7 +92,7 @@ const mockArgs = parseArguments([
   "test",
   "-N",
   "test",
-]);
+], argDictionary);
 const { db } = await getDb(mockArgs);
 describe("recordValues", () => {
   const insertStub = stub(db, "insert", () => ({

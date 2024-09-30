@@ -7,8 +7,10 @@ import type postgres from "postgres";
 import type { Db } from "./db/db.ts";
 import type { SparkplugHost } from "@joyautomation/synapse";
 import { EventEmitter } from "node:events";
+import { getBuilder } from "@joyautomation/conch";
 
 describe("server", () => {
+  const builder = getBuilder("This is mantle.", false, true);
   it("should run server", async () => {
     using _infoStub = stub(console, "info");
     const servStub = stub(Deno, "serve");
@@ -24,7 +26,13 @@ describe("server", () => {
         return { events: new EventEmitter() } as SparkplugHost;
       },
     );
-    await runServer({} as Args);
+    await runServer(
+      "mantle",
+      "this is mantle",
+      {} as Args,
+      false,
+      true,
+    );
     assertSpyCalls(getHostStub, 1);
     assertSpyCalls(getDbStub, 1);
     assertSpyCalls(servStub, 1);
