@@ -2,7 +2,7 @@
   "version": "3",
   "packages": {
     "specifiers": {
-      "jsr:@joyautomation/conch@^0.0.17": "jsr:@joyautomation/conch@0.0.17",
+      "jsr:@joyautomation/conch@^0.0.18": "jsr:@joyautomation/conch@0.0.18",
       "jsr:@joyautomation/coral@^0.0.10": "jsr:@joyautomation/coral@0.0.10",
       "jsr:@joyautomation/neuron@0.0.26": "jsr:@joyautomation/neuron@0.0.26",
       "jsr:@joyautomation/neuron@0.0.30": "jsr:@joyautomation/neuron@0.0.30",
@@ -40,8 +40,8 @@
       "npm:sparkplug-payload@^1.0.3": "npm:sparkplug-payload@1.0.3"
     },
     "jsr": {
-      "@joyautomation/conch@0.0.17": {
-        "integrity": "fce2f62dac97eeffbde5909712e98d384679dc7ba947d9ca54a0ca7dc50e5839",
+      "@joyautomation/conch@0.0.18": {
+        "integrity": "42b5977c0a990145b12b9404424aa1fca72eb7777f67753cab4f8ee848fea1d1",
         "dependencies": [
           "jsr:@joyautomation/coral@^0.0.10",
           "jsr:@std/cli@^1.0.6",
@@ -996,7 +996,7 @@
   "remote": {},
   "workspace": {
     "dependencies": [
-      "jsr:@joyautomation/conch@^0.0.17",
+      "jsr:@joyautomation/conch@^0.0.18",
       "jsr:@joyautomation/coral@^0.0.10",
       "jsr:@joyautomation/synapse@^0.0.36",
       "jsr:@std/assert@1",
