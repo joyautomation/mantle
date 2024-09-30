@@ -88,7 +88,7 @@ const mockArgs = parseArguments([
   "test",
   "-U",
   "test",
-  "-P",
+  "-W",
   "test",
   "-N",
   "test",

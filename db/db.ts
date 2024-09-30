@@ -17,11 +17,12 @@ export function createConnectionString(
   const user = args?.["db-user"] || Deno.env.get("MANTLE_DB_USER");
   const password = args?.["db-password"] || Deno.env.get("MANTLE_DB_PASSWORD");
   const host = args?.["db-host"] || Deno.env.get("MANTLE_DB_HOST");
+  const port = args?.["db-port"] || Deno.env.get("MANTLE_DB_PORT");
   const name = args?.["db-name"] || Deno.env.get("MANTLE_DB_NAME");
   if (!user || !password || !host || (!name && !root)) {
     throw new Error("Database credentials are not set");
   }
-  return `postgres://${user}:${password}@${host}:5432/${
+  return `postgres://${user}:${password}@${host}:${port}/${
     root ? "postgres" : name
   }`;
 }

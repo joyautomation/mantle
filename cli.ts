@@ -52,6 +52,12 @@ export const argDictionary: { [key: string]: ArgDictionaryItem } = {
     env: "MANTLE_DB_HOST",
     type: "string",
   },
+  "db-port": {
+    short: "P",
+    description: "Set the database port",
+    env: "MANTLE_DB_PORT",
+    type: "string",
+  },
   "db-user": {
     short: "U",
     description: "Set the database user",
@@ -59,7 +65,7 @@ export const argDictionary: { [key: string]: ArgDictionaryItem } = {
     type: "string",
   },
   "db-password": {
-    short: "P",
+    short: "W",
     description: "Set the database password",
     env: "MANTLE_DB_PASSWORD",
     type: "string",
