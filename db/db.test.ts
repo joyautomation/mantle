@@ -57,6 +57,7 @@ describe("getConnectionString", () => {
     const originalEnv = Deno.env.toObject();
     try {
       Deno.env.set("MANTLE_DB_HOST", "envhost");
+      Deno.env.set("MANTLE_DB_PORT", "5432");
       Deno.env.set("MANTLE_DB_NAME", "envdb");
       Deno.env.set("MANTLE_DB_USER", "envuser");
       Deno.env.set("MANTLE_DB_PASSWORD", "envpass");
