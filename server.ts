@@ -1,7 +1,7 @@
 import { addHistoryEvents, addHostToSchema, getHost } from "./synapse.ts";
 import { log } from "./log.ts";
 import { getDb } from "./db/db.ts";
-import { createRunServer } from "../conch/server.ts";
+import { createRunServer } from "@joyautomation/conch";
 
 export const _internal = {
   getDb,
