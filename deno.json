@@ -12,7 +12,7 @@
     "dev": "deno run --watch main.ts"
   },
   "imports": {
-    "@joyautomation/conch": "../conch/index.ts",
+    "@joyautomation/conch": "jsr:@joyautomation/conch@^0.0.17",
     "@joyautomation/coral": "jsr:@joyautomation/coral@^0.0.10",
     "@joyautomation/synapse": "jsr:@joyautomation/synapse@^0.0.36",
     "@pothos/core": "npm:@pothos/core@^4.2.0",
