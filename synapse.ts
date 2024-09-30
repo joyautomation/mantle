@@ -16,7 +16,7 @@ import type { Db } from "./db/db.ts";
 import { pubsub } from "./pubsub.ts";
 import type { UPayload } from "sparkplug-payload/lib/sparkplugbpayload.js";
 import { calcTimestamp } from "./history.ts";
-import type { Builder } from "./db/graphql.ts";
+import type { getBuilder } from "@joyautomation/conch";
 
 /**
  * Creates and returns a SparkplugHost instance based on the provided arguments or environment variables.
@@ -68,7 +68,7 @@ export function addHistoryEvents(db: Db, host: SparkplugHost) {
  */
 export function addHostToSchema(
   host: SparkplugHost,
-  builder: Builder,
+  builder: ReturnType<typeof getBuilder>,
 ) {
   const SparkplugHostRef = builder.objectRef<SparkplugHost>(
     "SparkplugHost",

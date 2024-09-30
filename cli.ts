@@ -1,160 +1,88 @@
-import { type Args, parseArgs } from "@std/cli";
-
-function getVersion(): string {
-  const config = Deno.readTextFileSync("./deno.json");
-  return JSON.parse(config).version;
-}
-
-/**
- * Prints the current version of mantle to the console.
- */
-export function printVersion(): void {
-  console.log(`mantle v${getVersion()}`);
-}
-
-/**
- * Prints the help message for mantle, including usage instructions and available options.
- */
-export function printHelp(): void {
-  console.log(`Usage: mantle [OPTIONS...]
-
-Optional Flags:
-  -b, --broker-url   MANTLE_MQTT_BROKER_URL    Set the URL for MQTT Broker (i.e. https://mqtt3.anywherescada.com:8883)
-  -u, --username     MANTLE_MQTT_USERNAME      Set the username for MQTT Broker
-  -p, --password     MANTLE_MQTT_PASSWORD      Set the password for MQTT Broker
-  -c, --client-id    MANTLE_MQTT_CLIENT_ID     Set the MQTT Client ID (a random ID will be appended to this)
-  -l, --log-level    MANTLE_LOG_LEVEL          Set the log level (default: info)
-  -D, --db-host      MANTLE_DATABASE_HOST      Set the database host (default: localhost)
-  -U, --db-user      MANTLE_DATABASE_USER      Set the database user (default: postgres)
-  -P, --db-password  MANTLE_DATABASE_PASSWORD  Set the database password (default: postgres)
-  -N, --db-name      MANTLE_DATABASE_NAME      Set the database name (default: mantl)
-  -m, --migrate                                Run the database migrations
-  -h, --help                                   Show help
-  -v, --version                                Show version
-`);
-}
-
-export type ArgDictionaryItem = {
-  short: string;
-  type: "boolean" | "string";
-};
+import { type ArgDictionaryItem, createMain } from "@joyautomation/conch";
+import { runServer } from "./server.ts";
 
 /**
  * A dictionary of command-line arguments and their properties.
  * @type {Object.<string, ArgDictionaryItem>}
  */
 export const argDictionary: { [key: string]: ArgDictionaryItem } = {
-  help: {
-    short: "h",
-    type: "boolean",
-  },
-  version: {
-    short: "v",
-    type: "boolean",
-  },
   migrate: {
     short: "m",
+    description: "Run the database migrations",
+    action: async () => {
+      const { runMigrations } = await import("./db/migration.ts");
+      await runMigrations();
+    },
+    exit: true,
     type: "boolean",
   },
   "log-level": {
     short: "l",
+    description: "Set the log level",
+    env: "MANTLE_LOG_LEVEL",
     type: "string",
   },
   "broker-url": {
     short: "b",
+    description: "Set the URL for MQTT Broker",
+    env: "MANTLE_MQTT_BROKER_URL",
     type: "string",
   },
   username: {
     short: "u",
+    description: "Set the username for MQTT Broker",
+    env: "MANTLE_MQTT_USERNAME",
     type: "string",
   },
   password: {
     short: "p",
+    description: "Set the password for MQTT Broker",
+    env: "MANTLE_MQTT_PASSWORD",
     type: "string",
   },
   "client-id": {
     short: "c",
+    description: "Set the MQTT Client ID",
+    env: "MANTLE_MQTT_CLIENT_ID",
     type: "string",
   },
   "db-host": {
     short: "D",
+    description: "Set the database host",
+    env: "MANTLE_DB_HOST",
     type: "string",
   },
   "db-user": {
     short: "U",
+    description: "Set the database user",
+    env: "MANTLE_DB_USER",
     type: "string",
   },
   "db-password": {
     short: "P",
+    description: "Set the database password",
+    env: "MANTLE_DB_PASSWORD",
     type: "string",
   },
   "db-name": {
     short: "N",
+    description: "Set the database name",
+    env: "MANTLE_DB_NAME",
     type: "string",
   },
 };
 
 /**
- * Filters and returns argument keys from the argDictionary based on the specified type.
- * @param {Object.<string, ArgDictionaryItem>} argDictionary - An object containing argument definitions.
- * @param {"boolean" | "string"} argType - The type of arguments to filter.
- * @returns {string[]} An array of argument keys matching the specified type.
- */
-export function getArgsFromType(
-  argDictionary: { [key: string]: ArgDictionaryItem },
-  argType: "boolean" | "string",
-): string[] {
-  return Object.entries(argDictionary).filter(([key, value]) =>
-    value.type === argType
-  ).map(([key]) => key);
-}
-
-/**
- * Parses command-line arguments into a structured Args object.
- * @param {string[]} args - An array of command-line argument strings.
- * @returns {Args} An object containing parsed arguments.
- */
-export function parseArguments(args: string[]): Args {
-  const booleanArgs = getArgsFromType(argDictionary, "boolean");
-  const stringArgs = getArgsFromType(argDictionary, "string");
-  return parseArgs(args, {
-    alias: Object.fromEntries(
-      Object.entries(argDictionary).map(([key, value]) => [key, value.short]),
-    ),
-    boolean: booleanArgs,
-    string: stringArgs,
-    "--": true,
-  });
-}
-
-export const _internal = {
-  printHelp: printHelp,
-  printVersion: printVersion,
-  parseArguments: parseArguments,
-};
-/**
  * The main function that runs the mantle application.
- * It parses command-line arguments, handles help and version flags,
- * and starts the server if no special flags are provided.
- * We use dynamic import to defer the server start until we have parsed the arguments.
- * This prevents the SparkplugHost from being created if we're not going to run the server yet.
  * @async
  * @returns {Promise<void>}
  */
-export async function main(): Promise<void> {
-  const args = _internal.parseArguments(Deno.args);
-  if (args.help) {
-    _internal.printHelp();
-    Deno.exit(0);
-  } else if (args.version) {
-    _internal.printVersion();
-    Deno.exit(0);
-  } else if (args.migrate) {
-    const { runMigrations } = await import("./db/migration.ts");
-    await runMigrations();
-    Deno.exit(0);
-  } else {
-    const { runServer } = await import("./server.ts");
-    runServer(args);
-  }
-}
+export const main = createMain(
+  "mantle",
+  "Mantle, an MQTT Sparkplug B data aggregator and historian.",
+  "MANTLE",
+  argDictionary,
+  runServer,
+  false,
+  true,
+);

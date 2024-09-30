@@ -1,6 +1,6 @@
 import {
+  bigint,
   boolean,
-  integer,
   pgTable,
   real,
   text,
@@ -14,7 +14,7 @@ export const history = pgTable("history", {
   nodeId: text("node_id").notNull(),
   deviceId: text("device_id").default(""),
   metricId: text("metric_id").notNull(),
-  intValue: integer("int_value"),
+  intValue: bigint("int_value", { mode: "number" }),
   floatValue: real("float_value"),
   stringValue: text("string_value"),
   boolValue: boolean("bool_value"),

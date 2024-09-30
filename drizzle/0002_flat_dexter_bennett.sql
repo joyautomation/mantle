@@ -1,0 +1,1 @@
+ALTER TABLE "history" ALTER COLUMN "int_value" SET DATA TYPE bigint;
