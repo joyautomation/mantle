@@ -16,12 +16,6 @@ export const argDictionary: { [key: string]: ArgDictionaryItem } = {
     exit: true,
     type: "boolean",
   },
-  "log-level": {
-    short: "l",
-    description: "Set the log level",
-    env: "MANTLE_LOG_LEVEL",
-    type: "string",
-  },
   "broker-url": {
     short: "b",
     description: "Set the URL for MQTT Broker",
