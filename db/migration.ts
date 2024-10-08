@@ -1,8 +1,5 @@
 import { migrate } from "drizzle-orm/node-postgres/migrator";
-import { createConnectionString, getDb } from "./db.ts";
-
-import pg from "pg";
-const { Client, Pool } = pg;
+import { createConnection, getDb } from "./db.ts";
 import type { Args } from "@std/cli";
 
 /**
@@ -15,24 +12,16 @@ import type { Args } from "@std/cli";
  * @throws {Error} If there's an issue checking or creating the database.
  */
 async function createDatabaseIfNotExists(args?: Args) {
-  const connectionString = createConnectionString(args, true);
-  const rootConnection = new Client({
-    connectionString,
-    ssl: {
-      ca: Deno.readFileSync('./db/ca-certificate.crt')
-    }
-  })
+  const rootConnection = createConnection(args, true);
   await rootConnection.connect()
   const DB_NAME = Deno.env.get("MANTLE_DB_NAME");
   if (!DB_NAME) {
     throw new Error("MANTLE_DB_NAME is not set");
   }
-  console.log(rootConnection.query)
   try {
     const result = await rootConnection.query(`
       SELECT 1 FROM pg_database WHERE datname = $1
     `, [DB_NAME])
-    console.log('result', result)
     if (result.length === 0) {
       console.log(`Creating database ${DB_NAME}...`);
       await rootConnection.query(`CREATE DATABASE "${DB_NAME}"`);
@@ -43,7 +32,7 @@ async function createDatabaseIfNotExists(args?: Args) {
   } catch (error) {
     console.error("Error checking/creating database:", error);
   } finally {
-    await rootConnection.end();
+    rootConnection.end();
   }
 }
 
@@ -60,7 +49,9 @@ async function createDatabaseIfNotExists(args?: Args) {
  */
 export async function runMigrations(args?: Args) {
   await createDatabaseIfNotExists(args);
-  // const { db, connection } = getDb(args);
-  // await migrate(db, { migrationsFolder: "./drizzle" });
-  // await connection.end();
+  console.log('args', args)
+  const { db, connection } = getDb(args);
+  console.log('db', db)
+  await migrate(db, { migrationsFolder: "./drizzle" });
+  connection.end();
 }
