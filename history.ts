@@ -8,6 +8,9 @@ import type {
 } from "sparkplug-payload/lib/sparkplugbpayload.js";
 import Long from "long";
 import { log } from "./log.ts";
+import { getBuilder } from "@joyautomation/conch";
+import { and, avg, between, sql } from "drizzle-orm";
+import { differenceInMinutes } from "date-fns";
 
 /**
  * Determines the value type of a SparkplugMetric.
@@ -93,4 +96,57 @@ export async function recordValues(
       }
     }
   }
+}
+
+export async function getHistory(
+  db: Db,
+  metrics: string[],
+  start: Date,
+  end: Date,
+  interval?: string,
+  samples?: number,
+  raw?: boolean,
+) {
+  const autoInterval = `${
+    Math.floor(
+      (differenceInMinutes(new Date(end), new Date(start)) * 60.0) /
+        (samples ?? 300.0),
+    )
+  } seconds`;
+  const time = raw != null
+    ? history.timestamp
+    : sql`time_bucket('${interval ?? autoInterval}', "timestamp")`;
+  const subQuery = await db.select({
+    time,
+    name: sql`CONCAT("groupId",'/',"nodeId",'/',"deviceId",'/',"metricId")`,
+    value: sql`AVG("floatValue")`,
+  }).from(history).where(and(
+    sql`("groupId", "nodeId", "deviceId", "metricId") in (${
+      metrics.join(", ")
+    })`,
+    between(history.timestamp, new Date(start), new Date(end)),
+  ));
+  await db.select({
+    time,
+    data: sql<Record<string, unknown>>`json_object_agg("name","value")`,
+  }).from(sql`(${subQuery}) as bucketed`).groupBy(sql`time`);
+}
+
+export function addHistoryToSchema(
+  builder: ReturnType<typeof getBuilder>,
+) {
+  const HistoryRecordRef = builder.objectRef<HistoryRecord>("HistoryRecord");
+
+  HistoryRecordRef.implement({
+    fields: (t) => ({
+      groupId: t.exposeString("groupId"),
+      nodeId: t.exposeString("nodeId"),
+      deviceId: t.exposeString("deviceId"),
+      metricId: t.exposeString("metricId"),
+      timestamp: t.field({
+        type: "Date",
+        resolve: (parent) => parent.timestamp,
+      }),
+    }),
+  });
 }

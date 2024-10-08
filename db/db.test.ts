@@ -15,7 +15,7 @@ describe("getConnectionString", () => {
     };
 
     const expectedConnectionString =
-      "postgres://user:password@localhost:5432/testdb";
+      "postgres://user:password@localhost:5432/testdb?ssl=false";
     const result = createConnectionString(args);
 
     expect(result).toEqual(expectedConnectionString);
@@ -64,7 +64,7 @@ describe("getConnectionString", () => {
 
       const args: Args = { _: [] };
       const expectedConnectionString =
-        "postgres://envuser:envpass@envhost:5432/envdb";
+        "postgres://envuser:envpass@envhost:5432/envdb?ssl=false";
       const result = createConnectionString(args);
 
       expect(result).toEqual(expectedConnectionString);
@@ -81,6 +81,6 @@ describe("getConnectionString", () => {
 
     const result = createConnectionString(args, true);
 
-    expect(result.endsWith("/postgres")).toBe(true);
+    expect(result.endsWith("/postgres?ssl=false")).toBe(true);
   });
 });
