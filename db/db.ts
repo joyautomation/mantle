@@ -25,7 +25,7 @@ export function createConnectionString(
   }
   return `postgres://${user}:${password}@${host}:${port}/${
     root ? "postgres" : name
-  }?ssl=${ssl}`;
+  }${ssl ? "?sslmode=require" : ""}`;
 }
 
 export async function getDb(args?: Args, root: boolean = false) {
