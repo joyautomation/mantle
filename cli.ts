@@ -1,5 +1,6 @@
 import { type ArgDictionaryItem, createMain } from "@joyautomation/conch";
 import { runServer } from "./server.ts";
+import { Args } from "@std/cli";
 
 /**
  * A dictionary of command-line arguments and their properties.
@@ -9,9 +10,9 @@ export const argDictionary: { [key: string]: ArgDictionaryItem } = {
   migrate: {
     short: "m",
     description: "Run the database migrations",
-    action: async () => {
+    action: async (args?: Args) => {
       const { runMigrations } = await import("./db/migration.ts");
-      await runMigrations();
+      await runMigrations(args);
     },
     exit: true,
     type: "boolean",
