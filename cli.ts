@@ -70,6 +70,12 @@ export const argDictionary: { [key: string]: ArgDictionaryItem } = {
     env: "MANTLE_DB_NAME",
     type: "string",
   },
+  "db-ssl": {
+    short: "S",
+    description: "Set the database SSL mode",
+    env: "MANTLE_DB_SSL",
+    type: "boolean",
+  },
 };
 
 /**
@@ -83,6 +89,6 @@ export const main = createMain(
   "MANTLE",
   argDictionary,
   runServer,
-  false,
-  true,
+  false, //don't add mutations
+  true, //add subscriptions
 );

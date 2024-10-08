@@ -26,6 +26,7 @@
       "npm:@pothos/core@^4.2.0": "npm:@pothos/core@4.2.0_graphql@16.9.0",
       "npm:@types/node": "npm:@types/node@18.16.19",
       "npm:date-fns@^3.6.0": "npm:date-fns@3.6.0",
+      "npm:date-fns@^4.1.0": "npm:date-fns@4.1.0",
       "npm:drizzle-kit": "npm:drizzle-kit@0.24.2_esbuild@0.19.12",
       "npm:drizzle-kit@^0.24.2": "npm:drizzle-kit@0.24.2_esbuild@0.19.12",
       "npm:drizzle-orm@^0.33.0": "npm:drizzle-orm@0.33.0_postgres@3.4.4",
@@ -618,6 +619,10 @@
         "integrity": "sha512-fRHTG8g/Gif+kSh50gaGEdToemgfj74aRX3swtiouboip5JDLAyDE9F11nHMIcvOaXeOC6D7SpNhi7uFyB7Uww==",
         "dependencies": {}
       },
+      "date-fns@4.1.0": {
+        "integrity": "sha512-Ukq0owbQXxa/U3EGtsdVBkR1w7KOQ5gIBqdH2hkvknzZPYvBxb/aa6E8L7tmjFtkwZBu3UXBbjIgPo/Ez4xaNg==",
+        "dependencies": {}
+      },
       "debug@4.3.7": {
         "integrity": "sha512-Er2nc/H7RrMXZBFCEim6TCmMk02Z8vLC2Rbi1KEBggpo0fS6l0S1nnapwmIi3yW/+GOJap1Krg4w0Hg80oCqgQ==",
         "dependencies": {
@@ -1015,6 +1020,7 @@
       "jsr:@std/expect@^1.0.3",
       "jsr:@std/testing@^1.0.2",
       "npm:@pothos/core@^4.2.0",
+      "npm:date-fns@^4.1.0",
       "npm:drizzle-kit@^0.24.2",
       "npm:drizzle-orm@^0.33.0",
       "npm:graphql-scalars@^1.23.0",
