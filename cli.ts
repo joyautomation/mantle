@@ -1,5 +1,6 @@
 import { type ArgDictionaryItem, createMain } from "@joyautomation/conch";
 import { runServer } from "./server.ts";
+import { Args } from "@std/cli";
 
 /**
  * A dictionary of command-line arguments and their properties.
@@ -9,9 +10,9 @@ export const argDictionary: { [key: string]: ArgDictionaryItem } = {
   migrate: {
     short: "m",
     description: "Run the database migrations",
-    action: async () => {
+    action: async (args?: Args) => {
       const { runMigrations } = await import("./db/migration.ts");
-      await runMigrations();
+      await runMigrations(args);
     },
     exit: true,
     type: "boolean",
@@ -70,11 +71,29 @@ export const argDictionary: { [key: string]: ArgDictionaryItem } = {
     env: "MANTLE_DB_NAME",
     type: "string",
   },
+  "db-admin-name": {
+    short: "A",
+    description: "Set the database admin name",
+    env: "MANTLE_DB_ADMIN_NAME",
+    type: "string",
+  },
+  "db-admin-password": {
+    short: "W",
+    description: "Set the database admin password",
+    env: "MANTLE_DB_ADMIN_PASSWORD",
+    type: "string",
+  },
   "db-ssl": {
     short: "S",
-    description: "Set the database SSL mode",
+    description: "SSL mode for database connection",
     env: "MANTLE_DB_SSL",
     type: "boolean",
+  },
+  "db-ssl-ca": {
+    short: "C",
+    description: "Path to the root certificate for the database SSL connection",
+    env: "MANTLE_DB_SSL_CA",
+    type: "string",
   },
 };
 

@@ -1,6 +1,6 @@
 {
   "name": "@joyautomation/mantle",
-  "version": "0.0.25",
+  "version": "0.0.26",
   "description": "Mantle consumes and logs Sparkplug B data",
   "author": "Joy Automation",
   "license": "GPL-3.0-or-later",
@@ -12,7 +12,7 @@
     "dev": "deno run --watch main.ts"
   },
   "imports": {
-    "@joyautomation/conch": "jsr:@joyautomation/conch@^0.0.18",
+    "@joyautomation/conch": "jsr:@joyautomation/conch@^0.0.20",
     "@joyautomation/coral": "jsr:@joyautomation/coral@^0.0.10",
     "@joyautomation/synapse": "jsr:@joyautomation/synapse@^0.0.41",
     "@pothos/core": "npm:@pothos/core@^4.2.0",
@@ -20,6 +20,7 @@
     "@std/cli": "jsr:@std/cli@^1.0.6",
     "@std/expect": "jsr:@std/expect@^1.0.3",
     "@std/testing": "jsr:@std/testing@^1.0.2",
+    "@types/pg": "npm:@types/pg@^8.11.10",
     "date-fns": "npm:date-fns@^4.1.0",
     "drizzle-kit": "npm:drizzle-kit@^0.24.2",
     "drizzle-orm": "npm:drizzle-orm@^0.33.0",
@@ -27,7 +28,8 @@
     "graphql-yoga": "npm:graphql-yoga@^5.7.0",
     "long": "npm:long@^5.2.3",
     "nanoid": "npm:nanoid@^5.0.7",
-    "postgres": "npm:postgres@^3.4.4",
+    "pg": "npm:pg@^8.13.0",
+    "postgres": "npm:postgres@^3.4.2",
     "sparkplug-payload": "npm:sparkplug-payload@^1.0.3"
   }
 }

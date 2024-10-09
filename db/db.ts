@@ -1,15 +1,10 @@
-import { drizzle } from "drizzle-orm/postgres-js";
+import { drizzle } from "drizzle-orm/node-postgres";
 import type { Args } from "@std/cli";
-import postgres from "postgres";
+//@deno-types="@types/pg"
+import pg from "pg";
+import { validateSslCa } from "../validation.ts";
+const { Pool } = pg;
 
-/**
- * Creates a PostgreSQL connection string based on environment variables or CLI arguments.
- *
- * @param {Args} [args] - Optional CLI arguments that may contain database configuration.
- * @param {boolean} [root=false] - If true, connects to the 'postgres' database instead of the application database.
- * @returns {string} The constructed connection string.
- * @throws {Error} If any required database credentials are not set.
- */
 export function createConnectionString(
   args?: Args,
   root: boolean = false,
@@ -19,21 +14,36 @@ export function createConnectionString(
   const host = args?.["db-host"] || Deno.env.get("MANTLE_DB_HOST");
   const port = args?.["db-port"] || Deno.env.get("MANTLE_DB_PORT");
   const name = args?.["db-name"] || Deno.env.get("MANTLE_DB_NAME");
-  const ssl = args?.["db-ssl"] || Deno.env.get("MANTLE_DB_SSL") || false;
-  if (!user || !password || !host || (!name && !root)) {
+  const adminDbName = args?.["admin-db-name"] ||
+    Deno.env.get("MANTLE_ADMIN_DB_NAME") || "postgres";
+  if (!user || !password || !host || (!root && !name)) {
     throw new Error("Database credentials are not set");
   }
-  return `postgres://${user}:${password}@${host}:${port}/${
-    root ? "postgres" : name
-  }${ssl ? "?sslmode=require" : ""}`;
+  return `postgres://${user}:${password}@${host}:${port}${
+    name ? `/${root ? adminDbName : name}` : ""
+  }`;
 }
 
-export async function getDb(args?: Args, root: boolean = false) {
-  const connection = postgres(
-    await createConnectionString(args, root),
-    { max: 1 },
+export function createConnection(args?: Args, root: boolean = false) {
+  const ssl = args?.["db-ssl"] || Deno.env.get("MANTLE_DB_SSL") === "true";
+  const ca = validateSslCa(
+    args?.["db-ssl-ca"] || Deno.env.get("MANTLE_DB_SSL_CA"),
   );
-  return { db: drizzle(connection), connection };
+  const connectionString = createConnectionString(args, root);
+  return new Pool({
+    connectionString,
+    ssl: ssl && ca
+      ? {
+        ca,
+        rejectUnauthorized: false,
+      }
+      : ssl,
+  });
+}
+
+export function getDb(args?: Args, root: boolean = false) {
+  const connection = createConnection(args, root);
+  return { db: drizzle(connection, { logger: true }), connection };
 }
 
 export type Db = Awaited<ReturnType<typeof getDb>>["db"];

@@ -1,15 +1,6 @@
-import { migrate } from "drizzle-orm/postgres-js/migrator";
-import { createConnectionString, getDb } from "./db.ts";
-
-const { db, connection } = await getDb();
-
-import postgres from "postgres";
+import { migrate } from "drizzle-orm/node-postgres/migrator";
+import { createConnection, getDb } from "./db.ts";
 import type { Args } from "@std/cli";
-
-const rootConnection = postgres(
-  await createConnectionString({} as Args, true),
-  { max: 1 },
-);
 
 /**
  * Creates the database if it doesn't already exist.
@@ -20,18 +11,23 @@ const rootConnection = postgres(
  * @throws {Error} If DB_NAME environment variable is not set.
  * @throws {Error} If there's an issue checking or creating the database.
  */
-async function createDatabaseIfNotExists() {
+async function createDatabaseIfNotExists(args?: Args) {
+  const rootConnection = createConnection(args, true);
+  await rootConnection.connect();
   const DB_NAME = Deno.env.get("MANTLE_DB_NAME");
   if (!DB_NAME) {
     throw new Error("MANTLE_DB_NAME is not set");
   }
   try {
-    const result = await rootConnection`
-      SELECT 1 FROM pg_database WHERE datname = ${DB_NAME}
-    `;
-    if (result.length === 0) {
+    const result = await rootConnection.query(
+      `
+      SELECT 1 FROM pg_database WHERE datname = $1
+    `,
+      [DB_NAME],
+    );
+    if (result.rowCount === 0) {
       console.log(`Creating database ${DB_NAME}...`);
-      await rootConnection.unsafe(`CREATE DATABASE "${DB_NAME}"`);
+      await rootConnection.query(`CREATE DATABASE "${DB_NAME}"`);
       console.log(`Database ${DB_NAME} created successfully.`);
     } else {
       console.log(`Database ${DB_NAME} found.`);
@@ -39,7 +35,7 @@ async function createDatabaseIfNotExists() {
   } catch (error) {
     console.error("Error checking/creating database:", error);
   } finally {
-    await rootConnection.end();
+    rootConnection.end();
   }
 }
 
@@ -54,8 +50,9 @@ async function createDatabaseIfNotExists() {
  * @async
  * @throws {Error} If there's an issue creating the database or running migrations.
  */
-export async function runMigrations() {
-  await createDatabaseIfNotExists();
+export async function runMigrations(args?: Args) {
+  await createDatabaseIfNotExists(args);
+  const { db, connection } = getDb(args);
   await migrate(db, { migrationsFolder: "./drizzle" });
-  await connection.end();
+  connection.end();
 }
