@@ -13,16 +13,19 @@ import type { Args } from "@std/cli";
  */
 async function createDatabaseIfNotExists(args?: Args) {
   const rootConnection = createConnection(args, true);
-  await rootConnection.connect()
+  await rootConnection.connect();
   const DB_NAME = Deno.env.get("MANTLE_DB_NAME");
   if (!DB_NAME) {
     throw new Error("MANTLE_DB_NAME is not set");
   }
   try {
-    const result = await rootConnection.query(`
+    const result = await rootConnection.query(
+      `
       SELECT 1 FROM pg_database WHERE datname = $1
-    `, [DB_NAME])
-    if (result.length === 0) {
+    `,
+      [DB_NAME],
+    );
+    if (result.rowCount === 0) {
       console.log(`Creating database ${DB_NAME}...`);
       await rootConnection.query(`CREATE DATABASE "${DB_NAME}"`);
       console.log(`Database ${DB_NAME} created successfully.`);
@@ -49,9 +52,7 @@ async function createDatabaseIfNotExists(args?: Args) {
  */
 export async function runMigrations(args?: Args) {
   await createDatabaseIfNotExists(args);
-  console.log('args', args)
   const { db, connection } = getDb(args);
-  console.log('db', db)
   await migrate(db, { migrationsFolder: "./drizzle" });
   connection.end();
 }

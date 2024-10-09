@@ -71,11 +71,29 @@ export const argDictionary: { [key: string]: ArgDictionaryItem } = {
     env: "MANTLE_DB_NAME",
     type: "string",
   },
+  "db-admin-name": {
+    short: "A",
+    description: "Set the database admin name",
+    env: "MANTLE_DB_ADMIN_NAME",
+    type: "string",
+  },
+  "db-admin-password": {
+    short: "W",
+    description: "Set the database admin password",
+    env: "MANTLE_DB_ADMIN_PASSWORD",
+    type: "string",
+  },
   "db-ssl": {
     short: "S",
-    description: "Set the database SSL mode",
+    description: "SSL mode for database connection",
     env: "MANTLE_DB_SSL",
     type: "boolean",
+  },
+  "db-ssl-ca": {
+    short: "C",
+    description: "Path to the root certificate for the database SSL connection",
+    env: "MANTLE_DB_SSL_CA",
+    type: "string",
   },
 };
 

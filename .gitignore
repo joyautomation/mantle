@@ -2,3 +2,4 @@ node_modules
 coverage
 !hooks/
 .env
+ca-certificate.crt
