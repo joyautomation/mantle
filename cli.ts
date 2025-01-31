@@ -1,6 +1,5 @@
-import { type ArgDictionaryItem, createMain } from "@joyautomation/conch";
-import { runServer } from "./server.ts";
-import { Args } from "@std/cli";
+import type { ArgDictionaryItem } from "@joyautomation/conch";
+import type { Args } from "@std/cli";
 
 /**
  * A dictionary of command-line arguments and their properties.
@@ -96,18 +95,3 @@ export const argDictionary: { [key: string]: ArgDictionaryItem } = {
     type: "string",
   },
 };
-
-/**
- * The main function that runs the mantle application.
- * @async
- * @returns {Promise<void>}
- */
-export const main = createMain(
-  "mantle",
-  "Mantle, an MQTT Sparkplug B data aggregator and historian.",
-  "MANTLE",
-  argDictionary,
-  runServer,
-  false, //don't add mutations
-  true, //add subscriptions
-);
