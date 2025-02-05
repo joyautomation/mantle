@@ -3,7 +3,6 @@ import { argDictionary } from "./cli.ts";
 import { log } from "./log.ts";
 import { addHistoryEvents, addHostToSchema, getHost } from "./synapse.ts";
 import { getDb } from "./db/db.ts";
-import { createRunServer } from "@joyautomation/conch";
 
 export const _internal = {
   getDb,

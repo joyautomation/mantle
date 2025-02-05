@@ -1,11 +1,24 @@
 import type { ArgDictionaryItem } from "@joyautomation/conch";
 import type { Args } from "@std/cli";
+import { setLogLevel } from "@joyautomation/coral";
+import { logs } from "./log.ts";
+import { LogLevel } from "graphql-yoga";
 
 /**
  * A dictionary of command-line arguments and their properties.
  * @type {Object.<string, ArgDictionaryItem>}
  */
-export const argDictionary: { [key: string]: ArgDictionaryItem } = {
+export const argDictionary: Record<string, ArgDictionaryItem> = {
+  log_level: {
+    short: "l",
+    type: "string",
+    description: "Set the log level",
+    env: "MANTLE_LOG_LEVEL",
+    action: (args?: Args) => {
+      setLogLevel(logs.synapse.main, args?.["log_level"]);
+      setLogLevel(logs.mantle.main, args?.["log_level"]);
+    },
+  },
   migrate: {
     short: "m",
     description: "Run the database migrations",

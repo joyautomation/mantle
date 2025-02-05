@@ -2,8 +2,8 @@ import { nanoid } from "nanoid";
 import {
   createHost,
   flattenHostGroups,
-  SparkplugMetricFlat,
-  SparkplugMetricPropertyFlat,
+  type SparkplugMetricFlat,
+  type SparkplugMetricPropertyFlat,
   type SparkplugCreateHostInput,
   type SparkplugDeviceFlat,
   type SparkplugGroupFlat,
@@ -17,7 +17,6 @@ import { recordValues } from "./history.ts";
 import type { Db } from "./db/db.ts";
 import { pubsub } from "./pubsub.ts";
 import type { UPayload } from "sparkplug-payload/lib/sparkplugbpayload.js";
-import { calcTimestamp } from "./history.ts";
 import type { getBuilder } from "@joyautomation/conch";
 
 /**
