@@ -1,6 +1,6 @@
 # Use the official Deno image as the base image for building
-# FROM denoland/deno:alpine-1.46.3 AS builder
-FROM denoland/deno:debian-1.46.3 AS builder
+# FROM denoland/deno:alpine-2.1.9 AS builder
+FROM denoland/deno:debian-2.1.9 AS builder
 
 # Set the working directory in the container
 WORKDIR /app
