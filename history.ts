@@ -88,12 +88,11 @@ export async function recordValues(
           boolValue:
             valueType === "boolValue" ? (metric.value as boolean) : null,
         };
-        await db
-          .insert(history)
-          .values(record)
-          .catch((error) => {
-            log.error(error);
-          });
+        try {
+          db.insert(history).values(record);
+        } catch (error) {
+          log.error(error);
+        }
       } else {
         log.warn(
           `Metric missing name or timestamp: name: ${metric.name}, timestamp: ${metric.timestamp}`
