@@ -41,7 +41,7 @@ export function getValueType(metric: SparkplugMetric) {
  * @returns {Date | null} The calculated Date object or null if input is invalid.
  */
 export function calcTimestamp(
-  timestamp: number | UMetric["timestamp"] | null | undefined,
+  timestamp: number | UMetric["timestamp"] | null | undefined
 ): Date | null {
   if (timestamp) {
     if (typeof timestamp === "number") {
@@ -63,7 +63,7 @@ export function calcTimestamp(
 export async function recordValues(
   db: Db,
   topic: SparkplugTopic,
-  message: UPayload,
+  message: UPayload
 ) {
   const { metrics } = message;
   const { groupId, edgeNode: nodeId, deviceId } = topic;
@@ -73,7 +73,7 @@ export async function recordValues(
       const valueType = getValueType(metric);
       if (metric.name && timestamp) {
         log.debug(
-          `Recording metric: ${metric.name} with value: ${metric.value}`,
+          `Recording metric: ${metric.name} with value: ${metric.value}`
         );
         const record: HistoryRecord = {
           groupId,
@@ -81,17 +81,21 @@ export async function recordValues(
           metricId: metric.name || "",
           deviceId: deviceId || null,
           timestamp,
-          intValue: valueType === "intValue" ? metric.value as number : null,
-          floatValue: valueType === "floatValue"
-            ? metric.value as number
-            : null,
+          intValue: valueType === "intValue" ? (metric.value as number) : null,
+          floatValue:
+            valueType === "floatValue" ? (metric.value as number) : null,
           stringValue: valueType === "stringValue" ? `${metric.value}` : null,
-          boolValue: valueType === "boolValue" ? metric.value as boolean : null,
+          boolValue:
+            valueType === "boolValue" ? (metric.value as boolean) : null,
         };
-        await db.insert(history).values(record);
+        try {
+          db.insert(history).values(record);
+        } catch (error) {
+          log.error(error);
+        }
       } else {
         log.warn(
-          `Metric missing name or timestamp: name: ${metric.name}, timestamp: ${metric.timestamp}`,
+          `Metric missing name or timestamp: name: ${metric.name}, timestamp: ${metric.timestamp}`
         );
       }
     }
@@ -105,36 +109,41 @@ export async function getHistory(
   end: Date,
   interval?: string,
   samples?: number,
-  raw?: boolean,
+  raw?: boolean
 ) {
-  const autoInterval = `${
-    Math.floor(
-      (differenceInMinutes(new Date(end), new Date(start)) * 60.0) /
-        (samples ?? 300.0),
-    )
-  } seconds`;
-  const time = raw != null
-    ? history.timestamp
-    : sql`time_bucket('${interval ?? autoInterval}', "timestamp")`;
-  const subQuery = await db.select({
-    time,
-    name: sql`CONCAT("groupId",'/',"nodeId",'/',"deviceId",'/',"metricId")`,
-    value: sql`AVG("floatValue")`,
-  }).from(history).where(and(
-    sql`("groupId", "nodeId", "deviceId", "metricId") in (${
-      metrics.join(", ")
-    })`,
-    between(history.timestamp, new Date(start), new Date(end)),
-  ));
-  await db.select({
-    time,
-    data: sql<Record<string, unknown>>`json_object_agg("name","value")`,
-  }).from(sql`(${subQuery}) as bucketed`).groupBy(sql`time`);
+  const autoInterval = `${Math.floor(
+    (differenceInMinutes(new Date(end), new Date(start)) * 60.0) /
+      (samples ?? 300.0)
+  )} seconds`;
+  const time =
+    raw != null
+      ? history.timestamp
+      : sql`time_bucket('${interval ?? autoInterval}', "timestamp")`;
+  const subQuery = await db
+    .select({
+      time,
+      name: sql`CONCAT("groupId",'/',"nodeId",'/',"deviceId",'/',"metricId")`,
+      value: sql`AVG("floatValue")`,
+    })
+    .from(history)
+    .where(
+      and(
+        sql`("groupId", "nodeId", "deviceId", "metricId") in (${metrics.join(
+          ", "
+        )})`,
+        between(history.timestamp, new Date(start), new Date(end))
+      )
+    );
+  await db
+    .select({
+      time,
+      data: sql<Record<string, unknown>>`json_object_agg("name","value")`,
+    })
+    .from(sql`(${subQuery}) as bucketed`)
+    .groupBy(sql`time`);
 }
 
-export function addHistoryToSchema(
-  builder: ReturnType<typeof getBuilder>,
-) {
+export function addHistoryToSchema(builder: ReturnType<typeof getBuilder>) {
   const HistoryRecordRef = builder.objectRef<HistoryRecord>("HistoryRecord");
 
   HistoryRecordRef.implement({
