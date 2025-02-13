@@ -1,12 +1,24 @@
-import { type ArgDictionaryItem, createMain } from "@joyautomation/conch";
-import { runServer } from "./server.ts";
-import { Args } from "@std/cli";
+import type { ArgDictionaryItem } from "@joyautomation/conch";
+import type { Args } from "@std/cli";
+import { setLogLevel } from "@joyautomation/coral";
+import { logs } from "./log.ts";
+import { LogLevel } from "graphql-yoga";
 
 /**
  * A dictionary of command-line arguments and their properties.
  * @type {Object.<string, ArgDictionaryItem>}
  */
-export const argDictionary: { [key: string]: ArgDictionaryItem } = {
+export const argDictionary: Record<string, ArgDictionaryItem> = {
+  log_level: {
+    short: "l",
+    type: "string",
+    description: "Set the log level",
+    env: "MANTLE_LOG_LEVEL",
+    action: (args?: Args) => {
+      setLogLevel(logs.synapse.main, args?.["log_level"]);
+      setLogLevel(logs.mantle.main, args?.["log_level"]);
+    },
+  },
   migrate: {
     short: "m",
     description: "Run the database migrations",
@@ -96,18 +108,3 @@ export const argDictionary: { [key: string]: ArgDictionaryItem } = {
     type: "string",
   },
 };
-
-/**
- * The main function that runs the mantle application.
- * @async
- * @returns {Promise<void>}
- */
-export const main = createMain(
-  "mantle",
-  "Mantle, an MQTT Sparkplug B data aggregator and historian.",
-  "MANTLE",
-  argDictionary,
-  runServer,
-  false, //don't add mutations
-  true, //add subscriptions
-);
