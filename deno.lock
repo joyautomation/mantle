@@ -4,8 +4,8 @@
     "jsr:@joyautomation/conch@^0.0.22": "0.0.22",
     "jsr:@joyautomation/coral@^0.0.10": "0.0.10",
     "jsr:@joyautomation/coral@^0.0.12": "0.0.12",
-    "jsr:@joyautomation/dark-matter@^0.0.11": "0.0.11",
     "jsr:@joyautomation/dark-matter@^0.0.13": "0.0.13",
+    "jsr:@joyautomation/dark-matter@^0.0.18": "0.0.18",
     "jsr:@joyautomation/neuron@0.0.26": "0.0.26",
     "jsr:@joyautomation/neuron@0.0.30": "0.0.30",
     "jsr:@joyautomation/neuron@0.0.32": "0.0.32",
@@ -33,6 +33,7 @@
     "npm:drizzle-orm@~0.39.1": "0.39.1_@types+pg@8.11.10_pg@8.13.0_postgres@3.4.4",
     "npm:graphql-scalars@^1.23.0": "1.23.0_graphql@16.9.0",
     "npm:graphql-yoga@^5.7.0": "5.7.0_graphql@16.9.0",
+    "npm:graphql@^16.10.0": "16.10.0",
     "npm:long@^5.2.3": "5.2.3",
     "npm:mqtt@^5.10.1": "5.10.1",
     "npm:nanoid@^5.0.7": "5.0.7",
@@ -67,11 +68,11 @@
         "jsr:@std/fmt@^1.0.2"
       ]
     },
-    "@joyautomation/dark-matter@0.0.11": {
-      "integrity": "65018d51c8ce7f07aa4e442f13b5c969eab4ac881550ecf43ffee31b1cf6d0c7"
-    },
     "@joyautomation/dark-matter@0.0.13": {
       "integrity": "a9943d207986701a8f597fc357682cc78f3297a2cf984cc0e0004539393e5dab"
+    },
+    "@joyautomation/dark-matter@0.0.18": {
+      "integrity": "aec589bc71e490d9843ccd428665b79afe409a260188ab272c8814810aa7bc7d"
     },
     "@joyautomation/neuron@0.0.26": {
       "integrity": "5f3f1517175790541b646d2c5d0d170dee1cdcec76b20b87b4fbbbba61d90618",
@@ -353,7 +354,7 @@
         "@graphql-tools/utils",
         "@graphql-typed-document-node/core",
         "@repeaterjs/repeater",
-        "graphql",
+        "graphql@16.9.0",
         "tslib",
         "value-or-promise"
       ]
@@ -362,7 +363,7 @@
       "integrity": "sha512-lbTrIuXIbUSmSumHkPRY1QX0Z8JEtmRhnIrkH7vkfeEmf0kNn/nCWvJwqokm5U7L+a+DA1wlRM4slIlbfXjJBA==",
       "dependencies": [
         "@graphql-tools/utils",
-        "graphql",
+        "graphql@16.9.0",
         "tslib"
       ]
     },
@@ -371,7 +372,7 @@
       "dependencies": [
         "@graphql-tools/merge",
         "@graphql-tools/utils",
-        "graphql",
+        "graphql@16.9.0",
         "tslib",
         "value-or-promise"
       ]
@@ -382,14 +383,14 @@
         "@graphql-typed-document-node/core",
         "cross-inspect",
         "dset",
-        "graphql",
+        "graphql@16.9.0",
         "tslib"
       ]
     },
     "@graphql-typed-document-node/core@3.2.0_graphql@16.9.0": {
       "integrity": "sha512-mB9oAsNCm9aM3/SOv4YtBMqZbYj10R7dkq8byBqxGY/ncFwhf2oQzMV+LCRlWoDSEBJ3COiR1yeDvMtsoOsuFQ==",
       "dependencies": [
-        "graphql"
+        "graphql@16.9.0"
       ]
     },
     "@graphql-yoga/logger@2.0.0": {
@@ -420,7 +421,7 @@
     "@pothos/core@4.2.0_graphql@16.9.0": {
       "integrity": "sha512-dEoQCaA/pCPg3MhjGCwBF1QRbtOPysXm4nivQQsq6OrOvC7pU+KJNVdBSwpi1ZtTLtd4wg+PCC8Js9GrCyh9sw==",
       "dependencies": [
-        "graphql"
+        "graphql@16.9.0"
       ]
     },
     "@protobufjs/aspromise@1.1.2": {
@@ -693,7 +694,7 @@
     "graphql-scalars@1.23.0_graphql@16.9.0": {
       "integrity": "sha512-YTRNcwitkn8CqYcleKOx9IvedA8JIERn8BRq21nlKgOr4NEcTaWEG0sT+H92eF3ALTFbPgsqfft4cw+MGgv0Gg==",
       "dependencies": [
-        "graphql",
+        "graphql@16.9.0",
         "tslib"
       ]
     },
@@ -709,10 +710,13 @@
         "@whatwg-node/fetch",
         "@whatwg-node/server",
         "dset",
-        "graphql",
+        "graphql@16.9.0",
         "lru-cache",
         "tslib"
       ]
+    },
+    "graphql@16.10.0": {
+      "integrity": "sha512-AjqGKbDGUFRKIRCP9tCKiIGHyriz2oHEbPIbEtcSLSs4YjReZOIPQQWek4+6hjw62H9QShXHyaGivGiYVLeYFQ=="
     },
     "graphql@16.9.0": {
       "integrity": "sha512-GGTKBX4SD7Wdb8mqeDLni2oaRGYQWjWHGKPQ24ZMnUtKfcsVoiv4uX8+LJr1K6U5VW2Lu1BwJnj7uiori0YtRw=="
@@ -1029,7 +1033,7 @@
     "dependencies": [
       "jsr:@joyautomation/conch@^0.0.22",
       "jsr:@joyautomation/coral@^0.0.10",
-      "jsr:@joyautomation/dark-matter@^0.0.11",
+      "jsr:@joyautomation/dark-matter@^0.0.18",
       "jsr:@joyautomation/synapse@^0.0.66",
       "jsr:@std/assert@1",
       "jsr:@std/cli@^1.0.6",
@@ -1042,6 +1046,7 @@
       "npm:drizzle-orm@~0.39.1",
       "npm:graphql-scalars@^1.23.0",
       "npm:graphql-yoga@^5.7.0",
+      "npm:graphql@^16.10.0",
       "npm:long@^5.2.3",
       "npm:nanoid@^5.0.7",
       "npm:pg@^8.13.0",
