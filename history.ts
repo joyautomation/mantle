@@ -239,7 +239,7 @@ export function addHistoryToSchema(
       }),
     }),
   });
-  const MetricHistoryInputRef = builder.inputType("MetricHistoryInput", {
+  const MetricHistoryInputRef = builder.inputType("MetricHistoryEntry", {
     fields: (t) => ({
       groupId: t.string({ required: true }),
       nodeId: t.string({ required: true }),
