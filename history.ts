@@ -15,8 +15,8 @@ import {
   createFail,
   createSuccess,
   isSuccess,
-} from "jsr:@joyautomation/dark-matter@^0.0.13";
-import { createErrorString } from "https://jsr.io/@joyautomation/dark-matter/0.0.13/result/result.ts";
+  createErrorString,
+} from "@joyautomation/dark-matter";
 import { GraphQLError } from "graphql";
 
 /**

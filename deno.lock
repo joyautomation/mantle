@@ -4,8 +4,8 @@
     "jsr:@joyautomation/conch@^0.0.22": "0.0.22",
     "jsr:@joyautomation/coral@^0.0.10": "0.0.10",
     "jsr:@joyautomation/coral@^0.0.12": "0.0.12",
-    "jsr:@joyautomation/dark-matter@^0.0.11": "0.0.11",
     "jsr:@joyautomation/dark-matter@^0.0.13": "0.0.13",
+    "jsr:@joyautomation/dark-matter@^0.0.18": "0.0.18",
     "jsr:@joyautomation/neuron@0.0.26": "0.0.26",
     "jsr:@joyautomation/neuron@0.0.30": "0.0.30",
     "jsr:@joyautomation/neuron@0.0.32": "0.0.32",
@@ -68,11 +68,11 @@
         "jsr:@std/fmt@^1.0.2"
       ]
     },
-    "@joyautomation/dark-matter@0.0.11": {
-      "integrity": "65018d51c8ce7f07aa4e442f13b5c969eab4ac881550ecf43ffee31b1cf6d0c7"
-    },
     "@joyautomation/dark-matter@0.0.13": {
       "integrity": "a9943d207986701a8f597fc357682cc78f3297a2cf984cc0e0004539393e5dab"
+    },
+    "@joyautomation/dark-matter@0.0.18": {
+      "integrity": "aec589bc71e490d9843ccd428665b79afe409a260188ab272c8814810aa7bc7d"
     },
     "@joyautomation/neuron@0.0.26": {
       "integrity": "5f3f1517175790541b646d2c5d0d170dee1cdcec76b20b87b4fbbbba61d90618",
@@ -1033,7 +1033,7 @@
     "dependencies": [
       "jsr:@joyautomation/conch@^0.0.22",
       "jsr:@joyautomation/coral@^0.0.10",
-      "jsr:@joyautomation/dark-matter@^0.0.11",
+      "jsr:@joyautomation/dark-matter@^0.0.18",
       "jsr:@joyautomation/synapse@^0.0.66",
       "jsr:@std/assert@1",
       "jsr:@std/cli@^1.0.6",
