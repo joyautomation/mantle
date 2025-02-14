@@ -1,5 +1,5 @@
 import type { SparkplugMetric, SparkplugTopic } from "@joyautomation/synapse";
-import { getDb, type Db } from "./db/db.ts";
+import type { Db } from "./db/db.ts";
 import { history as historyTable } from "./db/schema.ts";
 import type { HistoryRecord } from "./db/schema.ts";
 import type {
@@ -8,9 +8,8 @@ import type {
 } from "sparkplug-payload/lib/sparkplugbpayload.js";
 import Long from "long";
 import { log } from "./log.ts";
-import { getBuilder } from "@joyautomation/conch";
-import { and, avg, between, sql } from "drizzle-orm";
-import { differenceInMinutes } from "date-fns";
+import type { getBuilder } from "@joyautomation/conch";
+import { and, between, sql } from "drizzle-orm";
 import {
   createFail,
   createSuccess,
