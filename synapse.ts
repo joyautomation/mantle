@@ -96,15 +96,6 @@ export function addHostToSchema(
     "SparkplugMetricUpdate"
   );
 
-  SparkplugHostRef.implement({
-    fields: (t) => ({
-      id: t.string({ resolve: (parent) => parent.id }),
-      groups: t.field({
-        type: [SparkplugGroupRef],
-        resolve: (parent) => flattenHostGroups(parent),
-      }),
-    }),
-  });
   SparkplugGroupRef.implement({
     fields: (t) => ({
       id: t.string({ resolve: (parent) => parent.id }),
@@ -165,10 +156,10 @@ export function addHostToSchema(
       }),
     }),
   });
-  builder.queryField("host", (t) =>
+  builder.queryField("groups", (t) =>
     t.field({
-      type: SparkplugHostRef,
-      resolve: () => host,
+      type: [SparkplugGroupRef],
+      resolve: () => flattenHostGroups(host),
     })
   );
   builder.subscriptionField("metrics", (t) =>
