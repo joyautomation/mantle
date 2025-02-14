@@ -149,10 +149,15 @@ export function addHostToSchema(
       groupId: t.exposeString("groupId"),
       nodeId: t.exposeString("nodeId"),
       deviceId: t.exposeString("deviceId"),
+      metricId: t.exposeString("name"),
       name: t.exposeString("name"),
       value: t.field({
         type: "String",
         resolve: (parent) => parent.value?.toString(),
+      }),
+      timestamp: t.field({
+        type: "Int",
+        resolve: (parent) => Number(parent.timestamp),
       }),
     }),
   });
@@ -162,7 +167,7 @@ export function addHostToSchema(
       resolve: () => flattenHostGroups(host),
     })
   );
-  builder.subscriptionField("metrics", (t) =>
+  builder.subscriptionField("metricUpdate", (t) =>
     t.field({
       type: [SparkplugMetricUpdateRef],
       subscribe: () => pubsub.subscribe("metricUpdate"),
