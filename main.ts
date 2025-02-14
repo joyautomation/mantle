@@ -3,6 +3,7 @@ import { argDictionary } from "./cli.ts";
 import { log } from "./log.ts";
 import { addHistoryEvents, addHostToSchema, getHost } from "./synapse.ts";
 import { getDb } from "./db/db.ts";
+import { addHistoryToSchema } from "./history.ts";
 
 export const _internal = {
   getDb,
@@ -32,6 +33,7 @@ const main = createApp(
     const { db } = await _internal.getDb(args);
     const host = _internal.getHost(args);
     addHistoryEvents(db, host);
+    addHistoryToSchema(builder, db);
     addHostToSchema(host, builder);
     return builder;
   }

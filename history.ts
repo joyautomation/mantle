@@ -1,6 +1,6 @@
 import type { SparkplugMetric, SparkplugTopic } from "@joyautomation/synapse";
-import type { Db } from "./db/db.ts";
-import { history } from "./db/schema.ts";
+import { getDb, type Db } from "./db/db.ts";
+import { history as historyTable } from "./db/schema.ts";
 import type { HistoryRecord } from "./db/schema.ts";
 import type {
   UMetric,
@@ -11,6 +11,13 @@ import { log } from "./log.ts";
 import { getBuilder } from "@joyautomation/conch";
 import { and, avg, between, sql } from "drizzle-orm";
 import { differenceInMinutes } from "date-fns";
+import {
+  createFail,
+  createSuccess,
+  isSuccess,
+} from "jsr:@joyautomation/dark-matter@^0.0.13";
+import { createErrorString } from "https://jsr.io/@joyautomation/dark-matter/0.0.13/result/result.ts";
+import { GraphQLError } from "graphql";
 
 /**
  * Determines the value type of a SparkplugMetric.
@@ -89,7 +96,7 @@ export async function recordValues(
             valueType === "boolValue" ? (metric.value as boolean) : null,
         };
         try {
-          db.insert(history).values(record);
+          await db.insert(historyTable).values(record);
         } catch (error) {
           log.error(error);
         }
@@ -102,60 +109,173 @@ export async function recordValues(
   }
 }
 
-export async function getHistory(
-  db: Db,
-  metrics: string[],
-  start: Date,
-  end: Date,
-  interval?: string,
-  samples?: number,
-  raw?: boolean
-) {
-  const autoInterval = `${Math.floor(
-    (differenceInMinutes(new Date(end), new Date(start)) * 60.0) /
-      (samples ?? 300.0)
-  )} seconds`;
-  const time =
-    raw != null
-      ? history.timestamp
-      : sql`time_bucket('${interval ?? autoInterval}', "timestamp")`;
-  const subQuery = await db
-    .select({
-      time,
-      name: sql`CONCAT("groupId",'/',"nodeId",'/',"deviceId",'/',"metricId")`,
-      value: sql`AVG("floatValue")`,
-    })
-    .from(history)
-    .where(
-      and(
-        sql`("groupId", "nodeId", "deviceId", "metricId") in (${metrics.join(
-          ", "
-        )})`,
-        between(history.timestamp, new Date(start), new Date(end))
+type MetricHistory = {
+  value: string | null;
+  timestamp: Date;
+};
+
+type History = {
+  groupId: string;
+  nodeId: string;
+  deviceId: string | null;
+  metricId: string;
+  history: MetricHistory[];
+};
+
+type HistoryMetricInput = {
+  groupId: string;
+  nodeId: string;
+  deviceId: string | null;
+  metricId: string;
+};
+
+export async function getHistory({
+  db,
+  metrics,
+  start,
+  end,
+  interval,
+  samples,
+  raw,
+}: {
+  metrics: HistoryMetricInput[];
+  start: Date;
+  end: Date;
+  interval?: string | null;
+  samples?: number | null;
+  raw?: boolean | null;
+  db: Db;
+}) {
+  try {
+    const autoInterval = `${Math.floor(
+      (end.getTime() - start.getTime()) / (1000 * (samples ?? 100))
+    )}s`;
+    const time =
+      raw == null
+        ? sql<Date>`${historyTable.timestamp} as "time"`
+        : sql<Date>`time_bucket(${
+            interval ?? autoInterval
+          }, "timestamp") as "time"`;
+    const normalizedMetrics = metrics.map((metric) => ({
+      groupId: String(metric.groupId),
+      nodeId: String(metric.nodeId),
+      deviceId: metric.deviceId ? String(metric.deviceId) : null,
+      metricId: String(metric.metricId),
+    }));
+    const subQuery = db
+      .select({
+        time,
+        name: sql<string>`CONCAT("group_id",'/',"node_id",'/',"device_id",'/',"metric_id") as "name"`,
+        value: sql<number>`AVG("float_value") as "value"`,
+      })
+      .from(historyTable)
+      .where(
+        and(
+          sql.raw(
+            `("group_id", "node_id", "device_id", "metric_id") in (${metrics
+              .map(
+                (m) =>
+                  `('${m.groupId}', '${m.nodeId}', '${m.deviceId}', '${m.metricId}')`
+              )
+              .join(", ")})`
+          ),
+          between(historyTable.timestamp, start, end)
+        )
       )
+      .groupBy(sql`time`, sql`name`)
+      .orderBy(sql`time asc`);
+    const history = await db
+      .select({
+        time: sql<Date>`"time"`,
+        data: sql<Record<string, string>>`json_object_agg("name","value")`,
+      })
+      .from(sql`${subQuery} as bucketed`)
+      .groupBy(sql`time`);
+    return createSuccess(
+      normalizedMetrics.map((m) => {
+        return {
+          ...m,
+          history: history
+            .map((h) => {
+              return {
+                timestamp: new Date(h.time),
+                value:
+                  h.data[
+                    `${m.groupId}/${m.nodeId}/${m.deviceId}/${m.metricId}`
+                  ],
+              };
+            })
+            .filter((h) => h.value !== null && h.value !== undefined),
+        };
+      })
     );
-  await db
-    .select({
-      time,
-      data: sql<Record<string, unknown>>`json_object_agg("name","value")`,
-    })
-    .from(sql`(${subQuery}) as bucketed`)
-    .groupBy(sql`time`);
+  } catch (error) {
+    return createFail(createErrorString(error));
+  }
 }
 
-export function addHistoryToSchema(builder: ReturnType<typeof getBuilder>) {
-  const HistoryRecordRef = builder.objectRef<HistoryRecord>("HistoryRecord");
-
-  HistoryRecordRef.implement({
+export function addHistoryToSchema(
+  builder: ReturnType<typeof getBuilder>,
+  db: Db
+) {
+  const MetricHistoryRef = builder.objectRef<MetricHistory>("MetricHistory");
+  const HistoryRef = builder.objectRef<History>("History");
+  MetricHistoryRef.implement({
+    fields: (t) => ({
+      value: t.exposeString("value"),
+      timestamp: t.expose("timestamp", {
+        type: "Date",
+      }),
+    }),
+  });
+  HistoryRef.implement({
     fields: (t) => ({
       groupId: t.exposeString("groupId"),
       nodeId: t.exposeString("nodeId"),
       deviceId: t.exposeString("deviceId"),
       metricId: t.exposeString("metricId"),
-      timestamp: t.field({
-        type: "Date",
-        resolve: (parent) => parent.timestamp,
+      history: t.field({
+        type: [MetricHistoryRef],
+        resolve: (parent) => parent.history,
       }),
     }),
   });
+  const MetricHistoryInputRef = builder.inputType("MetricHistoryInput", {
+    fields: (t) => ({
+      groupId: t.string({ required: true }),
+      nodeId: t.string({ required: true }),
+      deviceId: t.string({ required: true }),
+      metricId: t.string({ required: true }),
+    }),
+  });
+  builder.queryField("history", (t) =>
+    t.field({
+      type: [HistoryRef],
+      args: {
+        start: t.arg({
+          type: "Date",
+          required: true,
+        }),
+        end: t.arg({
+          type: "Date",
+          required: true,
+        }),
+        metrics: t.arg({
+          type: [MetricHistoryInputRef],
+          required: true,
+        }),
+        interval: t.arg.string(),
+        samples: t.arg.int(),
+        raw: t.arg.boolean({ defaultValue: false }),
+      },
+      resolve: async (_parent, args) => {
+        const result = await getHistory({ ...args, db });
+        if (isSuccess(result)) {
+          return result.output;
+        } else {
+          throw new GraphQLError(result.error);
+        }
+      },
+    })
+  );
 }

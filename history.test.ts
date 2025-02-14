@@ -11,6 +11,8 @@ import { getDb } from "./db/db.ts";
 import type { TypeStr } from "sparkplug-payload/lib/sparkplugbpayload.js";
 import { parseArguments } from "@joyautomation/conch";
 import { argDictionary } from "./cli.ts";
+import { sql } from "drizzle-orm";
+import {history as historyTable} from "./db/schema.ts";
 
 describe("getValueType", () => {
   function makeMetric(type: string) {
@@ -120,3 +122,4 @@ describe("recordValues", () => {
     assertSpyCalls(insertStub, 1);
   });
 });
+
