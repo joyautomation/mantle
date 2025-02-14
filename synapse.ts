@@ -120,6 +120,7 @@ export function addHostToSchema(
   });
   SparkplugMetricRef.implement({
     fields: (t) => ({
+      id: t.exposeString("name"),
       name: t.exposeString("name"),
       value: t.field({
         type: "String",
