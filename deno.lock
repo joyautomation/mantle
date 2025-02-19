@@ -9,10 +9,11 @@
     "jsr:@joyautomation/neuron@0.0.26": "0.0.26",
     "jsr:@joyautomation/neuron@0.0.30": "0.0.30",
     "jsr:@joyautomation/neuron@0.0.32": "0.0.32",
-    "jsr:@joyautomation/synapse@^0.0.66": "0.0.66",
+    "jsr:@joyautomation/synapse@^0.0.69": "0.0.69",
     "jsr:@std/assert@1": "1.0.5",
     "jsr:@std/assert@^1.0.4": "1.0.5",
     "jsr:@std/assert@^1.0.5": "1.0.5",
+    "jsr:@std/async@^1.0.5": "1.0.10",
     "jsr:@std/cli@^1.0.6": "1.0.6",
     "jsr:@std/data-structures@^1.0.2": "1.0.2",
     "jsr:@std/expect@*": "1.0.3",
@@ -116,8 +117,8 @@
         "npm:sparkplug-payload@^1.0.3"
       ]
     },
-    "@joyautomation/synapse@0.0.66": {
-      "integrity": "7e1693ff3af315169627aed41b0892d6ac6a729b2ed87fca958cde250d495217",
+    "@joyautomation/synapse@0.0.69": {
+      "integrity": "51439d9eb8744b69ac0264a3a0b2188669996021f793cfd0ee86f61ad290a263",
       "dependencies": [
         "jsr:@joyautomation/coral@^0.0.12",
         "jsr:@joyautomation/dark-matter@^0.0.13",
@@ -133,6 +134,9 @@
       "dependencies": [
         "jsr:@std/internal"
       ]
+    },
+    "@std/async@1.0.10": {
+      "integrity": "2ff1b1c7d33d1416159989b0f69e59ec7ee8cb58510df01e454def2108b3dbec"
     },
     "@std/cli@1.0.6": {
       "integrity": "d22d8b38c66c666d7ad1f2a66c5b122da1704f985d3c47f01129f05abb6c5d3d"
@@ -169,6 +173,7 @@
       "integrity": "9e8a7f4e26c219addabe7942d09c3450fa0a74e9662341961bc0ef502274dec3",
       "dependencies": [
         "jsr:@std/assert@^1.0.4",
+        "jsr:@std/async",
         "jsr:@std/data-structures",
         "jsr:@std/fs",
         "jsr:@std/internal",
@@ -1034,7 +1039,7 @@
       "jsr:@joyautomation/conch@^0.0.22",
       "jsr:@joyautomation/coral@^0.0.10",
       "jsr:@joyautomation/dark-matter@^0.0.18",
-      "jsr:@joyautomation/synapse@^0.0.66",
+      "jsr:@joyautomation/synapse@^0.0.69",
       "jsr:@std/assert@1",
       "jsr:@std/cli@^1.0.6",
       "jsr:@std/expect@^1.0.3",

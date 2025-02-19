@@ -34,12 +34,15 @@ export function getHost(args: Args) {
     password: args.password || Deno.env.get("MANTLE_MQTT_PASSWORD") || "",
     id: args.nodeId || Deno.env.get("MANTLE_MQTT_NODE_ID") || "test",
     clientId:
-      args.clientId || `${Deno.env.get("MANTLE_MQTT_CLIENT_ID")}-${nanoid(7)}`,
+      `${args.clientId || Deno.env.get("MANTLE_MQTT_CLIENT_ID") || "mantle"}-${nanoid(7)}`,
     version: "spBv1.0",
     primaryHostId:
       args.primaryHostId ||
       Deno.env.get("MANTLE_MQTT_PRIMARY_HOST_ID") ||
       "test",
+    sharedSubscriptionGroup:
+      args.sharedSubscriptionGroup ||
+      Deno.env.get("MANTLE_SHARED_GROUP")
   };
   return createHost(config);
 }

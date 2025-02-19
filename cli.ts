@@ -107,4 +107,10 @@ export const argDictionary: Record<string, ArgDictionaryItem> = {
     env: "MANTLE_DB_SSL_CA",
     type: "string",
   },
+  "shared-group": {
+    short: "g",
+    description: "Shared subscription group for DDATA and NDATA messages",
+    env: "MANTLE_SHARED_GROUP",
+    type: "string",
+  },
 };
