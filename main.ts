@@ -19,6 +19,7 @@ export const _internal = {
  * @async
  * @returns {Promise<void>}
  */
+
 const main = createApp(
   "mantle",
   "Mantle, an MQTT Sparkplug B data aggregator and historian.",
