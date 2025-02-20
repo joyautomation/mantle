@@ -47,11 +47,19 @@ export function validateRedisUrl(url: string | undefined): Result<string> {
 
 function createRedisConnectionString(args: Args) {
   const argsRedisUrlResult = validateRedisUrl(args["redis-url"]);
-  if (isSuccess(argsRedisUrlResult)) return argsRedisUrlResult.output;
+  if (isSuccess(argsRedisUrlResult)) {
+    return argsRedisUrlResult.output;
+  } else {
+    log.debug('redis url arg invalid: ',argsRedisUrlResult.error);
+  }
   const mantleRedisUrlResult = validateRedisUrl(
     Deno.env.get("MANTLE_REDIS_URL")
   );
-  if (isSuccess(mantleRedisUrlResult)) return mantleRedisUrlResult.output;
+  if (isSuccess(mantleRedisUrlResult)) {
+    return mantleRedisUrlResult.output;
+  } else {
+    log.debug('redis url environment variable invalid: ',mantleRedisUrlResult.error);
+  }
   return "redis://localhost:6379";
 }
 
