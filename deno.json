@@ -1,6 +1,6 @@
 {
   "name": "@joyautomation/mantle",
-  "version": "0.0.39",
+  "version": "0.0.40",
   "description": "Mantle consumes and logs Sparkplug B data",
   "author": "Joy Automation",
   "license": "GPL-3.0-or-later",
