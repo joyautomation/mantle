@@ -29,7 +29,7 @@
     "graphql-scalars": "npm:graphql-scalars@^1.23.0",
     "graphql-yoga": "npm:graphql-yoga@^5.7.0",
     "long": "npm:long@^5.2.3",
-    "nanoid": "npm:nanoid@^5.0.7",
+    "nanoid": "npm:nanoid@^5.1.0",
     "pg": "npm:pg@^8.13.0",
     "postgres": "npm:postgres@^3.4.2",
     "redis": "npm:redis@^4.7.0",

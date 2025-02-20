@@ -112,4 +112,10 @@ export const argDictionary: Record<string, ArgDictionaryItem> = {
     env: "MANTLE_SHARED_GROUP",
     type: "string",
   },
+  "redis-url": {
+    short: "R",
+    description: "Redis URL",
+    env: "MANTLE_REDIS_URL",
+    type: "string",
+  },
 };

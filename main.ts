@@ -4,6 +4,8 @@ import { log } from "./log.ts";
 import { addHistoryEvents, addHostToSchema, getHost } from "./synapse.ts";
 import { getDb } from "./db/db.ts";
 import { addHistoryToSchema } from "./history.ts";
+import { getRedis } from "./redis.ts";
+import { isSuccess } from "@joyautomation/dark-matter";
 
 /**
  * Internal utility functions exposed for testing purposes
@@ -14,6 +16,7 @@ export const _internal = {
   getDb,
   /** Function to create and configure a SparkplugHost instance */
   getHost,
+  getRedis,
 };
 
 /**
@@ -38,10 +41,16 @@ const main = createApp(
   log,
   async (builder, args) => {
     const { db } = await _internal.getDb(args);
+    const redisResult = await _internal.getRedis(args);
     const host = _internal.getHost(args);
-    addHistoryEvents(db, host);
+    if (isSuccess(redisResult)) {
+      addHistoryEvents(db, host, redisResult.output);
+      addHostToSchema(host, builder, redisResult.output);
+    } else {
+      addHistoryEvents(db, host);
+      addHostToSchema(host, builder);
+    }
     addHistoryToSchema(builder, db);
-    addHostToSchema(host, builder);
     return builder;
   }
 );
