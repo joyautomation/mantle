@@ -23,8 +23,8 @@ import {
 import type { UMetric } from "sparkplug-payload/lib/sparkplugbpayload.js";
 import Long from "long";
 
-let publisher: ReturnType<typeof createClient>;
-let subscriber: ReturnType<typeof createClient>;
+let publisher: ReturnType<typeof createClient> | undefined;
+let subscriber: ReturnType<typeof createClient> | undefined;
 
 /**
  * Validates if the given URL is a valid Redis URL
@@ -67,9 +67,9 @@ function createRedisConnectionString(args: Args) {
 }
 
 export async function getPublisher(args: Args) {
+  const url = createRedisConnectionString(args);
   try {
     if (!publisher) {
-      const url = createRedisConnectionString(args);
       publisher = createClient({
         url,
       });
@@ -78,14 +78,29 @@ export async function getPublisher(args: Args) {
     }
     return createSuccess(publisher);
   } catch (e) {
-    return createFail(createErrorString(e));
+    publisher = undefined;
+    return createFail(`Failed to connect to Redis at ${url}: ${createErrorString(e)}`);
   }
 }
 
+export async function getPublisherRetry(args: Args, maxRetries: number, delay: number) {
+  let retries = 0;
+  while (retries < maxRetries) {
+    const publisherResult = await getPublisher(args);
+    if (isSuccess(publisherResult)) {
+      return publisherResult;
+    }
+    retries++;
+    await new Promise(resolve => setTimeout(resolve, delay));
+  }
+  return createFail(`Failed to connect to Redis after ${maxRetries} retries`);
+}
+
 export async function getSubscriber(args: Args) {
+  const url = createRedisConnectionString(args);
   try {
     if (!subscriber) {
-      const url = createRedisConnectionString(args);
+      subscriber = createClient({ url });
       subscriber = createClient({ url });
       await subscriber.connect();
       subscriber.configSet("notify-keyspace-events", "KEA");
@@ -93,9 +108,23 @@ export async function getSubscriber(args: Args) {
     }
     return createSuccess(subscriber);
   } catch (e) {
-    return createFail(createErrorString(e));
+    subscriber = undefined;
+    return createFail(`Failed to connect to Redis at ${url}: ${createErrorString(e)}`);
   }
 }
+
+export async function getSubscriberRetry(args: Args, maxRetries: number, delay: number) {
+    let retries = 0;
+    while (retries < maxRetries) {
+      const subscriberResult = await getSubscriber(args);
+      if (isSuccess(subscriberResult)) {
+        return subscriberResult;
+      }
+      retries++;
+      await new Promise(resolve => setTimeout(resolve, delay));
+    }
+    return createFail(`Failed to connect to Redis after ${maxRetries} retries`);
+  }
 
 export function subscribeToKeys(subscriber: ReturnType<typeof createClient>, onMessage: (key: string, topic: string) => void) {
   const keyPattern = "__keyevent@0__:*"; // Subscribe to all key events
