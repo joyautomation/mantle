@@ -5,8 +5,14 @@ import { addHistoryEvents, addHostToSchema, getHost } from "./synapse.ts";
 import { getDb } from "./db/db.ts";
 import { addHistoryToSchema } from "./history.ts";
 
+/**
+ * Internal utility functions exposed for testing purposes
+ * @internal
+ */
 export const _internal = {
+  /** Function to get database connection and Drizzle ORM instance */
   getDb,
+  /** Function to create and configure a SparkplugHost instance */
   getHost,
 };
 
@@ -19,6 +25,7 @@ export const _internal = {
  * @async
  * @returns {Promise<void>}
  */
+
 const main = createApp(
   "mantle",
   "Mantle, an MQTT Sparkplug B data aggregator and historian.",
