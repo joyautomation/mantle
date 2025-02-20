@@ -18,6 +18,7 @@ import type { Db } from "./db/db.ts";
 import { pubsub } from "./pubsub.ts";
 import type { UPayload } from "sparkplug-payload/lib/sparkplugbpayload.js";
 import type { getBuilder } from "@joyautomation/conch";
+import type { createClient } from "redis";
 
 /**
  * Creates and returns a SparkplugHost instance based on the provided arguments or environment variables.
@@ -52,19 +53,25 @@ export function getHost(args: Args) {
  * @param {Db} db - The database instance.
  * @param {SparkplugHost} host - The SparkplugHost instance.
  */
-export function addHistoryEvents(db: Db, host: SparkplugHost) {
+export function addHistoryEvents(db: Db, host: SparkplugHost, redis?: ReturnType<typeof createClient>) {
   ["ndata", "ddata"].forEach((topic) => {
-    host.events.on(topic, (topic: SparkplugTopic, message: UPayload) => {
+    host.events.on(topic, async (topic: SparkplugTopic, message: UPayload) => {
       recordValues(db, topic, message);
-      pubsub.publish(
-        "metricUpdate",
-        message.metrics?.map((metric) => ({
-          ...metric,
-          groupId: topic.groupId,
-          nodeId: topic.edgeNode,
-          deviceId: topic.deviceId,
-        }))
-      );
+      if (redis) {
+        await Promise.all(
+          message.metrics?.map((metric) => redis.publish(`${topic.groupId}/${topic.edgeNode}/${topic.deviceId}/${metric.name}`,JSON.stringify(metric))) || []
+        )
+      } else {
+        pubsub.publish(
+          "metricUpdate",
+          message.metrics?.map((metric) => ({
+            ...metric,
+            groupId: topic.groupId,
+            nodeId: topic.edgeNode,
+            deviceId: topic.deviceId,
+          }))
+        );
+      }
     });
   });
 }
@@ -78,7 +85,6 @@ export function addHostToSchema(
   host: SparkplugHost,
   builder: ReturnType<typeof getBuilder>
 ) {
-  const SparkplugHostRef = builder.objectRef<SparkplugHost>("SparkplugHost");
   const SparkplugGroupRef =
     builder.objectRef<SparkplugGroupFlat>("SparkplugGroup");
   const SparkplugNodeRef =

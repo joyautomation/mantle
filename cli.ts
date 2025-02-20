@@ -2,7 +2,6 @@ import type { ArgDictionaryItem } from "@joyautomation/conch";
 import type { Args } from "@std/cli";
 import { setLogLevel } from "@joyautomation/coral";
 import { logs } from "./log.ts";
-import { LogLevel } from "graphql-yoga";
 
 /**
  * A dictionary of command-line arguments and their properties.

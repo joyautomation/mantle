@@ -32,6 +32,7 @@
     "nanoid": "npm:nanoid@^5.0.7",
     "pg": "npm:pg@^8.13.0",
     "postgres": "npm:postgres@^3.4.2",
+    "redis": "npm:redis@^4.7.0",
     "sparkplug-payload": "npm:sparkplug-payload@^1.0.3"
   },
   "nodeModulesDir": "auto"
