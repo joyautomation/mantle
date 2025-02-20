@@ -4,8 +4,9 @@ import { log } from "./log.ts";
 import { addHistoryEvents, addHostToSchema, getHost } from "./synapse.ts";
 import { getDb } from "./db/db.ts";
 import { addHistoryToSchema } from "./history.ts";
-import { getRedis } from "./redis.ts";
+import { getPublisher, getSubscriber, subscribeToKeys } from "./redis.ts";
 import { isSuccess } from "@joyautomation/dark-matter";
+import { pubsub } from "./pubsub.ts";
 
 /**
  * Internal utility functions exposed for testing purposes
@@ -16,7 +17,8 @@ export const _internal = {
   getDb,
   /** Function to create and configure a SparkplugHost instance */
   getHost,
-  getRedis,
+  getPublisher,
+  getSubscriber,
 };
 
 /**
@@ -41,12 +43,29 @@ const main = createApp(
   log,
   async (builder, args) => {
     const { db } = await _internal.getDb(args);
-    const redisResult = await _internal.getRedis(args);
+    const publisherResult = await _internal.getPublisher(args);
+    const subscriberResult = await _internal.getSubscriber(args);
     const host = _internal.getHost(args);
-    if (isSuccess(redisResult)) {
-      addHistoryEvents(db, host, redisResult.output);
-      addHostToSchema(host, builder, redisResult.output);
+    if (isSuccess(publisherResult) && isSuccess(subscriberResult)) {
+      log.debug("Using key value store")
+      const publisher = publisherResult.output;
+      const subscriber = subscriberResult.output;
+      addHistoryEvents(db, host, publisher, subscriber);
+      addHostToSchema(host, builder, publisher);
+      subscribeToKeys(subscriber, async (key: string, _topic: string) => {
+        const value = await publisher.get(key);
+        if (value) {
+          pubsub.publish(
+            "metricUpdate",
+            [{
+              ...JSON.parse(value),
+              ...JSON.parse(key),
+            }]
+          );
+        }
+      });
     } else {
+      log.debug("Using in-memory database")
       addHistoryEvents(db, host);
       addHostToSchema(host, builder);
     }

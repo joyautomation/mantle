@@ -22,6 +22,7 @@ import type { createClient } from "redis";
 import { getMetricHierarchy } from "./redis.ts";
 import { GraphQLError } from "graphql";
 import { isSuccess } from "@joyautomation/dark-matter";
+import Long from "long";
 
 /**
  * Creates and returns a SparkplugHost instance based on the provided arguments or environment variables.
@@ -59,12 +60,13 @@ export function getHost(args: Args) {
 export function addHistoryEvents(
   db: Db,
   host: SparkplugHost,
-  redis?: ReturnType<typeof createClient>
+  publisher?: ReturnType<typeof createClient>,
+  subscriber?: ReturnType<typeof createClient>
 ) {
   ["nbirth", "dbirth", "ndata", "ddata"].forEach((topic) => {
     host.events.on(topic, async (topic: SparkplugTopic, message: UPayload) => {
       recordValues(db, topic, message);
-      if (redis) {
+      if (publisher) {
         await Promise.all(
           message.metrics?.map((metric) => {
             const key = JSON.stringify({
@@ -73,7 +75,7 @@ export function addHistoryEvents(
               deviceId: topic.deviceId,
               metricId: metric.name,
             });
-            redis.set(key, JSON.stringify(metric));
+            publisher.set(key, JSON.stringify({ ...metric, value: Long.isLong(metric.value) ? metric.value.toNumber() : metric.value }));
           }) || []
         );
       } else {

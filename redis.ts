@@ -21,8 +21,10 @@ import {
   SparkplugTopic,
 } from "@joyautomation/synapse";
 import type { UMetric } from "sparkplug-payload/lib/sparkplugbpayload.js";
+import Long from "long";
 
-let redis: ReturnType<typeof createClient>;
+let publisher: ReturnType<typeof createClient>;
+let subscriber: ReturnType<typeof createClient>;
 
 /**
  * Validates if the given URL is a valid Redis URL
@@ -53,27 +55,41 @@ function createRedisConnectionString(args: Args) {
   return "redis://localhost:6379";
 }
 
-export async function getRedis(args: Args) {
+export async function getPublisher(args: Args) {
   try {
-    if (!redis) {
+    if (!publisher) {
       const url = createRedisConnectionString(args);
-      redis = createClient({
+      publisher = createClient({
         url,
       });
-      await redis.connect();
-      log.info(`Connected to Redis at ${url}`);
-      const keyPattern = "__keyevent@0__:*"; // Subscribe to all key events
-      const subscriber = createClient({ url });
-      await subscriber.connect();
-      console.log("Subscribing to key pattern:", keyPattern);
-      await subscriber.pSubscribe(keyPattern, (message, channel) => {
-        console.log(`Event: ${channel}, Key: ${message}`);
-      });
+      await publisher.connect();
+      log.info(`Publisher connected to Redis at ${url}`);
     }
-    return createSuccess(redis);
+    return createSuccess(publisher);
   } catch (e) {
     return createFail(createErrorString(e));
   }
+}
+
+export async function getSubscriber(args: Args) {
+  try {
+    if (!subscriber) {
+      const url = createRedisConnectionString(args);
+      const keyPattern = "__keyevent@0__:*"; // Subscribe to all key events
+      subscriber = createClient({ url });
+      await subscriber.connect();
+      subscriber.configSet("notify-keyspace-events", "KEA");
+      log.info(`Subscriber connected to Redis at ${url}`);
+    }
+    return createSuccess(subscriber);
+  } catch (e) {
+    return createFail(createErrorString(e));
+  }
+}
+
+export function subscribeToKeys(subscriber: ReturnType<typeof createClient>, onMessage: (key: string, topic: string) => void) {
+  const keyPattern = "__keyevent@0__:*"; // Subscribe to all key events
+  subscriber.pSubscribe(keyPattern, onMessage);
 }
 
 export async function getMetricHierarchy(
@@ -137,14 +153,14 @@ export async function getMetricHierarchy(
               };
             }
             if (parsedValue?.name)
-              hierarchy.groups[groupId].nodes[nodeId].devices[deviceId].metrics[
-                parsedValue.name
-              ] = metric;
-          } else {
+                hierarchy.groups[groupId].nodes[nodeId].devices[deviceId].metrics[
+            parsedValue.name
+        ] = { ...metric, value: Long.isLong(metric.value) ? metric.value.toNumber() : metric.value };
+    } else {
             if (parsedValue?.name)
               hierarchy.groups[groupId].nodes[nodeId].metrics[
                 parsedValue.name
-              ] = metric;
+              ] = { ...metric, value: Long.isLong(metric.value) ? metric.value.toNumber() : metric.value };
           }
         } catch {
           console.log(
