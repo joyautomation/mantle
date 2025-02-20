@@ -48,6 +48,7 @@ export function validateRedisUrl(url: string | undefined): Result<string> {
 function createRedisConnectionString(args: Args) {
   const argsRedisUrlResult = validateRedisUrl(args["redis-url"]);
   if (isSuccess(argsRedisUrlResult)) {
+    log.debug('redis url arg valid: ',argsRedisUrlResult.output);
     return argsRedisUrlResult.output;
   } else {
     log.debug('redis url arg invalid: ',argsRedisUrlResult.error);
@@ -56,10 +57,12 @@ function createRedisConnectionString(args: Args) {
     Deno.env.get("MANTLE_REDIS_URL")
   );
   if (isSuccess(mantleRedisUrlResult)) {
+    log.debug('redis url environment variable valid: ',mantleRedisUrlResult.output);
     return mantleRedisUrlResult.output;
   } else {
     log.debug('redis url environment variable invalid: ',mantleRedisUrlResult.error);
   }
+  log.debug('using default redis url: "redis://localhost:6379"');
   return "redis://localhost:6379";
 }
 
@@ -83,7 +86,6 @@ export async function getSubscriber(args: Args) {
   try {
     if (!subscriber) {
       const url = createRedisConnectionString(args);
-      const keyPattern = "__keyevent@0__:*"; // Subscribe to all key events
       subscriber = createClient({ url });
       await subscriber.connect();
       subscriber.configSet("notify-keyspace-events", "KEA");
