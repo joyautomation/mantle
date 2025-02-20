@@ -5,7 +5,7 @@ import { addHistoryEvents, addHostToSchema, getHost } from "./synapse.ts";
 import { getDb } from "./db/db.ts";
 import { addHistoryToSchema } from "./history.ts";
 import { getPublisher, getSubscriber, subscribeToKeys } from "./redis.ts";
-import { isSuccess } from "@joyautomation/dark-matter";
+import { isFail, isSuccess } from "@joyautomation/dark-matter";
 import { pubsub } from "./pubsub.ts";
 
 /**
@@ -65,6 +65,8 @@ const main = createApp(
         }
       });
     } else {
+      if (isFail(publisherResult)) log.info(publisherResult.error)
+      if (isFail(subscriberResult)) log.info(subscriberResult.error)
       log.debug("Using in-memory database")
       addHistoryEvents(db, host);
       addHostToSchema(host, builder);
