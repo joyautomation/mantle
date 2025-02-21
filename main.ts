@@ -4,6 +4,15 @@ import { log } from "./log.ts";
 import { addHistoryEvents, addHostToSchema, getHost } from "./synapse.ts";
 import { getDb } from "./db/db.ts";
 import { addHistoryToSchema } from "./history.ts";
+import {
+  getPublisherRetry,
+  getSubscriberRetry,
+  subscribeToKeys,
+} from "./redis.ts";
+import { isFail, isSuccess } from "@joyautomation/dark-matter";
+import { pubsub } from "./pubsub.ts";
+import { addMemoryUsageToSchema } from "./memory.ts";
+import type { UMetric } from "sparkplug-payload/lib/sparkplugbpayload.js";
 
 /**
  * Internal utility functions exposed for testing purposes
@@ -14,6 +23,8 @@ export const _internal = {
   getDb,
   /** Function to create and configure a SparkplugHost instance */
   getHost,
+  getPublisherRetry,
+  getSubscriberRetry,
 };
 
 /**
@@ -38,10 +49,41 @@ const main = createApp(
   log,
   async (builder, args) => {
     const { db } = await _internal.getDb(args);
+    const publisherResult = await _internal.getPublisherRetry(args, 5, 1000);
+    const subscriberResult = await _internal.getSubscriberRetry(args, 5, 1000);
     const host = _internal.getHost(args);
-    addHistoryEvents(db, host);
+    if (isSuccess(publisherResult) && isSuccess(subscriberResult)) {
+      log.debug(
+        `Using key value store at ${publisherResult.output.options?.url}`
+      );
+      const publisher = publisherResult.output;
+      const subscriber = subscriberResult.output;
+      addHistoryEvents(db, host, publisher, subscriber);
+      addHostToSchema(host, builder, publisher);
+      let metricUpdates: UMetric[] = [];
+      subscribeToKeys(subscriber, async (key: string, _topic: string) => {
+        const value = await publisher.get(key);
+        if (value) {
+          metricUpdates.push({
+            ...JSON.parse(value),
+            ...JSON.parse(key),
+          });
+        }
+      });
+      setInterval(() => {
+        if (metricUpdates.length > 0)
+          pubsub.publish("metricUpdate", metricUpdates);
+        metricUpdates = [];
+      }, 1000);
+    } else {
+      if (isFail(publisherResult)) log.info(publisherResult.error);
+      if (isFail(subscriberResult)) log.info(subscriberResult.error);
+      log.debug("Using in-memory database");
+      addHistoryEvents(db, host);
+      addHostToSchema(host, builder);
+    }
     addHistoryToSchema(builder, db);
-    addHostToSchema(host, builder);
+    addMemoryUsageToSchema(builder);
     return builder;
   }
 );

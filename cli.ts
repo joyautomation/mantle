@@ -2,7 +2,6 @@ import type { ArgDictionaryItem } from "@joyautomation/conch";
 import type { Args } from "@std/cli";
 import { setLogLevel } from "@joyautomation/coral";
 import { logs } from "./log.ts";
-import { LogLevel } from "graphql-yoga";
 
 /**
  * A dictionary of command-line arguments and their properties.
@@ -111,6 +110,12 @@ export const argDictionary: Record<string, ArgDictionaryItem> = {
     short: "g",
     description: "Shared subscription group for DDATA and NDATA messages",
     env: "MANTLE_SHARED_GROUP",
+    type: "string",
+  },
+  "redis-url": {
+    short: "R",
+    description: "Redis URL",
+    env: "MANTLE_REDIS_URL",
     type: "string",
   },
 };

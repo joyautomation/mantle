@@ -18,6 +18,11 @@ import type { Db } from "./db/db.ts";
 import { pubsub } from "./pubsub.ts";
 import type { UPayload } from "sparkplug-payload/lib/sparkplugbpayload.js";
 import type { getBuilder } from "@joyautomation/conch";
+import type { createClient } from "redis";
+import { getMetricHierarchy } from "./redis.ts";
+import { GraphQLError } from "graphql";
+import { isSuccess } from "@joyautomation/dark-matter";
+import Long from "long";
 
 /**
  * Creates and returns a SparkplugHost instance based on the provided arguments or environment variables.
@@ -33,18 +38,25 @@ export function getHost(args: Args) {
     username: args.username || Deno.env.get("MANTLE_MQTT_USERNAME") || "",
     password: args.password || Deno.env.get("MANTLE_MQTT_PASSWORD") || "",
     id: args.nodeId || Deno.env.get("MANTLE_MQTT_NODE_ID") || "test",
-    clientId:
-      `${args.clientId || Deno.env.get("MANTLE_MQTT_CLIENT_ID") || "mantle"}-${nanoid(7)}`,
+    clientId: `${
+      args.clientId || Deno.env.get("MANTLE_MQTT_CLIENT_ID") || "mantle"
+    }-${nanoid(7)}`,
     version: "spBv1.0",
     primaryHostId:
       args.primaryHostId ||
       Deno.env.get("MANTLE_MQTT_PRIMARY_HOST_ID") ||
       "test",
     sharedSubscriptionGroup:
-      args.sharedSubscriptionGroup ||
-      Deno.env.get("MANTLE_SHARED_GROUP")
+      args.sharedSubscriptionGroup || Deno.env.get("MANTLE_SHARED_GROUP"),
   };
   return createHost(config);
+}
+
+function convertIfLong<T>(value: T) {
+  if (Long.isLong(value)) {
+    return value.toNumber();
+  }
+  return value;
 }
 
 /**
@@ -52,19 +64,43 @@ export function getHost(args: Args) {
  * @param {Db} db - The database instance.
  * @param {SparkplugHost} host - The SparkplugHost instance.
  */
-export function addHistoryEvents(db: Db, host: SparkplugHost) {
-  ["ndata", "ddata"].forEach((topic) => {
-    host.events.on(topic, (topic: SparkplugTopic, message: UPayload) => {
+export function addHistoryEvents(
+  db: Db,
+  host: SparkplugHost,
+  publisher?: ReturnType<typeof createClient>,
+  subscriber?: ReturnType<typeof createClient>
+) {
+  ["nbirth", "dbirth", "ndata", "ddata"].forEach((topic) => {
+    host.events.on(topic, async (topic: SparkplugTopic, message: UPayload) => {
       recordValues(db, topic, message);
-      pubsub.publish(
-        "metricUpdate",
-        message.metrics?.map((metric) => ({
-          ...metric,
-          groupId: topic.groupId,
-          nodeId: topic.edgeNode,
-          deviceId: topic.deviceId,
-        }))
-      );
+      if (publisher) {
+        await Promise.all(
+          message.metrics?.map((metric) => {
+            const key = JSON.stringify({
+              groupId: topic.groupId,
+              nodeId: topic.edgeNode,
+              deviceId: topic.deviceId,
+              metricId: metric.name,
+            });
+            publisher.set(key, JSON.stringify({ 
+              ...metric, 
+              timestamp: convertIfLong(metric.timestamp), 
+              value: convertIfLong(metric.value) 
+            }));
+          }) || []
+        );
+      } else {
+        pubsub.publish(
+          "metricUpdate",
+          message.metrics?.map((metric) => ({
+            ...metric,
+            groupId: topic.groupId,
+            nodeId: topic.edgeNode,
+            deviceId: topic.deviceId,
+            metricId: metric.name,
+          }))
+        );
+      }
     });
   });
 }
@@ -76,9 +112,9 @@ export function addHistoryEvents(db: Db, host: SparkplugHost) {
  */
 export function addHostToSchema(
   host: SparkplugHost,
-  builder: ReturnType<typeof getBuilder>
+  builder: ReturnType<typeof getBuilder>,
+  redis?: ReturnType<typeof createClient>
 ) {
-  const SparkplugHostRef = builder.objectRef<SparkplugHost>("SparkplugHost");
   const SparkplugGroupRef =
     builder.objectRef<SparkplugGroupFlat>("SparkplugGroup");
   const SparkplugNodeRef =
@@ -167,7 +203,18 @@ export function addHostToSchema(
   builder.queryField("groups", (t) =>
     t.field({
       type: [SparkplugGroupRef],
-      resolve: () => flattenHostGroups(host),
+      resolve: async () => {
+        if (redis) {
+          const result = await getMetricHierarchy(redis, host);
+          if (isSuccess(result)) {
+            return flattenHostGroups(result.output);
+          } else {
+            throw new GraphQLError(result.error);
+          }
+        } else {
+          return flattenHostGroups(host);
+        }
+      },
     })
   );
   builder.subscriptionField("metricUpdate", (t) =>

@@ -87,7 +87,7 @@ export async function recordValues(
           metricId: metric.name || "",
           deviceId: deviceId || null,
           timestamp,
-          intValue: valueType === "intValue" ? (metric.value as number) : null,
+          intValue: valueType === "intValue" ? (Long.isLong(metric.value) ? metric.value.toNumber() : metric.value as number) : null,
           floatValue:
             valueType === "floatValue" ? (metric.value as number) : null,
           stringValue: valueType === "stringValue" ? `${metric.value}` : null,
@@ -97,7 +97,7 @@ export async function recordValues(
         try {
           await db.insert(historyTable).values(record);
         } catch (error) {
-          log.error(error);
+          log.error(`Error recording metric: ${metric.name}`, error);
         }
       } else {
         log.warn(

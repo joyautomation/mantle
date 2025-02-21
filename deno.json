@@ -1,6 +1,6 @@
 {
   "name": "@joyautomation/mantle",
-  "version": "0.0.36",
+  "version": "0.0.43",
   "description": "Mantle consumes and logs Sparkplug B data",
   "author": "Joy Automation",
   "license": "GPL-3.0-or-later",
@@ -15,7 +15,7 @@
     "@joyautomation/conch": "jsr:@joyautomation/conch@^0.0.22",
     "@joyautomation/coral": "jsr:@joyautomation/coral@^0.0.10",
     "@joyautomation/dark-matter": "jsr:@joyautomation/dark-matter@^0.0.18",
-    "@joyautomation/synapse": "jsr:@joyautomation/synapse@^0.0.69",
+    "@joyautomation/synapse": "jsr:@joyautomation/synapse@^0.0.70",
     "@pothos/core": "npm:@pothos/core@^4.2.0",
     "@std/assert": "jsr:@std/assert@1",
     "@std/cli": "jsr:@std/cli@^1.0.6",
@@ -29,9 +29,10 @@
     "graphql-scalars": "npm:graphql-scalars@^1.23.0",
     "graphql-yoga": "npm:graphql-yoga@^5.7.0",
     "long": "npm:long@^5.2.3",
-    "nanoid": "npm:nanoid@^5.0.7",
+    "nanoid": "npm:nanoid@^5.1.0",
     "pg": "npm:pg@^8.13.0",
     "postgres": "npm:postgres@^3.4.2",
+    "redis": "npm:redis@^4.7.0",
     "sparkplug-payload": "npm:sparkplug-payload@^1.0.3"
   },
   "nodeModulesDir": "auto"
