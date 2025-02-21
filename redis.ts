@@ -101,7 +101,6 @@ export async function getSubscriber(args: Args) {
   try {
     if (!subscriber) {
       subscriber = createClient({ url });
-      subscriber = createClient({ url });
       await subscriber.connect();
       subscriber.configSet("notify-keyspace-events", "KEA");
       log.info(`Subscriber connected to Redis at ${url}`);

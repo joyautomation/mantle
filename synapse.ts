@@ -52,6 +52,13 @@ export function getHost(args: Args) {
   return createHost(config);
 }
 
+function convertIfLong<T>(value: T) {
+  if (Long.isLong(value)) {
+    return value.toNumber();
+  }
+  return value;
+}
+
 /**
  * Adds event listeners to the SparkplugHost for recording history events.
  * @param {Db} db - The database instance.
@@ -75,7 +82,11 @@ export function addHistoryEvents(
               deviceId: topic.deviceId,
               metricId: metric.name,
             });
-            publisher.set(key, JSON.stringify({ ...metric, value: Long.isLong(metric.value) ? metric.value.toNumber() : metric.value }));
+            publisher.set(key, JSON.stringify({ 
+              ...metric, 
+              timestamp: convertIfLong(metric.timestamp), 
+              value: convertIfLong(metric.value) 
+            }));
           }) || []
         );
       } else {
@@ -86,6 +97,7 @@ export function addHistoryEvents(
             groupId: topic.groupId,
             nodeId: topic.edgeNode,
             deviceId: topic.deviceId,
+            metricId: metric.name,
           }))
         );
       }
