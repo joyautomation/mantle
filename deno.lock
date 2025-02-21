@@ -9,7 +9,7 @@
     "jsr:@joyautomation/neuron@0.0.26": "0.0.26",
     "jsr:@joyautomation/neuron@0.0.30": "0.0.30",
     "jsr:@joyautomation/neuron@0.0.32": "0.0.32",
-    "jsr:@joyautomation/synapse@^0.0.69": "0.0.69",
+    "jsr:@joyautomation/synapse@^0.0.70": "0.0.70",
     "jsr:@std/assert@1": "1.0.5",
     "jsr:@std/assert@^1.0.4": "1.0.5",
     "jsr:@std/assert@^1.0.5": "1.0.5",
@@ -118,8 +118,8 @@
         "npm:sparkplug-payload@^1.0.3"
       ]
     },
-    "@joyautomation/synapse@0.0.69": {
-      "integrity": "51439d9eb8744b69ac0264a3a0b2188669996021f793cfd0ee86f61ad290a263",
+    "@joyautomation/synapse@0.0.70": {
+      "integrity": "a2601ecff8117e7f67e4978ed8681edf5110f3f7dcd4fa42fb71105bad383856",
       "dependencies": [
         "jsr:@joyautomation/coral@^0.0.12",
         "jsr:@joyautomation/dark-matter@^0.0.13",
@@ -1098,7 +1098,7 @@
       "jsr:@joyautomation/conch@^0.0.22",
       "jsr:@joyautomation/coral@^0.0.10",
       "jsr:@joyautomation/dark-matter@^0.0.18",
-      "jsr:@joyautomation/synapse@^0.0.69",
+      "jsr:@joyautomation/synapse@^0.0.70",
       "jsr:@std/assert@1",
       "jsr:@std/cli@^1.0.6",
       "jsr:@std/expect@^1.0.3",
