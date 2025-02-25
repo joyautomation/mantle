@@ -1,6 +1,6 @@
 {
   "name": "@joyautomation/mantle",
-  "version": "0.0.43",
+  "version": "0.0.44",
   "description": "Mantle consumes and logs Sparkplug B data",
   "author": "Joy Automation",
   "license": "GPL-3.0-or-later",
@@ -9,7 +9,7 @@
   "bugs": "https://github.com/joyautomation/mantle/issues",
   "exports": "./main.ts",
   "tasks": {
-    "dev": "deno run --watch main.ts"
+    "dev": "deno run --inspect --env-file=.env -A --watch main.ts"
   },
   "imports": {
     "@joyautomation/conch": "jsr:@joyautomation/conch@^0.0.22",
