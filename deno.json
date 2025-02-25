@@ -9,7 +9,7 @@
   "bugs": "https://github.com/joyautomation/mantle/issues",
   "exports": "./main.ts",
   "tasks": {
-    "dev": "deno run --watch main.ts"
+    "dev": "deno run --inspect --env-file=.env -A --watch main.ts"
   },
   "imports": {
     "@joyautomation/conch": "jsr:@joyautomation/conch@^0.0.22",
