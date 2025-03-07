@@ -2,13 +2,13 @@ import { nanoid } from "nanoid";
 import {
   createHost,
   flattenHostGroups,
-  type SparkplugMetricFlat,
-  type SparkplugMetricPropertyFlat,
   type SparkplugCreateHostInput,
   type SparkplugDeviceFlat,
   type SparkplugGroupFlat,
   type SparkplugHost,
   type SparkplugMetric,
+  type SparkplugMetricFlat,
+  type SparkplugMetricPropertyFlat,
   type SparkplugNodeFlat,
   type SparkplugTopic,
 } from "@joyautomation/synapse";
@@ -31,8 +31,7 @@ import Long from "long";
  */
 export function getHost(args: Args) {
   const config: SparkplugCreateHostInput = {
-    brokerUrl:
-      args.brokerUrl ||
+    brokerUrl: args.brokerUrl ||
       Deno.env.get("MANTLE_MQTT_BROKER_URL") ||
       "ssl://mqtt3.anywherescada.com:8883",
     username: args.username || Deno.env.get("MANTLE_MQTT_USERNAME") || "",
@@ -42,12 +41,11 @@ export function getHost(args: Args) {
       args.clientId || Deno.env.get("MANTLE_MQTT_CLIENT_ID") || "mantle"
     }-${nanoid(7)}`,
     version: "spBv1.0",
-    primaryHostId:
-      args.primaryHostId ||
+    primaryHostId: args.primaryHostId ||
       Deno.env.get("MANTLE_MQTT_PRIMARY_HOST_ID") ||
       "test",
-    sharedSubscriptionGroup:
-      args.sharedSubscriptionGroup || Deno.env.get("MANTLE_SHARED_GROUP"),
+    sharedSubscriptionGroup: args.sharedSubscriptionGroup ||
+      Deno.env.get("MANTLE_SHARED_GROUP"),
   };
   return createHost(config);
 }
@@ -68,7 +66,7 @@ export function addHistoryEvents(
   db: Db,
   host: SparkplugHost,
   publisher?: ReturnType<typeof createClient>,
-  subscriber?: ReturnType<typeof createClient>
+  subscriber?: ReturnType<typeof createClient>,
 ) {
   ["nbirth", "dbirth", "ndata", "ddata"].forEach((topic) => {
     host.events.on(topic, async (topic: SparkplugTopic, message: UPayload) => {
@@ -82,12 +80,15 @@ export function addHistoryEvents(
               deviceId: topic.deviceId,
               metricId: metric.name,
             });
-            publisher.set(key, JSON.stringify({ 
-              ...metric, 
-              timestamp: convertIfLong(metric.timestamp), 
-              value: convertIfLong(metric.value) 
-            }));
-          }) || []
+            publisher.set(
+              key,
+              JSON.stringify({
+                ...metric,
+                timestamp: convertIfLong(metric.timestamp),
+                value: convertIfLong(metric.value),
+              }),
+            );
+          }) || [],
         );
       } else {
         pubsub.publish(
@@ -98,7 +99,7 @@ export function addHistoryEvents(
             nodeId: topic.edgeNode,
             deviceId: topic.deviceId,
             metricId: metric.name,
-          }))
+          })),
         );
       }
     });
@@ -113,18 +114,23 @@ export function addHistoryEvents(
 export function addHostToSchema(
   host: SparkplugHost,
   builder: ReturnType<typeof getBuilder>,
-  redis?: ReturnType<typeof createClient>
+  redis?: ReturnType<typeof createClient>,
 ) {
-  const SparkplugGroupRef =
-    builder.objectRef<SparkplugGroupFlat>("SparkplugGroup");
-  const SparkplugNodeRef =
-    builder.objectRef<SparkplugNodeFlat>("SparkplugNode");
-  const SparkplugDeviceRef =
-    builder.objectRef<SparkplugDeviceFlat>("SparkplugDevice");
-  const SparkplugMetricRef =
-    builder.objectRef<SparkplugMetricFlat>("SparkplugMetric");
-  const SparkplugMetricPropertyRef =
-    builder.objectRef<SparkplugMetricPropertyFlat>("SparkplugMetricProperty");
+  const SparkplugGroupRef = builder.objectRef<SparkplugGroupFlat>(
+    "SparkplugGroup",
+  );
+  const SparkplugNodeRef = builder.objectRef<SparkplugNodeFlat>(
+    "SparkplugNode",
+  );
+  const SparkplugDeviceRef = builder.objectRef<SparkplugDeviceFlat>(
+    "SparkplugDevice",
+  );
+  const SparkplugMetricRef = builder.objectRef<SparkplugMetricFlat>(
+    "SparkplugMetric",
+  );
+  const SparkplugMetricPropertyRef = builder.objectRef<
+    SparkplugMetricPropertyFlat
+  >("SparkplugMetricProperty");
 
   type SparkplugMetricUpdate = SparkplugMetric & {
     groupId: string;
@@ -132,7 +138,7 @@ export function addHostToSchema(
     deviceId: string;
   };
   const SparkplugMetricUpdateRef = builder.objectRef<SparkplugMetricUpdate>(
-    "SparkplugMetricUpdate"
+    "SparkplugMetricUpdate",
   );
 
   SparkplugGroupRef.implement({
@@ -155,8 +161,9 @@ export function addHostToSchema(
       value: t.field({
         type: "String",
         resolve: async (parent) => {
-          if (typeof parent.value === "function")
+          if (typeof parent.value === "function") {
             return (await parent?.value())?.toString();
+          }
           return parent.value?.toString();
         },
       }),
@@ -215,13 +222,11 @@ export function addHostToSchema(
           return flattenHostGroups(host);
         }
       },
-    })
-  );
+    }));
   builder.subscriptionField("metricUpdate", (t) =>
     t.field({
       type: [SparkplugMetricUpdateRef],
       subscribe: () => pubsub.subscribe("metricUpdate"),
       resolve: (payload) => payload,
-    })
-  );
+    }));
 }
