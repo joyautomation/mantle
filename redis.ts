@@ -4,22 +4,11 @@ import {
   createFail,
   createSuccess,
   isSuccess,
-  Result,
+  type Result,
 } from "@joyautomation/dark-matter";
 import { createClient } from "redis";
 import { log } from "./log.ts";
-import {
-  type SparkplugGroupFlat,
-  type SparkplugNodeFlat,
-  type SparkplugDeviceFlat,
-  type SparkplugMetricFlat,
-  SparkplugGroup,
-  SparkplugNode,
-  SparkplugDevice,
-  SparkplugMetric,
-  SparkplugHost,
-  SparkplugTopic,
-} from "@joyautomation/synapse";
+import type { SparkplugHost } from "@joyautomation/synapse";
 import type { UMetric } from "sparkplug-payload/lib/sparkplugbpayload.js";
 import Long from "long";
 
@@ -48,19 +37,25 @@ export function validateRedisUrl(url: string | undefined): Result<string> {
 function createRedisConnectionString(args: Args) {
   const argsRedisUrlResult = validateRedisUrl(args["redis-url"]);
   if (isSuccess(argsRedisUrlResult)) {
-    log.debug('redis url arg valid: ',argsRedisUrlResult.output);
+    log.debug("redis url arg valid: ", argsRedisUrlResult.output);
     return argsRedisUrlResult.output;
   } else {
-    log.debug('redis url arg invalid: ',argsRedisUrlResult.error);
+    log.debug("redis url arg invalid: ", argsRedisUrlResult.error);
   }
   const mantleRedisUrlResult = validateRedisUrl(
-    Deno.env.get("MANTLE_REDIS_URL")
+    Deno.env.get("MANTLE_REDIS_URL"),
   );
   if (isSuccess(mantleRedisUrlResult)) {
-    log.debug('redis url environment variable valid: ',mantleRedisUrlResult.output);
+    log.debug(
+      "redis url environment variable valid: ",
+      mantleRedisUrlResult.output,
+    );
     return mantleRedisUrlResult.output;
   } else {
-    log.debug('redis url environment variable invalid: ',mantleRedisUrlResult.error);
+    log.debug(
+      "redis url environment variable invalid: ",
+      mantleRedisUrlResult.error,
+    );
   }
   log.debug('using default redis url: "redis://localhost:6379"');
   return "redis://localhost:6379";
@@ -79,11 +74,17 @@ export async function getPublisher(args: Args) {
     return createSuccess(publisher);
   } catch (e) {
     publisher = undefined;
-    return createFail(`Failed to connect to Redis at ${url}: ${createErrorString(e)}`);
+    return createFail(
+      `Failed to connect to Redis at ${url}: ${createErrorString(e)}`,
+    );
   }
 }
 
-export async function getPublisherRetry(args: Args, maxRetries: number, delay: number) {
+export async function getPublisherRetry(
+  args: Args,
+  maxRetries: number,
+  delay: number,
+) {
   let retries = 0;
   while (retries < maxRetries) {
     const publisherResult = await getPublisher(args);
@@ -91,7 +92,7 @@ export async function getPublisherRetry(args: Args, maxRetries: number, delay: n
       return publisherResult;
     }
     retries++;
-    await new Promise(resolve => setTimeout(resolve, delay));
+    await new Promise((resolve) => setTimeout(resolve, delay));
   }
   return createFail(`Failed to connect to Redis after ${maxRetries} retries`);
 }
@@ -108,31 +109,40 @@ export async function getSubscriber(args: Args) {
     return createSuccess(subscriber);
   } catch (e) {
     subscriber = undefined;
-    return createFail(`Failed to connect to Redis at ${url}: ${createErrorString(e)}`);
+    return createFail(
+      `Failed to connect to Redis at ${url}: ${createErrorString(e)}`,
+    );
   }
 }
 
-export async function getSubscriberRetry(args: Args, maxRetries: number, delay: number) {
-    let retries = 0;
-    while (retries < maxRetries) {
-      const subscriberResult = await getSubscriber(args);
-      if (isSuccess(subscriberResult)) {
-        return subscriberResult;
-      }
-      retries++;
-      await new Promise(resolve => setTimeout(resolve, delay));
+export async function getSubscriberRetry(
+  args: Args,
+  maxRetries: number,
+  delay: number,
+) {
+  let retries = 0;
+  while (retries < maxRetries) {
+    const subscriberResult = await getSubscriber(args);
+    if (isSuccess(subscriberResult)) {
+      return subscriberResult;
     }
-    return createFail(`Failed to connect to Redis after ${maxRetries} retries`);
+    retries++;
+    await new Promise((resolve) => setTimeout(resolve, delay));
   }
+  return createFail(`Failed to connect to Redis after ${maxRetries} retries`);
+}
 
-export function subscribeToKeys(subscriber: ReturnType<typeof createClient>, onMessage: (key: string, topic: string) => void) {
+export function subscribeToKeys(
+  subscriber: ReturnType<typeof createClient>,
+  onMessage: (key: string, topic: string) => void,
+) {
   const keyPattern = "__keyevent@0__:*"; // Subscribe to all key events
   subscriber.pSubscribe(keyPattern, onMessage);
 }
 
 export async function getMetricHierarchy(
   redis: ReturnType<typeof createClient>,
-  host: SparkplugHost
+  host: SparkplugHost,
 ): Promise<Result<SparkplugHost>> {
   try {
     // Get all keys matching the pattern that could be either 3 or 4 parts
@@ -177,9 +187,7 @@ export async function getMetricHierarchy(
         try {
           const parsedValue = JSON.parse(value as string) as UMetric;
           const metric = {
-            name: parsedValue.name,
-            type: parsedValue.type,
-            value: parsedValue.value,
+            ...parsedValue,
           };
 
           if (deviceId) {
@@ -190,21 +198,33 @@ export async function getMetricHierarchy(
                 metrics: {},
               };
             }
-            if (parsedValue?.name)
-                hierarchy.groups[groupId].nodes[nodeId].devices[deviceId].metrics[
-            parsedValue.name
-        ] = { ...metric, value: Long.isLong(metric.value) ? metric.value.toNumber() : metric.value };
-    } else {
-            if (parsedValue?.name)
+            if (parsedValue?.name) {
+              hierarchy.groups[groupId].nodes[nodeId].devices[deviceId].metrics[
+                parsedValue.name
+              ] = {
+                ...metric,
+                value: Long.isLong(metric.value)
+                  ? metric.value.toNumber()
+                  : metric.value,
+              };
+            }
+          } else {
+            if (parsedValue?.name) {
               hierarchy.groups[groupId].nodes[nodeId].metrics[
                 parsedValue.name
-              ] = { ...metric, value: Long.isLong(metric.value) ? metric.value.toNumber() : metric.value };
+              ] = {
+                ...metric,
+                value: Long.isLong(metric.value)
+                  ? metric.value.toNumber()
+                  : metric.value,
+              };
+            }
           }
         } catch {
           console.log(
             `Failed to parse value for ${groupId}/${nodeId}${
               deviceId ? "/" + deviceId : ""
-            }: ${value}`
+            }: ${value}`,
           );
         }
       } catch (e) {
