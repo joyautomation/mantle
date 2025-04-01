@@ -2,10 +2,7 @@ import type { SparkplugMetric, SparkplugTopic } from "@joyautomation/synapse";
 import type { Db } from "./db/db.ts";
 import { history as historyTable } from "./db/schema.ts";
 import type { HistoryRecord } from "./db/schema.ts";
-import type {
-  UMetric,
-  UPayload,
-} from "sparkplug-payload/lib/sparkplugbpayload.js";
+import type { UPayload } from "sparkplug-payload/lib/sparkplugbpayload.js";
 import Long from "long";
 import { log } from "./log.ts";
 import type { getBuilder } from "@joyautomation/conch";
@@ -42,18 +39,24 @@ export function getValueType(metric: SparkplugMetric) {
 }
 
 /**
- * Calculates a timestamp from various input types.
+ * Calculates a timestamp from various input types, handling both seconds and milliseconds.
  * @param {number | UMetric["timestamp"] | null | undefined} timestamp - The input timestamp.
  * @returns {Date | null} The calculated Date object or null if input is invalid.
  */
 export function calcTimestamp(
-  timestamp: number | UMetric["timestamp"] | null | undefined
+  timestamp?: Long.Long | number | null
 ): Date | null {
   if (timestamp) {
+    let timestampMs: number;
     if (typeof timestamp === "number") {
-      return new Date(timestamp * 1000);
+      // If timestamp is in seconds (less than 12 digits), convert to milliseconds
+      timestampMs = timestamp < 1e12 ? timestamp * 1000 : timestamp;
+      return new Date(timestampMs);
     } else if (Long.isLong(timestamp)) {
-      return new Date(timestamp.toNumber() * 1000);
+      timestampMs = timestamp.toNumber();
+      // If timestamp is in seconds (less than 12 digits), convert to milliseconds
+      timestampMs = timestampMs < 1e12 ? timestampMs * 1000 : timestampMs;
+      return new Date(timestampMs);
     }
   }
   return null;
@@ -87,7 +90,12 @@ export async function recordValues(
           metricId: metric.name || "",
           deviceId: deviceId || null,
           timestamp,
-          intValue: valueType === "intValue" ? (Long.isLong(metric.value) ? metric.value.toNumber() : metric.value as number) : null,
+          intValue:
+            valueType === "intValue"
+              ? Long.isLong(metric.value)
+                ? metric.value.toNumber()
+                : (metric.value as number)
+              : null,
           floatValue:
             valueType === "floatValue" ? (metric.value as number) : null,
           stringValue: valueType === "stringValue" ? `${metric.value}` : null,

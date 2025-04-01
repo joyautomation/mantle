@@ -9,13 +9,14 @@
   "bugs": "https://github.com/joyautomation/mantle/issues",
   "exports": "./main.ts",
   "tasks": {
-    "dev": "deno run --inspect --env-file=.env -A --watch main.ts"
+    "dev": "deno run --inspect --env-file=.env -A --watch main.ts",
+    "db:generate": "drizzle-kit generate"
   },
   "imports": {
     "@joyautomation/conch": "jsr:@joyautomation/conch@^0.0.22",
     "@joyautomation/coral": "jsr:@joyautomation/coral@^0.0.10",
     "@joyautomation/dark-matter": "jsr:@joyautomation/dark-matter@^0.0.18",
-    "@joyautomation/synapse": "jsr:@joyautomation/synapse@^0.0.70",
+    "@joyautomation/synapse": "jsr:@joyautomation/synapse@^0.0.71",
     "@pothos/core": "npm:@pothos/core@^4.2.0",
     "@std/assert": "jsr:@std/assert@1",
     "@std/cli": "jsr:@std/cli@^1.0.6",
