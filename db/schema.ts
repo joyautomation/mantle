@@ -26,12 +26,12 @@ export const history = pgTable(
   },
   (t) => ({
     unq: unique().on(t.groupId, t.nodeId, t.deviceId, t.metricId, t.timestamp),
-  })
+  }),
 );
 
 export type HistoryRecord = typeof history.$inferSelect;
 
-export const historyProperties = pgTable(
+export const historyPropertiesTable = pgTable(
   "history_properties",
   {
     groupId: text("group_id").notNull(),
@@ -54,9 +54,9 @@ export const historyProperties = pgTable(
       t.deviceId,
       t.metricId,
       t.propertyId,
-      t.timestamp
+      t.timestamp,
     ),
-  })
+  }),
 );
 
-export type HistoryPropertyRecord = typeof historyProperties.$inferSelect;
+export type HistoryPropertyRecord = typeof historyPropertiesTable.$inferSelect;
