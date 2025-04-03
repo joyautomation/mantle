@@ -1,22 +1,43 @@
 import type { SparkplugMetric, SparkplugTopic } from "@joyautomation/synapse";
 import type { Db } from "./db/db.ts";
-import { history as historyTable } from "./db/schema.ts";
-import type { HistoryRecord } from "./db/schema.ts";
+import {
+  history as historyTable,
+  historyPropertiesTable,
+} from "./db/schema.ts";
+import type { HistoryPropertyRecord, HistoryRecord } from "./db/schema.ts";
 import type {
-  UMetric,
   UPayload,
+  UPropertyValue,
 } from "sparkplug-payload/lib/sparkplugbpayload.js";
 import Long from "long";
 import { log } from "./log.ts";
 import type { getBuilder } from "@joyautomation/conch";
 import { and, between, sql } from "drizzle-orm";
 import {
+  createErrorString,
   createFail,
   createSuccess,
   isSuccess,
-  createErrorString,
 } from "@joyautomation/dark-matter";
 import { GraphQLError } from "graphql";
+
+export function getPropertyType(property: UPropertyValue) {
+  if (
+    property.type.toLowerCase().startsWith("int") ||
+    property.type.toLowerCase().startsWith("uint")
+  ) {
+    return "intValue";
+  } else if (
+    property.type.toLowerCase() === "float" ||
+    property.type.toLowerCase() === "double"
+  ) {
+    return "floatValue";
+  } else if (property.type.toLowerCase() === "boolean") {
+    return "boolValue";
+  } else {
+    return "stringValue";
+  }
+}
 
 /**
  * Determines the value type of a SparkplugMetric.
@@ -42,18 +63,24 @@ export function getValueType(metric: SparkplugMetric) {
 }
 
 /**
- * Calculates a timestamp from various input types.
+ * Calculates a timestamp from various input types, handling both seconds and milliseconds.
  * @param {number | UMetric["timestamp"] | null | undefined} timestamp - The input timestamp.
  * @returns {Date | null} The calculated Date object or null if input is invalid.
  */
 export function calcTimestamp(
-  timestamp: number | UMetric["timestamp"] | null | undefined
+  timestamp?: Long.Long | number | null,
 ): Date | null {
   if (timestamp) {
+    let timestampMs: number;
     if (typeof timestamp === "number") {
-      return new Date(timestamp * 1000);
+      // If timestamp is in seconds (less than 12 digits), convert to milliseconds
+      timestampMs = timestamp < 1e12 ? timestamp * 1000 : timestamp;
+      return new Date(timestampMs);
     } else if (Long.isLong(timestamp)) {
-      return new Date(timestamp.toNumber() * 1000);
+      timestampMs = timestamp.toNumber();
+      // If timestamp is in seconds (less than 12 digits), convert to milliseconds
+      timestampMs = timestampMs < 1e12 ? timestampMs * 1000 : timestampMs;
+      return new Date(timestampMs);
     }
   }
   return null;
@@ -69,7 +96,7 @@ export function calcTimestamp(
 export async function recordValues(
   db: Db,
   topic: SparkplugTopic,
-  message: UPayload
+  message: UPayload,
 ) {
   const { metrics } = message;
   const { groupId, edgeNode: nodeId, deviceId } = topic;
@@ -79,7 +106,7 @@ export async function recordValues(
       const valueType = getValueType(metric);
       if (metric.name && timestamp) {
         log.debug(
-          `Recording metric: ${metric.name} with value: ${metric.value}`
+          `Recording metric: ${metric.name} with value: ${metric.value}`,
         );
         const record: HistoryRecord = {
           groupId,
@@ -87,13 +114,56 @@ export async function recordValues(
           metricId: metric.name || "",
           deviceId: deviceId || null,
           timestamp,
-          intValue: valueType === "intValue" ? (Long.isLong(metric.value) ? metric.value.toNumber() : metric.value as number) : null,
-          floatValue:
-            valueType === "floatValue" ? (metric.value as number) : null,
+          intValue: valueType === "intValue"
+            ? Long.isLong(metric.value)
+              ? metric.value.toNumber()
+              : (metric.value as number)
+            : null,
+          floatValue: valueType === "floatValue"
+            ? (metric.value as number)
+            : null,
           stringValue: valueType === "stringValue" ? `${metric.value}` : null,
-          boolValue:
-            valueType === "boolValue" ? (metric.value as boolean) : null,
+          boolValue: valueType === "boolValue"
+            ? (metric.value as boolean)
+            : null,
         };
+        for (
+          const [propertyKey, property] of Object.entries(
+            metric.properties || {},
+          )
+        ) {
+          const valueType = getPropertyType(property);
+          const propertyRecord: HistoryPropertyRecord = {
+            groupId,
+            nodeId,
+            deviceId: deviceId || null,
+            metricId: metric.name || "",
+            timestamp,
+            propertyId: propertyKey,
+            intValue: valueType === "intValue"
+              ? Long.isLong(property.value)
+                ? property.value.toNumber()
+                : (property.value as number)
+              : null,
+            floatValue: valueType === "floatValue"
+              ? (property.value as number)
+              : null,
+            stringValue: valueType === "stringValue"
+              ? `${property.value}`
+              : null,
+            boolValue: valueType === "boolValue"
+              ? (property.value as boolean)
+              : null,
+          };
+          try {
+            await db.insert(historyPropertiesTable).values(propertyRecord);
+          } catch (error) {
+            log.error(
+              `Error recording metric property: ${metric.name}.${propertyKey}`,
+              error,
+            );
+          }
+        }
         try {
           await db.insert(historyTable).values(record);
         } catch (error) {
@@ -101,7 +171,7 @@ export async function recordValues(
         }
       } else {
         log.warn(
-          `Metric missing name or timestamp: name: ${metric.name}, timestamp: ${metric.timestamp}`
+          `Metric missing name or timestamp: name: ${metric.name}, timestamp: ${metric.timestamp}`,
         );
       }
     }
@@ -146,15 +216,16 @@ export async function getHistory({
   db: Db;
 }) {
   try {
-    const autoInterval = `${Math.floor(
-      (end.getTime() - start.getTime()) / (1000 * (samples ?? 100))
-    )}s`;
-    const time =
-      raw == null
-        ? sql<Date>`${historyTable.timestamp} as "time"`
-        : sql<Date>`time_bucket(${
-            interval ?? autoInterval
-          }, "timestamp") as "time"`;
+    const autoInterval = `${
+      Math.floor(
+        (end.getTime() - start.getTime()) / (1000 * (samples ?? 100)),
+      )
+    }s`;
+    const time = raw == null
+      ? sql<Date>`${historyTable.timestamp} as "time"`
+      : sql<Date>`time_bucket(${
+        interval ?? autoInterval
+      }, "timestamp") as "time"`;
     const normalizedMetrics = metrics.map((metric) => ({
       groupId: String(metric.groupId),
       nodeId: String(metric.nodeId),
@@ -164,22 +235,26 @@ export async function getHistory({
     const subQuery = db
       .select({
         time,
-        name: sql<string>`CONCAT("group_id",'/',"node_id",'/',"device_id",'/',"metric_id") as "name"`,
+        name: sql<
+          string
+        >`CONCAT("group_id",'/',"node_id",'/',"device_id",'/',"metric_id") as "name"`,
         value: sql<number>`AVG("float_value") as "value"`,
       })
       .from(historyTable)
       .where(
         and(
           sql.raw(
-            `("group_id", "node_id", "device_id", "metric_id") in (${metrics
-              .map(
-                (m) =>
-                  `('${m.groupId}', '${m.nodeId}', '${m.deviceId}', '${m.metricId}')`
-              )
-              .join(", ")})`
+            `("group_id", "node_id", "device_id", "metric_id") in (${
+              metrics
+                .map(
+                  (m) =>
+                    `('${m.groupId}', '${m.nodeId}', '${m.deviceId}', '${m.metricId}')`,
+                )
+                .join(", ")
+            })`,
           ),
-          between(historyTable.timestamp, start, end)
-        )
+          between(historyTable.timestamp, start, end),
+        ),
       )
       .groupBy(sql`time`, sql`name`)
       .orderBy(sql`time asc`);
@@ -198,15 +273,14 @@ export async function getHistory({
             .map((h) => {
               return {
                 timestamp: new Date(h.time),
-                value:
-                  h.data[
-                    `${m.groupId}/${m.nodeId}/${m.deviceId}/${m.metricId}`
-                  ],
+                value: h.data[
+                  `${m.groupId}/${m.nodeId}/${m.deviceId}/${m.metricId}`
+                ],
               };
             })
             .filter((h) => h.value !== null && h.value !== undefined),
         };
-      })
+      }),
     );
   } catch (error) {
     return createFail(createErrorString(error));
@@ -215,7 +289,7 @@ export async function getHistory({
 
 export function addHistoryToSchema(
   builder: ReturnType<typeof getBuilder>,
-  db: Db
+  db: Db,
 ) {
   const MetricHistoryRef = builder.objectRef<MetricHistory>("MetricHistory");
   const HistoryRef = builder.objectRef<History>("History");
@@ -275,6 +349,5 @@ export function addHistoryToSchema(
           throw new GraphQLError(result.error);
         }
       },
-    })
-  );
+    }));
 }

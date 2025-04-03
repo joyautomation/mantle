@@ -11,8 +11,7 @@ export function createConnectionString(args?: Args, root: boolean = false) {
   const host = args?.["db-host"] || Deno.env.get("MANTLE_DB_HOST");
   const port = args?.["db-port"] || Deno.env.get("MANTLE_DB_PORT");
   const name = args?.["db-name"] || Deno.env.get("MANTLE_DB_NAME");
-  const adminDbName =
-    args?.["admin-db-name"] ||
+  const adminDbName = args?.["admin-db-name"] ||
     Deno.env.get("MANTLE_ADMIN_DB_NAME") ||
     "postgres";
   if (!user || !password || !host || (!root && !name)) {
@@ -26,18 +25,17 @@ export function createConnectionString(args?: Args, root: boolean = false) {
 export function createConnection(args?: Args, root: boolean = false) {
   const ssl = args?.["db-ssl"] || Deno.env.get("MANTLE_DB_SSL") === "true";
   const ca = validateSslCa(
-    args?.["db-ssl-ca"] || Deno.env.get("MANTLE_DB_SSL_CA")
+    args?.["db-ssl-ca"] || Deno.env.get("MANTLE_DB_SSL_CA"),
   );
   const connectionString = createConnectionString(args, root);
   return new Pool({
     connectionString,
-    ssl:
-      ssl && ca
-        ? {
-            ca,
-            rejectUnauthorized: false,
-          }
-        : ssl,
+    ssl: ssl && ca
+      ? {
+        ca,
+        rejectUnauthorized: false,
+      }
+      : ssl,
   });
 }
 

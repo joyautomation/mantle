@@ -1,5 +1,5 @@
 node_modules
 coverage
 !hooks/
-.env
+.env*
 ca-certificate.crt
