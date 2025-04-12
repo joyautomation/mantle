@@ -13,6 +13,7 @@ import { isFail, isSuccess } from "@joyautomation/dark-matter";
 import { pubsub } from "./pubsub.ts";
 import { addMemoryUsageToSchema } from "./memory.ts";
 import type { UMetric } from "sparkplug-payload/lib/sparkplugbpayload.js";
+import type { SparkplugHost } from "@joyautomation/synapse";
 
 /**
  * Internal utility functions exposed for testing purposes
@@ -51,41 +52,44 @@ const main = createApp(
     const { db } = await _internal.getDb(args);
     const publisherResult = await _internal.getPublisherRetry(args, 5, 1000);
     const subscriberResult = await _internal.getSubscriberRetry(args, 5, 1000);
-    const host = _internal.getHost(args);
-    if (isSuccess(publisherResult) && isSuccess(subscriberResult)) {
-      log.debug(
-        `Using key value store at ${publisherResult.output.options?.url}`
-      );
-      const publisher = publisherResult.output;
-      const subscriber = subscriberResult.output;
-      addHistoryEvents(db, host, publisher, subscriber);
-      addHostToSchema(host, builder, publisher);
-      let metricUpdates: UMetric[] = [];
-      subscribeToKeys(subscriber, async (key: string, _topic: string) => {
-        const value = await publisher.get(key);
-        if (value) {
-          metricUpdates.push({
-            ...JSON.parse(value),
-            ...JSON.parse(key),
-          });
-        }
-      });
-      setInterval(() => {
-        if (metricUpdates.length > 0)
-          pubsub.publish("metricUpdate", metricUpdates);
-        metricUpdates = [];
-      }, 1000);
-    } else {
-      if (isFail(publisherResult)) log.info(publisherResult.error);
-      if (isFail(subscriberResult)) log.info(subscriberResult.error);
-      log.debug("Using in-memory database");
-      addHistoryEvents(db, host);
-      addHostToSchema(host, builder);
-    }
-    addHistoryToSchema(builder, db);
-    addMemoryUsageToSchema(builder);
+    const hosts: SparkplugHost[] = _internal.getHost(args);
+    hosts.forEach((host) => {
+      if (isSuccess(publisherResult) && isSuccess(subscriberResult)) {
+        log.debug(
+          `Using key value store at ${publisherResult.output.options?.url}`,
+        );
+        const publisher = publisherResult.output;
+        const subscriber = subscriberResult.output;
+        addHistoryEvents(db, host, publisher, subscriber);
+        addHostToSchema(host, builder, publisher);
+        let metricUpdates: UMetric[] = [];
+        subscribeToKeys(subscriber, async (key: string, _topic: string) => {
+          const value = await publisher.get(key);
+          if (value) {
+            metricUpdates.push({
+              ...JSON.parse(value),
+              ...JSON.parse(key),
+            });
+          }
+        });
+        setInterval(() => {
+          if (metricUpdates.length > 0) {
+            pubsub.publish("metricUpdate", metricUpdates);
+          }
+          metricUpdates = [];
+        }, 1000);
+      } else {
+        if (isFail(publisherResult)) log.info(publisherResult.error);
+        if (isFail(subscriberResult)) log.info(subscriberResult.error);
+        log.debug("Using in-memory database");
+        addHistoryEvents(db, host);
+        addHostToSchema(host, builder);
+      }
+      addHistoryToSchema(builder, db);
+      addMemoryUsageToSchema(builder);
+    });
     return builder;
-  }
+  },
 );
 
 main();

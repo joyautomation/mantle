@@ -112,6 +112,12 @@ export const argDictionary: Record<string, ArgDictionaryItem> = {
     env: "MANTLE_SHARED_GROUP",
     type: "string",
   },
+  "shared-groups": {
+    short: "G",
+    description: "Shared subscription groups for DDATA and NDATA messages",
+    env: "MANTLE_SHARED_GROUPS",
+    type: "string",
+  },
   "redis-url": {
     short: "R",
     description: "Redis URL",

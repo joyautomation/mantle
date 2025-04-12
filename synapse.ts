@@ -30,9 +30,14 @@ import Long from "long";
  * @returns {SparkplugHost} The created SparkplugHost instance.
  */
 export function getHost(args: Args) {
-  const config: SparkplugCreateHostInput = {
-    brokerUrl:
-      args.brokerUrl ||
+  // leaving singular in for back-compat
+  const mantleSharedGroup = Deno.env.get("MANTLE_SHARED_GROUP");
+  const mantleSharedGroups = Deno.env.get("MANTLE_SHARED_GROUPS");
+  const sharedSubscriptionGroups: string[] = (args.sharedSubscriptionGroups ||
+    mantleSharedGroups ||
+    mantleSharedGroup || "").split(",");
+  const config: Omit<SparkplugCreateHostInput, "sharedSubscriptionGroup"> = {
+    brokerUrl: args.brokerUrl ||
       Deno.env.get("MANTLE_MQTT_BROKER_URL") ||
       "ssl://mqtt3.anywherescada.com:8883",
     username: args.username || Deno.env.get("MANTLE_MQTT_USERNAME") || "",
@@ -42,14 +47,17 @@ export function getHost(args: Args) {
       args.clientId || Deno.env.get("MANTLE_MQTT_CLIENT_ID") || "mantle"
     }-${nanoid(7)}`,
     version: "spBv1.0",
-    primaryHostId:
-      args.primaryHostId ||
+    primaryHostId: args.primaryHostId ||
       Deno.env.get("MANTLE_MQTT_PRIMARY_HOST_ID") ||
       "test",
-    sharedSubscriptionGroup:
-      args.sharedSubscriptionGroup || Deno.env.get("MANTLE_SHARED_GROUP"),
   };
-  return createHost(config);
+  console.log({ sharedSubscriptionGroups });
+  return sharedSubscriptionGroups.map((group: string) =>
+    createHost({
+      ...config,
+      sharedSubscriptionGroup: group,
+    })
+  );
 }
 
 function convertIfLong<T>(value: T) {
@@ -68,7 +76,7 @@ export function addHistoryEvents(
   db: Db,
   host: SparkplugHost,
   publisher?: ReturnType<typeof createClient>,
-  subscriber?: ReturnType<typeof createClient>
+  subscriber?: ReturnType<typeof createClient>,
 ) {
   ["nbirth", "dbirth", "ndata", "ddata"].forEach((topic) => {
     host.events.on(topic, async (topic: SparkplugTopic, message: UPayload) => {
@@ -88,9 +96,9 @@ export function addHistoryEvents(
                 ...metric,
                 timestamp: convertIfLong(metric.timestamp),
                 value: convertIfLong(metric.value),
-              })
+              }),
             );
-          }) || []
+          }) || [],
         );
       } else {
         pubsub.publish(
@@ -101,7 +109,7 @@ export function addHistoryEvents(
             nodeId: topic.edgeNode,
             deviceId: topic.deviceId,
             metricId: metric.name,
-          }))
+          })),
         );
       }
     });
@@ -116,18 +124,23 @@ export function addHistoryEvents(
 export function addHostToSchema(
   host: SparkplugHost,
   builder: ReturnType<typeof getBuilder>,
-  redis?: ReturnType<typeof createClient>
+  redis?: ReturnType<typeof createClient>,
 ) {
-  const SparkplugGroupRef =
-    builder.objectRef<SparkplugGroupFlat>("SparkplugGroup");
-  const SparkplugNodeRef =
-    builder.objectRef<SparkplugNodeFlat>("SparkplugNode");
-  const SparkplugDeviceRef =
-    builder.objectRef<SparkplugDeviceFlat>("SparkplugDevice");
-  const SparkplugMetricRef =
-    builder.objectRef<SparkplugMetricFlat>("SparkplugMetric");
-  const SparkplugMetricPropertyRef =
-    builder.objectRef<SparkplugMetricPropertyFlat>("SparkplugMetricProperty");
+  const SparkplugGroupRef = builder.objectRef<SparkplugGroupFlat>(
+    "SparkplugGroup",
+  );
+  const SparkplugNodeRef = builder.objectRef<SparkplugNodeFlat>(
+    "SparkplugNode",
+  );
+  const SparkplugDeviceRef = builder.objectRef<SparkplugDeviceFlat>(
+    "SparkplugDevice",
+  );
+  const SparkplugMetricRef = builder.objectRef<SparkplugMetricFlat>(
+    "SparkplugMetric",
+  );
+  const SparkplugMetricPropertyRef = builder.objectRef<
+    SparkplugMetricPropertyFlat
+  >("SparkplugMetricProperty");
 
   type SparkplugMetricUpdate = SparkplugMetric & {
     groupId: string;
@@ -135,7 +148,7 @@ export function addHostToSchema(
     deviceId: string;
   };
   const SparkplugMetricUpdateRef = builder.objectRef<SparkplugMetricUpdate>(
-    "SparkplugMetricUpdate"
+    "SparkplugMetricUpdate",
   );
 
   SparkplugGroupRef.implement({
@@ -219,13 +232,11 @@ export function addHostToSchema(
           return flattenHostGroups(host);
         }
       },
-    })
-  );
+    }));
   builder.subscriptionField("metricUpdate", (t) =>
     t.field({
       type: [SparkplugMetricUpdateRef],
       subscribe: () => pubsub.subscribe("metricUpdate"),
       resolve: (payload) => payload,
-    })
-  );
+    }));
 }
