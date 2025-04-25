@@ -4,12 +4,12 @@
     "jsr:@joyautomation/conch@^0.0.22": "0.0.22",
     "jsr:@joyautomation/coral@^0.0.10": "0.0.10",
     "jsr:@joyautomation/coral@^0.0.12": "0.0.12",
-    "jsr:@joyautomation/dark-matter@^0.0.13": "0.0.13",
     "jsr:@joyautomation/dark-matter@^0.0.18": "0.0.18",
+    "jsr:@joyautomation/dark-matter@^0.0.26": "0.0.26",
     "jsr:@joyautomation/neuron@0.0.26": "0.0.26",
     "jsr:@joyautomation/neuron@0.0.30": "0.0.30",
     "jsr:@joyautomation/neuron@0.0.32": "0.0.32",
-    "jsr:@joyautomation/synapse@^0.0.71": "0.0.71",
+    "jsr:@joyautomation/synapse@^0.0.76": "0.0.76",
     "jsr:@std/assert@1": "1.0.5",
     "jsr:@std/assert@^1.0.4": "1.0.5",
     "jsr:@std/assert@^1.0.5": "1.0.5",
@@ -19,7 +19,7 @@
     "jsr:@std/expect@*": "1.0.3",
     "jsr:@std/expect@^1.0.3": "1.0.3",
     "jsr:@std/fmt@1.0.1": "1.0.1",
-    "jsr:@std/fmt@^1.0.2": "1.0.6",
+    "jsr:@std/fmt@^1.0.2": "1.0.7",
     "jsr:@std/fs@^1.0.3": "1.0.3",
     "jsr:@std/internal@^1.0.3": "1.0.3",
     "jsr:@std/path@^1.0.4": "1.0.4",
@@ -72,11 +72,11 @@
         "jsr:@std/fmt@^1.0.2"
       ]
     },
-    "@joyautomation/dark-matter@0.0.13": {
-      "integrity": "a9943d207986701a8f597fc357682cc78f3297a2cf984cc0e0004539393e5dab"
-    },
     "@joyautomation/dark-matter@0.0.18": {
       "integrity": "aec589bc71e490d9843ccd428665b79afe409a260188ab272c8814810aa7bc7d"
+    },
+    "@joyautomation/dark-matter@0.0.26": {
+      "integrity": "7276ddefea2448937b72ada91b3adb86efe4f01032c1dd7915900b59201cba2e"
     },
     "@joyautomation/neuron@0.0.26": {
       "integrity": "5f3f1517175790541b646d2c5d0d170dee1cdcec76b20b87b4fbbbba61d90618",
@@ -120,11 +120,11 @@
         "npm:sparkplug-payload@^1.0.3"
       ]
     },
-    "@joyautomation/synapse@0.0.71": {
-      "integrity": "353e949a53ec2a063c373fea39b24a45f617639fc41b225b0f613b4e49aff850",
+    "@joyautomation/synapse@0.0.76": {
+      "integrity": "9ed4e47ca707dc0115424bbd3a45fdc6dd018d9249ed2b8051071f4f2b32c227",
       "dependencies": [
         "jsr:@joyautomation/coral@^0.0.12",
-        "jsr:@joyautomation/dark-matter@^0.0.13",
+        "jsr:@joyautomation/dark-matter@^0.0.26",
         "npm:long",
         "npm:mqtt",
         "npm:pako",
@@ -156,8 +156,8 @@
     "@std/fmt@1.0.1": {
       "integrity": "ef76c37faa7720faa8c20fd8cc74583f9b1e356dfd630c8714baa716a45856ab"
     },
-    "@std/fmt@1.0.6": {
-      "integrity": "a2c56a69a2369876ddb3ad6a500bb6501b5bad47bb3ea16bfb0c18974d2661fc"
+    "@std/fmt@1.0.7": {
+      "integrity": "2a727c043d8df62cd0b819b3fb709b64dd622e42c3b1bb817ea7e6cc606360fb"
     },
     "@std/fs@1.0.3": {
       "integrity": "3cb839b1360b0a42d8b367c3093bfe4071798e6694fa44cf1963e04a8edba4fe",
@@ -1099,7 +1099,7 @@
       "jsr:@joyautomation/conch@^0.0.22",
       "jsr:@joyautomation/coral@^0.0.10",
       "jsr:@joyautomation/dark-matter@^0.0.18",
-      "jsr:@joyautomation/synapse@^0.0.71",
+      "jsr:@joyautomation/synapse@^0.0.76",
       "jsr:@std/assert@1",
       "jsr:@std/cli@^1.0.6",
       "jsr:@std/expect@^1.0.3",
