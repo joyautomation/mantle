@@ -16,7 +16,7 @@
     "@joyautomation/conch": "jsr:@joyautomation/conch@^0.0.22",
     "@joyautomation/coral": "jsr:@joyautomation/coral@^0.0.10",
     "@joyautomation/dark-matter": "jsr:@joyautomation/dark-matter@^0.0.18",
-    "@joyautomation/synapse": "jsr:@joyautomation/synapse@^0.0.71",
+    "@joyautomation/synapse": "jsr:@joyautomation/synapse@^0.0.76",
     "@pothos/core": "npm:@pothos/core@^4.2.0",
     "@std/assert": "jsr:@std/assert@1",
     "@std/cli": "jsr:@std/cli@^1.0.6",
