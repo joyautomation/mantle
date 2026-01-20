@@ -42,8 +42,8 @@ const main = createApp(
   "Mantle, an MQTT Sparkplug B data aggregator and historian.",
   "MANTLE",
   argDictionary,
-  true, //don' add subscriptions
-  false, //don't add mutations
+  true, //add subscriptions
+  true, //add mutations
   4001,
   "0.0.0.0",
   log,

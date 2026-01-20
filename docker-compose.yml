@@ -1,9 +1,36 @@
 services:
-  mantle:
-    container_name: mantle
-    image: mantle-debian:latest
-    command: ['./mantle', '-m']
+  # mantle:
+  #   container_name: mantle
+  #   image: mantle-debian:latest
+  #   command: ['./mantle', '-m']
+  #   ports:
+  #     - "4001:4001"
+  #   env_file:
+  #     - .env
+  #   depends_on:
+  #     - postgres
+  #     - redis
+
+  postgres:
+    container_name: mantle-postgres
+    image: timescale/timescaledb:latest-pg16
     ports:
-      - "4001:4001"
-    env_file:
-      - .env
+      - "5436:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: mantle-dev
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    container_name: mantle-redis
+    image: redis:7-alpine
+    ports:
+      - "6380:6379"
+    volumes:
+      - redis_data:/data
+
+volumes:
+  postgres_data:
+  redis_data:
