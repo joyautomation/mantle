@@ -221,7 +221,7 @@ export async function getHistory({
         (end.getTime() - start.getTime()) / (1000 * (samples ?? 100)),
       )
     }s`;
-    const time = raw == null
+    const time = raw === true
       ? sql<Date>`${historyTable.timestamp} as "time"`
       : sql<Date>`time_bucket(${
         interval ?? autoInterval
