@@ -217,11 +217,11 @@ export async function getHistory({
 }) {
   try {
     const autoInterval = `${
-      Math.floor(
+      Math.max(1, Math.floor(
         (end.getTime() - start.getTime()) / (1000 * (samples ?? 100)),
-      )
+      ))
     }s`;
-    const time = raw == null
+    const time = raw === true
       ? sql<Date>`${historyTable.timestamp} as "time"`
       : sql<Date>`time_bucket(${
         interval ?? autoInterval

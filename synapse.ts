@@ -2,6 +2,8 @@ import { nanoid } from "nanoid";
 import {
   createHost,
   flattenHostGroups,
+  publishNodeCommand,
+  publishDeviceCommand,
   type SparkplugCreateHostInput,
   type SparkplugDeviceFlat,
   type SparkplugGroupFlat,
@@ -241,4 +243,78 @@ export function addHostToSchema(
       subscribe: () => pubsub.subscribe("metricUpdate"),
       resolve: (payload) => payload,
     }));
+
+  // Mutation to write metric values (for commands like rebirth)
+  builder.mutationField("writeMetric", (t) =>
+    t.field({
+      type: "Boolean",
+      args: {
+        groupId: t.arg.string({ required: true }),
+        nodeId: t.arg.string({ required: true }),
+        deviceId: t.arg.string(),
+        metricId: t.arg.string({ required: true }),
+        value: t.arg.string({ required: true }),
+      },
+      resolve: (_parent, args) => {
+        if (!host.mqtt) {
+          throw new GraphQLError("MQTT client not connected");
+        }
+
+        const mqttConfig = {
+          version: host.version || "spBv1.0",
+          serverUrl: host.brokerUrl,
+          clientId: host.clientId,
+          keepalive: host.keepalive || 60,
+          username: host.username,
+          password: host.password,
+          primaryHostId: host.primaryHostId,
+        };
+
+        // Parse the value based on metric name patterns
+        let parsedValue: boolean | number | string = args.value;
+        if (args.value === "true") parsedValue = true;
+        else if (args.value === "false") parsedValue = false;
+        else if (!isNaN(Number(args.value))) parsedValue = Number(args.value);
+
+        // Determine metric type based on value
+        let metricType: "Boolean" | "Float" | "String" = "String";
+        if (typeof parsedValue === "boolean") metricType = "Boolean";
+        else if (typeof parsedValue === "number") metricType = "Float";
+
+        // Extract command name from metricId (e.g., "Node Control/Rebirth" -> "Rebirth")
+        const commandName = args.metricId.includes("/")
+          ? args.metricId.split("/").pop() || args.metricId
+          : args.metricId;
+
+        if (args.deviceId) {
+          // Device command (DCMD)
+          publishDeviceCommand(
+            host,
+            commandName,
+            metricType,
+            parsedValue,
+            args.groupId,
+            args.nodeId,
+            mqttConfig,
+            host.mqtt,
+            args.deviceId
+          );
+        } else {
+          // Node command (NCMD)
+          publishNodeCommand(
+            host,
+            commandName,
+            metricType,
+            parsedValue,
+            args.groupId,
+            args.nodeId,
+            mqttConfig,
+            host.mqtt
+          );
+        }
+
+        return true;
+      },
+    })
+  );
 }
