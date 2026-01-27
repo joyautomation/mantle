@@ -12,7 +12,7 @@ import type {
 import Long from "long";
 import { log } from "./log.ts";
 import type { getBuilder } from "@joyautomation/conch";
-import { and, between, sql } from "drizzle-orm";
+import { and, between, eq, sql } from "drizzle-orm";
 import {
   createErrorString,
   createFail,
@@ -387,6 +387,114 @@ export async function getUsage({ db }: { db: Db }) {
 
     return createSuccess<UsageStats>({ totalCount, byMonth });
   } catch (error) {
+    return createFail(createErrorString(error));
+  }
+}
+
+/**
+ * Delete all history for a node (including all devices and metrics)
+ */
+export async function deleteNodeHistory(
+  db: Db,
+  groupId: string,
+  nodeId: string,
+) {
+  try {
+    // Delete from history_properties first (referential integrity)
+    await db.delete(historyPropertiesTable).where(
+      and(
+        eq(historyPropertiesTable.groupId, groupId),
+        eq(historyPropertiesTable.nodeId, nodeId),
+      ),
+    );
+
+    // Delete from history
+    const result = await db.delete(historyTable).where(
+      and(
+        eq(historyTable.groupId, groupId),
+        eq(historyTable.nodeId, nodeId),
+      ),
+    ).returning({ groupId: historyTable.groupId });
+
+    log.info(`Deleted history for node: ${groupId}/${nodeId}, rows: ${result.length}`);
+    return createSuccess({ deletedCount: result.length });
+  } catch (error) {
+    log.error(`Error deleting history for node: ${groupId}/${nodeId}`, error);
+    return createFail(createErrorString(error));
+  }
+}
+
+/**
+ * Delete all history for a device (including all its metrics)
+ */
+export async function deleteDeviceHistory(
+  db: Db,
+  groupId: string,
+  nodeId: string,
+  deviceId: string,
+) {
+  try {
+    // Delete from history_properties first
+    await db.delete(historyPropertiesTable).where(
+      and(
+        eq(historyPropertiesTable.groupId, groupId),
+        eq(historyPropertiesTable.nodeId, nodeId),
+        eq(historyPropertiesTable.deviceId, deviceId),
+      ),
+    );
+
+    // Delete from history
+    const result = await db.delete(historyTable).where(
+      and(
+        eq(historyTable.groupId, groupId),
+        eq(historyTable.nodeId, nodeId),
+        eq(historyTable.deviceId, deviceId),
+      ),
+    ).returning({ groupId: historyTable.groupId });
+
+    log.info(`Deleted history for device: ${groupId}/${nodeId}/${deviceId}, rows: ${result.length}`);
+    return createSuccess({ deletedCount: result.length });
+  } catch (error) {
+    log.error(`Error deleting history for device: ${groupId}/${nodeId}/${deviceId}`, error);
+    return createFail(createErrorString(error));
+  }
+}
+
+/**
+ * Delete all history for a specific metric
+ */
+export async function deleteMetricHistory(
+  db: Db,
+  groupId: string,
+  nodeId: string,
+  deviceId: string | null,
+  metricId: string,
+) {
+  try {
+    // Delete from history_properties first
+    await db.delete(historyPropertiesTable).where(
+      and(
+        eq(historyPropertiesTable.groupId, groupId),
+        eq(historyPropertiesTable.nodeId, nodeId),
+        eq(historyPropertiesTable.deviceId, deviceId || ""),
+        eq(historyPropertiesTable.metricId, metricId),
+      ),
+    );
+
+    // Delete from history
+    const result = await db.delete(historyTable).where(
+      and(
+        eq(historyTable.groupId, groupId),
+        eq(historyTable.nodeId, nodeId),
+        eq(historyTable.deviceId, deviceId || ""),
+        eq(historyTable.metricId, metricId),
+      ),
+    ).returning({ groupId: historyTable.groupId });
+
+    log.info(`Deleted history for metric: ${groupId}/${nodeId}/${deviceId || ""}/${metricId}, rows: ${result.length}`);
+    return createSuccess({ deletedCount: result.length });
+  } catch (error) {
+    log.error(`Error deleting history for metric: ${groupId}/${nodeId}/${deviceId || ""}/${metricId}`, error);
     return createFail(createErrorString(error));
   }
 }

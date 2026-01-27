@@ -15,16 +15,39 @@ import {
   type SparkplugTopic,
 } from "@joyautomation/synapse";
 import type { Args } from "@std/cli";
-import { recordValues } from "./history.ts";
+import {
+  deleteDeviceHistory,
+  deleteMetricHistory,
+  deleteNodeHistory,
+  recordValues,
+} from "./history.ts";
 import type { Db } from "./db/db.ts";
 import { pubsub } from "./pubsub.ts";
 import type { UPayload } from "sparkplug-payload/lib/sparkplugbpayload.js";
 import type { getBuilder } from "@joyautomation/conch";
 import type { createClient } from "redis";
-import { getMetricHierarchy } from "./redis.ts";
+import {
+  deleteRedisKeyForMetric,
+  deleteRedisKeysForDevice,
+  deleteRedisKeysForNode,
+  getMetricHierarchy,
+} from "./redis.ts";
 import { GraphQLError } from "graphql";
 import { isSuccess } from "@joyautomation/dark-matter";
 import Long from "long";
+import {
+  deleteHiddenItemForMetric,
+  deleteHiddenItemsForDevice,
+  deleteHiddenItemsForNode,
+  getHiddenItemKeys,
+  hideDevice,
+  hideMetric,
+  hideNode,
+  shouldFilter,
+  unhideDevice,
+  unhideMetric,
+  unhideNode,
+} from "./hidden.ts";
 
 /**
  * Creates and returns a SparkplugHost instance based on the provided arguments or environment variables.
@@ -112,10 +135,13 @@ export function addHistoryEvents(
  * Adds the SparkplugHost and related types to the GraphQL schema.
  * @param {SparkplugHost} host - The SparkplugHost instance.
  * @param {PothosSchemaTypes.SchemaBuilder<PothosSchemaTypes.ExtendDefaultTypes<{}>>} builder - The schema builder instance.
+ * @param {Db} db - The database instance for hidden items.
+ * @param {ReturnType<typeof createClient>} redis - Optional Redis client.
  */
 export function addHostToSchema(
   host: SparkplugHost,
   builder: ReturnType<typeof getBuilder>,
+  db: Db,
   redis?: ReturnType<typeof createClient>,
 ) {
   const SparkplugGroupRef = builder.objectRef<SparkplugGroupFlat>(
@@ -224,17 +250,53 @@ export function addHostToSchema(
   builder.queryField("groups", (t) =>
     t.field({
       type: [SparkplugGroupRef],
-      resolve: async () => {
+      args: {
+        includeHidden: t.arg.boolean({ defaultValue: false }),
+      },
+      resolve: async (_parent, args) => {
+        let groups: SparkplugGroupFlat[];
         if (redis) {
           const result = await getMetricHierarchy(redis, host);
           if (isSuccess(result)) {
-            return flattenHostGroups(result.output);
+            groups = flattenHostGroups(result.output);
           } else {
             throw new GraphQLError(result.error);
           }
         } else {
-          return flattenHostGroups(host);
+          groups = flattenHostGroups(host);
         }
+
+        // If includeHidden is true, return all groups without filtering
+        if (args.includeHidden) {
+          return groups;
+        }
+
+        // Get hidden item keys for filtering
+        const hiddenKeys = await getHiddenItemKeys(db);
+        if (hiddenKeys.size === 0) {
+          return groups;
+        }
+
+        // Filter out hidden items
+        return groups.map((group) => ({
+          ...group,
+          nodes: group.nodes
+            .filter((node) => !shouldFilter(hiddenKeys, group.id, node.id))
+            .map((node) => ({
+              ...node,
+              devices: node.devices
+                .filter((device) => !shouldFilter(hiddenKeys, group.id, node.id, device.id))
+                .map((device) => ({
+                  ...device,
+                  metrics: device.metrics.filter(
+                    (metric) => !metric.name || !shouldFilter(hiddenKeys, group.id, node.id, device.id, metric.name)
+                  ),
+                })),
+              metrics: node.metrics.filter(
+                (metric) => !metric.name || !shouldFilter(hiddenKeys, group.id, node.id, "", metric.name)
+              ),
+            })),
+        })).filter((group) => group.nodes.length > 0);
       },
     }));
   builder.subscriptionField("metricUpdate", (t) =>
@@ -312,6 +374,228 @@ export function addHostToSchema(
             host.mqtt
           );
         }
+
+        return true;
+      },
+    })
+  );
+
+  // Hide/Unhide mutations
+  builder.mutationField("hideNode", (t) =>
+    t.field({
+      type: "Boolean",
+      args: {
+        groupId: t.arg.string({ required: true }),
+        nodeId: t.arg.string({ required: true }),
+      },
+      resolve: async (_parent, args) => {
+        const result = await hideNode(db, args.groupId, args.nodeId);
+        if (isSuccess(result)) {
+          return result.output;
+        }
+        throw new GraphQLError(result.error);
+      },
+    })
+  );
+
+  builder.mutationField("unhideNode", (t) =>
+    t.field({
+      type: "Boolean",
+      args: {
+        groupId: t.arg.string({ required: true }),
+        nodeId: t.arg.string({ required: true }),
+      },
+      resolve: async (_parent, args) => {
+        const result = await unhideNode(db, args.groupId, args.nodeId);
+        if (isSuccess(result)) {
+          return result.output;
+        }
+        throw new GraphQLError(result.error);
+      },
+    })
+  );
+
+  builder.mutationField("hideDevice", (t) =>
+    t.field({
+      type: "Boolean",
+      args: {
+        groupId: t.arg.string({ required: true }),
+        nodeId: t.arg.string({ required: true }),
+        deviceId: t.arg.string({ required: true }),
+      },
+      resolve: async (_parent, args) => {
+        const result = await hideDevice(db, args.groupId, args.nodeId, args.deviceId);
+        if (isSuccess(result)) {
+          return result.output;
+        }
+        throw new GraphQLError(result.error);
+      },
+    })
+  );
+
+  builder.mutationField("unhideDevice", (t) =>
+    t.field({
+      type: "Boolean",
+      args: {
+        groupId: t.arg.string({ required: true }),
+        nodeId: t.arg.string({ required: true }),
+        deviceId: t.arg.string({ required: true }),
+      },
+      resolve: async (_parent, args) => {
+        const result = await unhideDevice(db, args.groupId, args.nodeId, args.deviceId);
+        if (isSuccess(result)) {
+          return result.output;
+        }
+        throw new GraphQLError(result.error);
+      },
+    })
+  );
+
+  builder.mutationField("hideMetric", (t) =>
+    t.field({
+      type: "Boolean",
+      args: {
+        groupId: t.arg.string({ required: true }),
+        nodeId: t.arg.string({ required: true }),
+        deviceId: t.arg.string(),
+        metricId: t.arg.string({ required: true }),
+      },
+      resolve: async (_parent, args) => {
+        const result = await hideMetric(db, args.groupId, args.nodeId, args.deviceId || null, args.metricId);
+        if (isSuccess(result)) {
+          return result.output;
+        }
+        throw new GraphQLError(result.error);
+      },
+    })
+  );
+
+  builder.mutationField("unhideMetric", (t) =>
+    t.field({
+      type: "Boolean",
+      args: {
+        groupId: t.arg.string({ required: true }),
+        nodeId: t.arg.string({ required: true }),
+        deviceId: t.arg.string(),
+        metricId: t.arg.string({ required: true }),
+      },
+      resolve: async (_parent, args) => {
+        const result = await unhideMetric(db, args.groupId, args.nodeId, args.deviceId || null, args.metricId);
+        if (isSuccess(result)) {
+          return result.output;
+        }
+        throw new GraphQLError(result.error);
+      },
+    })
+  );
+
+  // Delete mutations - permanently remove from memory, Redis cache, and database
+  builder.mutationField("deleteNode", (t) =>
+    t.field({
+      type: "Boolean",
+      args: {
+        groupId: t.arg.string({ required: true }),
+        nodeId: t.arg.string({ required: true }),
+      },
+      resolve: async (_parent, args) => {
+        // Delete from in-memory host
+        const group = host.groups[args.groupId];
+        if (group?.nodes[args.nodeId]) {
+          delete group.nodes[args.nodeId];
+        }
+
+        // Delete from Redis if available
+        if (redis) {
+          await deleteRedisKeysForNode(redis, args.groupId, args.nodeId);
+        }
+
+        // Delete from database history
+        const result = await deleteNodeHistory(db, args.groupId, args.nodeId);
+        if (!isSuccess(result)) {
+          throw new GraphQLError(result.error);
+        }
+
+        // Delete from hidden_items table
+        await deleteHiddenItemsForNode(db, args.groupId, args.nodeId);
+
+        return true;
+      },
+    })
+  );
+
+  builder.mutationField("deleteDevice", (t) =>
+    t.field({
+      type: "Boolean",
+      args: {
+        groupId: t.arg.string({ required: true }),
+        nodeId: t.arg.string({ required: true }),
+        deviceId: t.arg.string({ required: true }),
+      },
+      resolve: async (_parent, args) => {
+        // Delete from in-memory host
+        const group = host.groups[args.groupId];
+        if (group?.nodes[args.nodeId]?.devices[args.deviceId]) {
+          delete group.nodes[args.nodeId].devices[args.deviceId];
+        }
+
+        // Delete from Redis if available
+        if (redis) {
+          await deleteRedisKeysForDevice(redis, args.groupId, args.nodeId, args.deviceId);
+        }
+
+        // Delete from database history
+        const result = await deleteDeviceHistory(db, args.groupId, args.nodeId, args.deviceId);
+        if (!isSuccess(result)) {
+          throw new GraphQLError(result.error);
+        }
+
+        // Delete from hidden_items table
+        await deleteHiddenItemsForDevice(db, args.groupId, args.nodeId, args.deviceId);
+
+        return true;
+      },
+    })
+  );
+
+  builder.mutationField("deleteMetric", (t) =>
+    t.field({
+      type: "Boolean",
+      args: {
+        groupId: t.arg.string({ required: true }),
+        nodeId: t.arg.string({ required: true }),
+        deviceId: t.arg.string(),
+        metricId: t.arg.string({ required: true }),
+      },
+      resolve: async (_parent, args) => {
+        // Delete from in-memory host
+        const group = host.groups[args.groupId];
+        if (group?.nodes[args.nodeId]) {
+          if (args.deviceId) {
+            const device = group.nodes[args.nodeId].devices[args.deviceId];
+            if (device?.metrics[args.metricId]) {
+              delete device.metrics[args.metricId];
+            }
+          } else {
+            const node = group.nodes[args.nodeId];
+            if (node?.metrics[args.metricId]) {
+              delete node.metrics[args.metricId];
+            }
+          }
+        }
+
+        // Delete from Redis if available
+        if (redis) {
+          await deleteRedisKeyForMetric(redis, args.groupId, args.nodeId, args.deviceId || null, args.metricId);
+        }
+
+        // Delete from database history
+        const result = await deleteMetricHistory(db, args.groupId, args.nodeId, args.deviceId || null, args.metricId);
+        if (!isSuccess(result)) {
+          throw new GraphQLError(result.error);
+        }
+
+        // Delete from hidden_items table
+        await deleteHiddenItemForMetric(db, args.groupId, args.nodeId, args.deviceId || null, args.metricId);
 
         return true;
       },
