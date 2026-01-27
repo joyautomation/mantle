@@ -82,6 +82,7 @@ Creating a release on GitHub triggers `release.yml` which compiles a standalone 
 
 ### Queries
 - `groups(includeHidden: Boolean)` - Get Sparkplug hierarchy
+- `hiddenItems` - Get list of hidden nodes, devices, and metrics
 - `history(...)` - Query metric history
 - `usage` - Get usage statistics
 
