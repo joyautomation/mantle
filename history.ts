@@ -232,13 +232,19 @@ export async function getHistory({
       deviceId: metric.deviceId ? String(metric.deviceId) : null,
       metricId: String(metric.metricId),
     }));
+    // For raw mode, use COALESCE to get the first non-null value
+    // For aggregated mode, use AVG for numeric types and cast bool to int for averaging
+    const valueSelect = raw === true
+      ? sql<number>`COALESCE("float_value", "int_value"::real, "bool_value"::int::real) as "value"`
+      : sql<number>`COALESCE(AVG("float_value"), AVG("int_value"::real), AVG("bool_value"::int::real)) as "value"`;
+
     const subQuery = db
       .select({
         time,
         name: sql<
           string
         >`CONCAT("group_id",'/',"node_id",'/',"device_id",'/',"metric_id") as "name"`,
-        value: sql<number>`AVG("float_value") as "value"`,
+        value: valueSelect,
       })
       .from(historyTable)
       .where(
