@@ -40,6 +40,7 @@ import {
   deleteHiddenItemsForDevice,
   deleteHiddenItemsForNode,
   getHiddenItemKeys,
+  getHiddenItems,
   hideDevice,
   hideMetric,
   hideNode,
@@ -47,6 +48,7 @@ import {
   unhideDevice,
   unhideMetric,
   unhideNode,
+  type HiddenItem,
 } from "./hidden.ts";
 
 /**
@@ -169,6 +171,8 @@ export function addHostToSchema(
     "SparkplugMetricUpdate",
   );
 
+  const HiddenItemRef = builder.objectRef<HiddenItem>("HiddenItem");
+
   SparkplugGroupRef.implement({
     fields: (t) => ({
       id: t.string({ resolve: (parent) => parent.id }),
@@ -247,6 +251,18 @@ export function addHostToSchema(
       }),
     }),
   });
+  HiddenItemRef.implement({
+    fields: (t) => ({
+      groupId: t.exposeString("groupId"),
+      nodeId: t.exposeString("nodeId"),
+      deviceId: t.exposeString("deviceId"),
+      metricId: t.exposeString("metricId"),
+      hiddenAt: t.field({
+        type: "String",
+        resolve: (parent) => parent.hiddenAt.toISOString(),
+      }),
+    }),
+  });
   builder.queryField("groups", (t) =>
     t.field({
       type: [SparkplugGroupRef],
@@ -297,6 +313,17 @@ export function addHostToSchema(
               ),
             })),
         })).filter((group) => group.nodes.length > 0);
+      },
+    }));
+  builder.queryField("hiddenItems", (t) =>
+    t.field({
+      type: [HiddenItemRef],
+      resolve: async () => {
+        const result = await getHiddenItems(db);
+        if (isSuccess(result)) {
+          return result.output;
+        }
+        throw new GraphQLError(result.error);
       },
     }));
   builder.subscriptionField("metricUpdate", (t) =>
