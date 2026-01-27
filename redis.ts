@@ -237,3 +237,98 @@ export async function getMetricHierarchy(
     return createFail(createErrorString(e));
   }
 }
+
+/**
+ * Delete all Redis keys for a specific node
+ */
+export async function deleteRedisKeysForNode(
+  redis: ReturnType<typeof createClient>,
+  groupId: string,
+  nodeId: string,
+): Promise<Result<{ deletedCount: number }>> {
+  try {
+    const keys = await redis.keys("*");
+    const keysToDelete = keys.filter((key) => {
+      try {
+        const parsed = JSON.parse(key);
+        return parsed.groupId === groupId && parsed.nodeId === nodeId;
+      } catch {
+        return false;
+      }
+    });
+
+    if (keysToDelete.length > 0) {
+      await redis.del(keysToDelete);
+    }
+
+    log.info(`Deleted ${keysToDelete.length} Redis keys for node: ${groupId}/${nodeId}`);
+    return createSuccess({ deletedCount: keysToDelete.length });
+  } catch (e) {
+    log.error(`Error deleting Redis keys for node: ${groupId}/${nodeId}`, e);
+    return createFail(createErrorString(e));
+  }
+}
+
+/**
+ * Delete all Redis keys for a specific device
+ */
+export async function deleteRedisKeysForDevice(
+  redis: ReturnType<typeof createClient>,
+  groupId: string,
+  nodeId: string,
+  deviceId: string,
+): Promise<Result<{ deletedCount: number }>> {
+  try {
+    const keys = await redis.keys("*");
+    const keysToDelete = keys.filter((key) => {
+      try {
+        const parsed = JSON.parse(key);
+        return (
+          parsed.groupId === groupId &&
+          parsed.nodeId === nodeId &&
+          parsed.deviceId === deviceId
+        );
+      } catch {
+        return false;
+      }
+    });
+
+    if (keysToDelete.length > 0) {
+      await redis.del(keysToDelete);
+    }
+
+    log.info(`Deleted ${keysToDelete.length} Redis keys for device: ${groupId}/${nodeId}/${deviceId}`);
+    return createSuccess({ deletedCount: keysToDelete.length });
+  } catch (e) {
+    log.error(`Error deleting Redis keys for device: ${groupId}/${nodeId}/${deviceId}`, e);
+    return createFail(createErrorString(e));
+  }
+}
+
+/**
+ * Delete a single Redis key for a specific metric
+ */
+export async function deleteRedisKeyForMetric(
+  redis: ReturnType<typeof createClient>,
+  groupId: string,
+  nodeId: string,
+  deviceId: string | null,
+  metricId: string,
+): Promise<Result<{ deletedCount: number }>> {
+  try {
+    const key = JSON.stringify({
+      groupId,
+      nodeId,
+      deviceId: deviceId || null,
+      metricId,
+    });
+
+    const deleted = await redis.del(key);
+
+    log.info(`Deleted Redis key for metric: ${groupId}/${nodeId}/${deviceId || ""}/${metricId}`);
+    return createSuccess({ deletedCount: deleted });
+  } catch (e) {
+    log.error(`Error deleting Redis key for metric: ${groupId}/${nodeId}/${deviceId || ""}/${metricId}`, e);
+    return createFail(createErrorString(e));
+  }
+}

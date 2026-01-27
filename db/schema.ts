@@ -2,6 +2,7 @@ import {
   bigint,
   boolean,
   pgTable,
+  primaryKey,
   real,
   text,
   timestamp,
@@ -60,3 +61,22 @@ export const historyPropertiesTable = pgTable(
 );
 
 export type HistoryPropertyRecord = typeof historyPropertiesTable.$inferSelect;
+
+// Hidden Items Table - tracks items that should be filtered from queries
+export const hiddenItems = pgTable(
+  "hidden_items",
+  {
+    groupId: text("group_id").notNull(),
+    nodeId: text("node_id").notNull(),
+    deviceId: text("device_id").notNull().default(""),
+    metricId: text("metric_id").notNull().default(""), // Empty string means entire node/device is hidden
+    hiddenAt: timestamp("hidden_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (t) => ({
+    pk: primaryKey({ columns: [t.groupId, t.nodeId, t.deviceId, t.metricId] }),
+  }),
+);
+
+export type HiddenItemRecord = typeof hiddenItems.$inferSelect;

@@ -59,7 +59,7 @@ const main = createApp(
       const publisher = publisherResult.output;
       const subscriber = subscriberResult.output;
       addHistoryEvents(db, host, publisher, subscriber);
-      addHostToSchema(host, builder, publisher);
+      addHostToSchema(host, builder, db, publisher);
       let metricUpdates: UMetric[] = [];
       subscribeToKeys(subscriber, async (key: string, _topic: string) => {
         const value = await publisher.get(key);
@@ -80,7 +80,7 @@ const main = createApp(
       if (isFail(subscriberResult)) log.info(subscriberResult.error);
       log.debug("Using in-memory database");
       addHistoryEvents(db, host);
-      addHostToSchema(host, builder);
+      addHostToSchema(host, builder, db);
     }
     addHistoryToSchema(builder, db);
     addMemoryUsageToSchema(builder);
