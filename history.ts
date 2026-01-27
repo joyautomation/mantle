@@ -249,6 +249,41 @@ export async function getHistory({
       ? sql<number>`COALESCE("float_value", "int_value"::real, "bool_value"::int::real) as "value"`
       : sql<number>`COALESCE(AVG("float_value"), AVG("int_value"::real), AVG("bool_value"::int::real)) as "value"`;
 
+    // Query for the most recent value BEFORE the start time for each metric (left edge)
+    // This allows the chart to show what value existed at the start of the window
+    const leftEdgeQuery = await db
+      .select({
+        name: sql<string>`CONCAT("group_id",'/',"node_id",'/',"device_id",'/',"metric_id") as "name"`,
+        value: sql<number>`COALESCE("float_value", "int_value"::real, "bool_value"::int::real) as "value"`,
+      })
+      .from(historyTable)
+      .where(
+        sql.raw(
+          `("group_id", "node_id", "device_id", "metric_id", "timestamp") in (
+            SELECT "group_id", "node_id", "device_id", "metric_id", MAX("timestamp")
+            FROM "history"
+            WHERE ("group_id", "node_id", "device_id", "metric_id") in (${
+              metrics
+                .map(
+                  (m) =>
+                    `('${m.groupId}', '${m.nodeId}', '${m.deviceId}', '${m.metricId}')`,
+                )
+                .join(", ")
+            })
+            AND "timestamp" < '${start.toISOString()}'
+            GROUP BY "group_id", "node_id", "device_id", "metric_id"
+          )`,
+        ),
+      );
+
+    // Build a map of left edge values by metric name
+    const leftEdgeValues = new Map<string, number>();
+    for (const row of leftEdgeQuery) {
+      if (row.value !== null) {
+        leftEdgeValues.set(row.name, row.value);
+      }
+    }
+
     const subQuery = db
       .select({
         time,
@@ -284,18 +319,33 @@ export async function getHistory({
       .groupBy(sql`time`);
     return createSuccess(
       normalizedMetrics.map((m) => {
+        const metricKey = `${m.groupId}/${m.nodeId}/${m.deviceId}/${m.metricId}`;
+        const metricHistory = history
+          .map((h) => {
+            return {
+              timestamp: new Date(h.time),
+              value: h.data[metricKey],
+            };
+          })
+          .filter((h) => h.value !== null && h.value !== undefined);
+
+        // Prepend left edge point if we have a value before the window
+        // and the first data point isn't already at the start
+        const leftEdgeValue = leftEdgeValues.get(metricKey);
+        if (leftEdgeValue !== undefined) {
+          const firstPoint = metricHistory[0];
+          // Only add if there's no point at start or first point is after start
+          if (!firstPoint || firstPoint.timestamp.getTime() > start.getTime()) {
+            metricHistory.unshift({
+              timestamp: start,
+              value: String(leftEdgeValue),
+            });
+          }
+        }
+
         return {
           ...m,
-          history: history
-            .map((h) => {
-              return {
-                timestamp: new Date(h.time),
-                value: h.data[
-                  `${m.groupId}/${m.nodeId}/${m.deviceId}/${m.metricId}`
-                ],
-              };
-            })
-            .filter((h) => h.value !== null && h.value !== undefined),
+          history: metricHistory,
         };
       }),
     );
