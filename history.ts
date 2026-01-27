@@ -198,6 +198,17 @@ type HistoryMetricInput = {
   metricId: string;
 };
 
+type UsageMonth = {
+  year: number;
+  month: number;
+  count: number;
+};
+
+type UsageStats = {
+  totalCount: number;
+  byMonth: UsageMonth[];
+};
+
 export async function getHistory({
   db,
   metrics,
@@ -293,6 +304,43 @@ export async function getHistory({
   }
 }
 
+export async function getUsage({ db }: { db: Db }) {
+  try {
+    // Get total count
+    const countResult = await db
+      .select({ count: sql<string>`COUNT(*)::text` })
+      .from(historyTable);
+    const totalCount = parseInt(countResult[0]?.count || "0", 10);
+
+    // Get count by month
+    const byMonthResult = await db
+      .select({
+        year: sql<number>`EXTRACT(YEAR FROM "timestamp")::int as "year"`,
+        month: sql<number>`EXTRACT(MONTH FROM "timestamp")::int as "month"`,
+        count: sql<string>`COUNT(*)::text as "count"`,
+      })
+      .from(historyTable)
+      .groupBy(
+        sql`EXTRACT(YEAR FROM "timestamp")`,
+        sql`EXTRACT(MONTH FROM "timestamp")`,
+      )
+      .orderBy(
+        sql`EXTRACT(YEAR FROM "timestamp") DESC`,
+        sql`EXTRACT(MONTH FROM "timestamp") DESC`,
+      );
+
+    const byMonth: UsageMonth[] = byMonthResult.map((row) => ({
+      year: row.year,
+      month: row.month,
+      count: parseInt(row.count, 10),
+    }));
+
+    return createSuccess<UsageStats>({ totalCount, byMonth });
+  } catch (error) {
+    return createFail(createErrorString(error));
+  }
+}
+
 export function addHistoryToSchema(
   builder: ReturnType<typeof getBuilder>,
   db: Db,
@@ -349,6 +397,41 @@ export function addHistoryToSchema(
       },
       resolve: async (_parent, args) => {
         const result = await getHistory({ ...args, db });
+        if (isSuccess(result)) {
+          return result.output;
+        } else {
+          throw new GraphQLError(result.error);
+        }
+      },
+    }));
+
+  // Usage statistics types and query
+  const UsageMonthRef = builder.objectRef<UsageMonth>("UsageMonth");
+  const UsageStatsRef = builder.objectRef<UsageStats>("UsageStats");
+
+  UsageMonthRef.implement({
+    fields: (t) => ({
+      year: t.exposeInt("year"),
+      month: t.exposeInt("month"),
+      count: t.exposeInt("count"),
+    }),
+  });
+
+  UsageStatsRef.implement({
+    fields: (t) => ({
+      totalCount: t.exposeInt("totalCount"),
+      byMonth: t.field({
+        type: [UsageMonthRef],
+        resolve: (parent) => parent.byMonth,
+      }),
+    }),
+  });
+
+  builder.queryField("usage", (t) =>
+    t.field({
+      type: UsageStatsRef,
+      resolve: async () => {
+        const result = await getUsage({ db });
         if (isSuccess(result)) {
           return result.output;
         } else {
