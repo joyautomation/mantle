@@ -102,3 +102,22 @@ git push origin 0.0.60
 - `MANTLE_GROUP_ID` - Sparkplug group ID filter
 - `MANTLE_REDIS_URL` - Redis connection URL
 - `DATABASE_URL` - PostgreSQL connection string
+
+## CI/CD Workflows
+
+### register.yml - Container Build
+Triggers on tag push matching semver pattern (no `v` prefix):
+```yaml
+on:
+  push:
+    tags:
+      - '[0-9]+.[0-9]+.[0-9]+'
+```
+
+What it does:
+1. Builds Docker image from Dockerfile
+2. Pushes to DigitalOcean Container Registry (`registry.digitalocean.com/jar-containers/joyautomation/mantle:<tag>`)
+3. Pushes to Docker Hub (`joyautomation/mantle:<tag>`)
+
+### test.yml - Run Tests
+Triggers on PRs to run `deno test -A`
