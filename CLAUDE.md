@@ -58,25 +58,24 @@ gh pr create --title "My feature" --body "Description"
 ### 2. Version Bump
 Update version in `deno.json` before or as part of your changes.
 
-### 3. Tag and Push (triggers Docker build)
+### 3. Merge PR
 ```bash
-git checkout feature/my-feature
-git tag X.Y.Z                    # No 'v' prefix!
-git push origin X.Y.Z
+gh pr merge <PR_NUMBER> --squash --delete-branch
 ```
 
-This triggers `register.yml` which:
-- Builds Docker image
-- Pushes to DigitalOcean Container Registry
-- Pushes to Docker Hub (`joyautomation/mantle:X.Y.Z`)
-
-### 4. Merge PR
+### 4. Sync local main
 ```bash
-gh pr merge <PR_NUMBER> --merge --delete-branch
+git checkout main && git pull origin main
 ```
 
-### 5. (Optional) Create GitHub Release
-Creating a release on GitHub triggers `release.yml` which compiles a standalone Deno binary.
+### 5. Create GitHub Release (triggers container build)
+```bash
+gh release create 0.0.60 --title "0.0.60" --notes "Description of changes"
+```
+
+**IMPORTANT**:
+- Do NOT use `v` prefix (use `0.0.60` not `v0.0.60`)
+- This triggers `release.yml` which builds and pushes the Docker image
 
 ## GraphQL API
 
