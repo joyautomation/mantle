@@ -112,7 +112,7 @@ export async function recordValues(
           groupId,
           nodeId,
           metricId: metric.name || "",
-          deviceId: deviceId || null,
+          deviceId: deviceId || "",
           timestamp,
           intValue: valueType === "intValue"
             ? Long.isLong(metric.value)
@@ -136,7 +136,7 @@ export async function recordValues(
           const propertyRecord: HistoryPropertyRecord = {
             groupId,
             nodeId,
-            deviceId: deviceId || null,
+            deviceId: deviceId || "",
             metricId: metric.name || "",
             timestamp,
             propertyId: propertyKey,
