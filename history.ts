@@ -240,7 +240,7 @@ export async function getHistory({
     const normalizedMetrics = metrics.map((metric) => ({
       groupId: String(metric.groupId),
       nodeId: String(metric.nodeId),
-      deviceId: metric.deviceId ? String(metric.deviceId) : null,
+      deviceId: metric.deviceId ?? "",
       metricId: String(metric.metricId),
     }));
     // For raw mode, use COALESCE to get the first non-null value
