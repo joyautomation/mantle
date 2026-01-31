@@ -68,14 +68,15 @@ gh pr merge <PR_NUMBER> --squash --delete-branch
 git checkout main && git pull origin main
 ```
 
-### 5. Create GitHub Release (triggers container build)
+### 5. Create and push tag (triggers container build)
 ```bash
-gh release create 0.0.60 --title "0.0.60" --notes "Description of changes"
+git tag 0.0.60
+git push origin 0.0.60
 ```
 
 **IMPORTANT**:
 - Do NOT use `v` prefix (use `0.0.60` not `v0.0.60`)
-- This triggers `release.yml` which builds and pushes the Docker image
+- This triggers `register.yml` which builds and pushes the Docker image to DigitalOcean and Docker Hub
 
 ## GraphQL API
 
