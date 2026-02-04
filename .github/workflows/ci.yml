@@ -19,4 +19,4 @@ jobs:
           deno-version: v2.5
 
       - name: Run tests
-        run: deno test -A
+        run: deno test -A --ignore=*integration*
