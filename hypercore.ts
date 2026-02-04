@@ -279,42 +279,51 @@ export async function getStorageStats(db: Db): Promise<Result<StorageStats>> {
     let compressionEnabled = false;
 
     if (hypercoreAvailable) {
-      // Get detailed compression stats for each hypertable
-      const statsResult = await db.execute(sql`
+      // Get hypertable info and sizes using TimescaleDB functions
+      const hypertablesResult = await db.execute(sql`
         SELECT
           hypertable_name as table_name,
-          total_bytes,
-          CASE WHEN compression_enabled THEN
-            (SELECT COALESCE(SUM(after_compression_total_bytes), 0)
-             FROM timescaledb_information.compressed_chunk_stats
-             WHERE hypertable_name = h.hypertable_name)
-          ELSE NULL END as compressed_bytes,
-          CASE WHEN compression_enabled THEN
-            (SELECT COALESCE(SUM(before_compression_total_bytes), 0)
-             FROM timescaledb_information.compressed_chunk_stats
-             WHERE hypertable_name = h.hypertable_name)
-          ELSE NULL END as uncompressed_bytes,
           compression_enabled
-        FROM timescaledb_information.hypertables h
+        FROM timescaledb_information.hypertables
         WHERE hypertable_name IN ('history', 'history_properties')
       `);
 
-      for (const row of statsResult.rows) {
-        const totalBytes = Number(row.total_bytes) || 0;
-        const compressedBytes = row.compressed_bytes !== null ? Number(row.compressed_bytes) : null;
-        const uncompressedBytes = row.uncompressed_bytes !== null ? Number(row.uncompressed_bytes) : null;
+      for (const row of hypertablesResult.rows) {
+        const tableName = String(row.table_name);
 
+        // Get total size using hypertable_size function
+        const sizeResult = await db.execute(sql.raw(`
+          SELECT hypertable_size('${tableName}') as total_bytes
+        `));
+        const totalBytes = Number(sizeResult.rows[0]?.total_bytes) || 0;
+
+        // Get compression stats using hypertable_compression_stats function
+        let compressedBytes: number | null = null;
+        let uncompressedBytes: number | null = null;
         let compressionRatio: number | null = null;
-        if (compressedBytes !== null && uncompressedBytes !== null && compressedBytes > 0) {
-          compressionRatio = uncompressedBytes / compressedBytes;
-        }
 
         if (row.compression_enabled) {
           compressionEnabled = true;
+
+          const compressionResult = await db.execute(sql.raw(`
+            SELECT
+              COALESCE(SUM(after_compression_total_bytes), 0) as compressed_bytes,
+              COALESCE(SUM(before_compression_total_bytes), 0) as uncompressed_bytes
+            FROM hypertable_compression_stats('${tableName}')
+          `));
+
+          if (compressionResult.rows[0]) {
+            compressedBytes = Number(compressionResult.rows[0].compressed_bytes) || 0;
+            uncompressedBytes = Number(compressionResult.rows[0].uncompressed_bytes) || 0;
+
+            if (compressedBytes > 0 && uncompressedBytes > 0) {
+              compressionRatio = uncompressedBytes / compressedBytes;
+            }
+          }
         }
 
         tables.push({
-          tableName: String(row.table_name),
+          tableName,
           totalBytes,
           compressedBytes,
           uncompressedBytes,
