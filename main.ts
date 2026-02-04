@@ -12,6 +12,7 @@ import {
 import { isFail, isSuccess } from "@joyautomation/dark-matter";
 import { pubsub } from "./pubsub.ts";
 import { addMemoryUsageToSchema } from "./memory.ts";
+import { addHypercoreToSchema, initializeHypercore } from "./hypercore.ts";
 import type { UMetric } from "sparkplug-payload/lib/sparkplugbpayload.js";
 
 /**
@@ -49,6 +50,10 @@ const main = createApp(
   log,
   async (builder, args) => {
     const { db } = await _internal.getDb(args);
+
+    // Initialize hypercore (TimescaleDB compression) if available
+    await initializeHypercore(db);
+
     const publisherResult = await _internal.getPublisherRetry(args, 5, 1000);
     const subscriberResult = await _internal.getSubscriberRetry(args, 5, 1000);
     const host = _internal.getHost(args);
@@ -84,6 +89,7 @@ const main = createApp(
     }
     addHistoryToSchema(builder, db);
     addMemoryUsageToSchema(builder);
+    addHypercoreToSchema(builder, db);
     return builder;
   }
 );
