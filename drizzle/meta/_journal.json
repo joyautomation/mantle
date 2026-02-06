@@ -43,6 +43,13 @@
       "when": 1769528092322,
       "tag": "0005_oval_ikaris",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1769558400000,
+      "tag": "0006_daily_chunk_interval",
+      "breakpoints": true
     }
   ]
 }
