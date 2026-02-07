@@ -1,6 +1,6 @@
 {
   "name": "@joyautomation/mantle",
-  "version": "0.0.67",
+  "version": "0.0.68",
   "description": "Mantle consumes and logs Sparkplug B data",
   "author": "Joy Automation",
   "license": "GPL-3.0-or-later",
@@ -34,7 +34,7 @@
     "pg": "npm:pg@^8.13.0",
     "postgres": "npm:postgres@^3.4.2",
     "redis": "npm:redis@^4.7.0",
-    "sparkplug-payload": "npm:@joyautomation/sparkplug-payload@^1.0.4"
+    "sparkplug-payload": "npm:@joyautomation/sparkplug-payload@^1.0.5"
   },
   "nodeModulesDir": "auto"
 }
