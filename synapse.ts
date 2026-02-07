@@ -4,6 +4,11 @@ import {
   flattenHostGroups,
   publishNodeCommand,
   publishDeviceCommand,
+  publish,
+  createSpbTopic,
+  encodePayload,
+  addSeqNumberCurry,
+  type Modify,
   type SparkplugCreateHostInput,
   type SparkplugDeviceFlat,
   type SparkplugGroupFlat,
@@ -33,8 +38,9 @@ import {
   getMetricHierarchy,
 } from "./redis.ts";
 import { GraphQLError } from "graphql";
-import { isSuccess } from "@joyautomation/dark-matter";
+import { isSuccess, pipe } from "@joyautomation/dark-matter";
 import Long from "long";
+import { Buffer } from "node:buffer";
 import {
   deleteHiddenItemForMetric,
   deleteHiddenItemsForDevice,
@@ -370,34 +376,65 @@ export function addHostToSchema(
         if (typeof parsedValue === "boolean") metricType = "Boolean";
         else if (typeof parsedValue === "number") metricType = "Float";
 
-        // Extract command name from metricId (e.g., "Node Control/Rebirth" -> "Rebirth")
-        const commandName = args.metricId.includes("/")
-          ? args.metricId.split("/").pop() || args.metricId
-          : args.metricId;
+        // Check if this is a control metric (Node Control/* or Device Control/*)
+        const isControlMetric = args.metricId.startsWith("Node Control/") ||
+          args.metricId.startsWith("Device Control/");
 
-        if (args.deviceId) {
-          // Device command (DCMD)
-          publishDeviceCommand(
-            host,
-            commandName,
-            metricType,
-            parsedValue,
-            args.groupId,
-            args.nodeId,
-            mqttConfig,
-            host.mqtt,
-            args.deviceId
-          );
+        if (isControlMetric) {
+          // For control metrics, use publishNodeCommand/publishDeviceCommand
+          // which wraps the name with the appropriate control prefix
+          const commandName = args.metricId.split("/").pop() || args.metricId;
+
+          if (args.deviceId) {
+            publishDeviceCommand(
+              host,
+              commandName,
+              metricType,
+              parsedValue,
+              args.groupId,
+              args.nodeId,
+              mqttConfig,
+              host.mqtt,
+              args.deviceId
+            );
+          } else {
+            publishNodeCommand(
+              host,
+              commandName,
+              metricType,
+              parsedValue,
+              args.groupId,
+              args.nodeId,
+              mqttConfig,
+              host.mqtt
+            );
+          }
         } else {
-          // Node command (NCMD)
-          publishNodeCommand(
-            host,
-            commandName,
-            metricType,
-            parsedValue,
-            args.groupId,
-            args.nodeId,
-            mqttConfig,
+          // For regular metrics, publish DCMD/NCMD with the raw metric name
+          const commandType = args.deviceId ? "DCMD" : "NCMD";
+          const topic = createSpbTopic(
+            commandType,
+            { ...mqttConfig, groupId: args.groupId, edgeNode: args.nodeId },
+            args.deviceId || undefined
+          );
+          const payload: UPayload = {
+            metrics: [
+              {
+                name: args.metricId,
+                value: parsedValue,
+                type: metricType,
+              },
+            ],
+          };
+          const toBuffer = (p: Uint8Array): Buffer => Buffer.from(p);
+          publish(
+            topic,
+            pipe(
+              payload,
+              addSeqNumberCurry(host) as Modify<UPayload>,
+              encodePayload,
+              toBuffer
+            ) as Buffer,
             host.mqtt
           );
         }
