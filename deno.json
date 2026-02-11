@@ -13,8 +13,8 @@
     "db:generate": "drizzle-kit generate"
   },
   "imports": {
-    "@joyautomation/conch": "jsr:@joyautomation/conch@^0.0.22",
-    "@joyautomation/coral": "jsr:@joyautomation/coral@^0.0.10",
+    "@joyautomation/conch": "jsr:@joyautomation/conch@^0.0.28",
+    "@joyautomation/coral": "jsr:@joyautomation/coral@^0.0.12",
     "@joyautomation/dark-matter": "jsr:@joyautomation/dark-matter@^0.0.18",
     "@joyautomation/synapse": "jsr:@joyautomation/synapse@^0.0.92",
     "@pothos/core": "npm:@pothos/core@^4.2.0",
