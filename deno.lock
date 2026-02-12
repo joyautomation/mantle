@@ -1,20 +1,24 @@
 {
   "version": "5",
   "specifiers": {
-    "jsr:@joyautomation/conch@^0.0.28": "0.0.28",
+    "jsr:@joyautomation/conch@^0.0.29": "0.0.29",
     "jsr:@joyautomation/coral@^0.0.12": "0.0.12",
     "jsr:@joyautomation/dark-matter@^0.0.18": "0.0.18",
     "jsr:@joyautomation/dark-matter@^0.0.26": "0.0.26",
     "jsr:@joyautomation/synapse@^0.0.92": "0.0.92",
+    "jsr:@std/assert@1": "1.0.14",
     "jsr:@std/assert@^1.0.13": "1.0.14",
+    "jsr:@std/async@^1.0.13": "1.0.14",
     "jsr:@std/cli@^1.0.6": "1.0.27",
-    "jsr:@std/expect@*": "1.0.16",
+    "jsr:@std/data-structures@^1.0.9": "1.0.9",
     "jsr:@std/expect@^1.0.3": "1.0.16",
     "jsr:@std/fmt@^1.0.2": "1.0.9",
+    "jsr:@std/fmt@^1.0.9": "1.0.9",
+    "jsr:@std/fs@^1.0.19": "1.0.19",
     "jsr:@std/internal@^1.0.10": "1.0.12",
     "jsr:@std/internal@^1.0.12": "1.0.12",
     "jsr:@std/internal@^1.0.7": "1.0.12",
-    "jsr:@std/testing@*": "1.0.15",
+    "jsr:@std/path@^1.1.1": "1.1.2",
     "jsr:@std/testing@^1.0.2": "1.0.15",
     "npm:@joyautomation/sparkplug-payload@^1.0.4": "1.0.5",
     "npm:@joyautomation/sparkplug-payload@^1.0.5": "1.0.5",
@@ -38,8 +42,8 @@
     "npm:redis@^4.7.0": "4.7.1_@redis+client@1.6.1"
   },
   "jsr": {
-    "@joyautomation/conch@0.0.28": {
-      "integrity": "3c02ddd87cb9bc8f9938f5a7425d8b90273460c958791d7b2ad43f99cdc2ef39",
+    "@joyautomation/conch@0.0.29": {
+      "integrity": "dcbb7ae755052e86b065b19ad2c89eebe08cb33df32bbf3eb2ab7d77c161fc9c",
       "dependencies": [
         "jsr:@joyautomation/coral",
         "jsr:@std/cli",
@@ -52,7 +56,7 @@
     "@joyautomation/coral@0.0.12": {
       "integrity": "a95c60c93c2fb9f434437fd975979038e3358f65621f55e9fd5b8d831aeda1ee",
       "dependencies": [
-        "jsr:@std/fmt"
+        "jsr:@std/fmt@^1.0.2"
       ]
     },
     "@joyautomation/dark-matter@0.0.18": {
@@ -78,30 +82,53 @@
         "jsr:@std/internal@^1.0.10"
       ]
     },
+    "@std/async@1.0.14": {
+      "integrity": "62e954a418652c704d37563a3e54a37d4cf0268a9dcaeac1660cc652880b5326"
+    },
     "@std/cli@1.0.27": {
       "integrity": "eba97edd0891871a7410e835dd94b3c260c709cca5983df2689c25a71fbe04de",
       "dependencies": [
+        "jsr:@std/fmt@^1.0.9",
         "jsr:@std/internal@^1.0.12"
       ]
+    },
+    "@std/data-structures@1.0.9": {
+      "integrity": "033d6e17e64bf1f84a614e647c1b015fa2576ae3312305821e1a4cb20674bb4d"
     },
     "@std/expect@1.0.16": {
       "integrity": "ceeef6dda21f256a5f0f083fcc0eaca175428b523359a9b1d9b3a1df11cc7391",
       "dependencies": [
-        "jsr:@std/assert",
+        "jsr:@std/assert@^1.0.13",
         "jsr:@std/internal@^1.0.7"
       ]
     },
     "@std/fmt@1.0.9": {
       "integrity": "2487343e8899fb2be5d0e3d35013e54477ada198854e52dd05ed0422eddcabe0"
     },
+    "@std/fs@1.0.19": {
+      "integrity": "051968c2b1eae4d2ea9f79a08a3845740ef6af10356aff43d3e2ef11ed09fb06",
+      "dependencies": [
+        "jsr:@std/path"
+      ]
+    },
     "@std/internal@1.0.12": {
       "integrity": "972a634fd5bc34b242024402972cd5143eac68d8dffaca5eaa4dba30ce17b027"
+    },
+    "@std/path@1.1.2": {
+      "integrity": "c0b13b97dfe06546d5e16bf3966b1cadf92e1cc83e56ba5476ad8b498d9e3038",
+      "dependencies": [
+        "jsr:@std/internal@^1.0.10"
+      ]
     },
     "@std/testing@1.0.15": {
       "integrity": "a490169f5ccb0f3ae9c94fbc69d2cd43603f2cffb41713a85f99bbb0e3087cbc",
       "dependencies": [
-        "jsr:@std/assert",
-        "jsr:@std/internal@^1.0.10"
+        "jsr:@std/assert@^1.0.13",
+        "jsr:@std/async",
+        "jsr:@std/data-structures",
+        "jsr:@std/fs",
+        "jsr:@std/internal@^1.0.10",
+        "jsr:@std/path"
       ]
     }
   },
@@ -1164,7 +1191,7 @@
   },
   "workspace": {
     "dependencies": [
-      "jsr:@joyautomation/conch@^0.0.28",
+      "jsr:@joyautomation/conch@^0.0.29",
       "jsr:@joyautomation/coral@^0.0.12",
       "jsr:@joyautomation/dark-matter@^0.0.18",
       "jsr:@joyautomation/synapse@^0.0.92",
