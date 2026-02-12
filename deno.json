@@ -1,6 +1,6 @@
 {
   "name": "@joyautomation/mantle",
-  "version": "0.0.69",
+  "version": "0.0.70",
   "description": "Mantle consumes and logs Sparkplug B data",
   "author": "Joy Automation",
   "license": "GPL-3.0-or-later",
@@ -13,7 +13,7 @@
     "db:generate": "drizzle-kit generate"
   },
   "imports": {
-    "@joyautomation/conch": "jsr:@joyautomation/conch@^0.0.28",
+    "@joyautomation/conch": "jsr:@joyautomation/conch@^0.0.29",
     "@joyautomation/coral": "jsr:@joyautomation/coral@^0.0.12",
     "@joyautomation/dark-matter": "jsr:@joyautomation/dark-matter@^0.0.18",
     "@joyautomation/synapse": "jsr:@joyautomation/synapse@^0.0.92",
