@@ -371,15 +371,23 @@ export async function getUsage({ db }: { db: Db }) {
       totalCount = parseInt(countResult[0]?.count || "0", 10);
     }
 
-    // Get count by month using time_bucket for efficient TimescaleDB chunk pruning
+    // Get approximate count by month using chunk metadata (avoids full table scan).
+    // Each chunk has a time range and pg_class.reltuples gives an O(1) row estimate.
     const byMonthResult = await db.execute(
       sql`SELECT
-        EXTRACT(YEAR FROM time_bucket('1 month', "timestamp"))::int as "year",
-        EXTRACT(MONTH FROM time_bucket('1 month', "timestamp"))::int as "month",
-        COUNT(*)::text as "count"
-      FROM "history"
-      GROUP BY time_bucket('1 month', "timestamp")
-      ORDER BY time_bucket('1 month', "timestamp") DESC`,
+        EXTRACT(YEAR FROM range_start)::int as "year",
+        EXTRACT(MONTH FROM range_start)::int as "month",
+        SUM(approx)::text as "count"
+      FROM (
+        SELECT
+          c.range_start,
+          (SELECT reltuples::bigint FROM pg_class
+           WHERE oid = format('%I.%I', c.chunk_schema, c.chunk_name)::regclass) as approx
+        FROM timescaledb_information.chunks c
+        WHERE c.hypertable_name = 'history'
+      ) sub
+      GROUP BY 1, 2
+      ORDER BY 1 DESC, 2 DESC`,
     );
 
     const byMonth: UsageMonth[] = (byMonthResult.rows ?? []).map(
