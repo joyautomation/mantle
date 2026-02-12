@@ -50,6 +50,13 @@
       "when": 1769558400000,
       "tag": "0006_daily_chunk_interval",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1769644800000,
+      "tag": "0007_metric_identity_index",
+      "breakpoints": true
     }
   ]
 }
