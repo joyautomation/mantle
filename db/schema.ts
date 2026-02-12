@@ -1,6 +1,7 @@
 import {
   bigint,
   boolean,
+  index,
   pgTable,
   primaryKey,
   real,
@@ -27,6 +28,13 @@ export const history = pgTable(
   },
   (t) => ({
     unq: unique().on(t.groupId, t.nodeId, t.deviceId, t.metricId, t.timestamp),
+    idx_metric_time: index("idx_history_metric_time").on(
+      t.groupId,
+      t.nodeId,
+      t.deviceId,
+      t.metricId,
+      t.timestamp,
+    ),
   }),
 );
 
@@ -50,6 +58,14 @@ export const historyPropertiesTable = pgTable(
   },
   (t) => ({
     unq: unique().on(
+      t.groupId,
+      t.nodeId,
+      t.deviceId,
+      t.metricId,
+      t.propertyId,
+      t.timestamp,
+    ),
+    idx_metric_time: index("idx_history_properties_metric_time").on(
       t.groupId,
       t.nodeId,
       t.deviceId,

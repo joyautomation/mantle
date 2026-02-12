@@ -356,34 +356,39 @@ export async function getHistory({
 
 export async function getUsage({ db }: { db: Db }) {
   try {
-    // Get total count
-    const countResult = await db
-      .select({ count: sql<string>`COUNT(*)::text` })
-      .from(historyTable);
-    const totalCount = parseInt(countResult[0]?.count || "0", 10);
-
-    // Get count by month
-    const byMonthResult = await db
-      .select({
-        year: sql<number>`EXTRACT(YEAR FROM "timestamp")::int as "year"`,
-        month: sql<number>`EXTRACT(MONTH FROM "timestamp")::int as "month"`,
-        count: sql<string>`COUNT(*)::text as "count"`,
-      })
-      .from(historyTable)
-      .groupBy(
-        sql`EXTRACT(YEAR FROM "timestamp")`,
-        sql`EXTRACT(MONTH FROM "timestamp")`,
-      )
-      .orderBy(
-        sql`EXTRACT(YEAR FROM "timestamp") DESC`,
-        sql`EXTRACT(MONTH FROM "timestamp") DESC`,
+    // Use approximate_row_count for fast total (avoids full table scan)
+    // Falls back to COUNT(*) if TimescaleDB function is not available
+    let totalCount: number;
+    try {
+      const approxResult = await db.execute(
+        sql`SELECT approximate_row_count('history') as count`,
       );
+      totalCount = Number(approxResult.rows[0]?.count ?? 0);
+    } catch {
+      const countResult = await db
+        .select({ count: sql<string>`COUNT(*)::text` })
+        .from(historyTable);
+      totalCount = parseInt(countResult[0]?.count || "0", 10);
+    }
 
-    const byMonth: UsageMonth[] = byMonthResult.map((row) => ({
-      year: row.year,
-      month: row.month,
-      count: parseInt(row.count, 10),
-    }));
+    // Get count by month using time_bucket for efficient TimescaleDB chunk pruning
+    const byMonthResult = await db.execute(
+      sql`SELECT
+        EXTRACT(YEAR FROM time_bucket('1 month', "timestamp"))::int as "year",
+        EXTRACT(MONTH FROM time_bucket('1 month', "timestamp"))::int as "month",
+        COUNT(*)::text as "count"
+      FROM "history"
+      GROUP BY time_bucket('1 month', "timestamp")
+      ORDER BY time_bucket('1 month', "timestamp") DESC`,
+    );
+
+    const byMonth: UsageMonth[] = (byMonthResult.rows ?? []).map(
+      (row: Record<string, unknown>) => ({
+        year: Number(row.year),
+        month: Number(row.month),
+        count: parseInt(String(row.count), 10),
+      }),
+    );
 
     return createSuccess<UsageStats>({ totalCount, byMonth });
   } catch (error) {
