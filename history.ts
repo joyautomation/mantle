@@ -284,7 +284,7 @@ export async function getHistory({
       }
     }
 
-    const subQuery = db
+    const baseQuery = db
       .select({
         time,
         name: sql<
@@ -307,9 +307,10 @@ export async function getHistory({
           ),
           between(historyTable.timestamp, start, end),
         ),
-      )
-      .groupBy(sql`time`, sql`name`)
-      .orderBy(sql`time asc`);
+      );
+    const subQuery = raw === true
+      ? baseQuery.orderBy(sql`time asc`)
+      : baseQuery.groupBy(sql`time`, sql`name`).orderBy(sql`time asc`);
     const history = await db
       .select({
         time: sql<Date>`"time"`,
