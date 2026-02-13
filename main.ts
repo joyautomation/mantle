@@ -12,7 +12,11 @@ import {
 import { isFail, isSuccess } from "@joyautomation/dark-matter";
 import { pubsub } from "./pubsub.ts";
 import { addMemoryUsageToSchema } from "./memory.ts";
-import { addHypercoreToSchema, initializeHypercore } from "./hypercore.ts";
+import {
+  addHypercoreToSchema,
+  compressEligibleChunks,
+  initializeHypercore,
+} from "./hypercore.ts";
 import type { UMetric } from "sparkplug-payload/lib/sparkplugbpayload.js";
 
 /**
@@ -90,6 +94,15 @@ const main = createApp(
     addHistoryToSchema(builder, db);
     addMemoryUsageToSchema(builder);
     addHypercoreToSchema(builder, db);
+
+    // Periodically compress eligible chunks (every 6 hours).
+    // The bgw scheduler policies are unreliable, so this ensures
+    // compression keeps happening even during long-running instances.
+    setInterval(async () => {
+      await compressEligibleChunks(db, "history", "1 hour");
+      await compressEligibleChunks(db, "history_properties", "1 day");
+    }, 6 * 60 * 60 * 1000);
+
     return builder;
   }
 );

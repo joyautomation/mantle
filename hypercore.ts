@@ -200,6 +200,44 @@ export async function addHistoryPropertiesCompressionPolicy(db: Db): Promise<Res
 }
 
 /**
+ * Compress all eligible chunks for a hypertable.
+ * Compresses any uncompressed chunk whose time range has fully elapsed
+ * (range_end is in the past), plus the configured grace period.
+ */
+export async function compressEligibleChunks(
+  db: Db,
+  tableName: string,
+  olderThan: string = "1 hour",
+): Promise<Result<number>> {
+  try {
+    const result = await db.execute(sql.raw(`
+      SELECT chunk_schema, chunk_name
+      FROM timescaledb_information.chunks
+      WHERE hypertable_name = '${tableName}'
+        AND NOT is_compressed
+        AND range_end < NOW() - INTERVAL '${olderThan}'
+      ORDER BY range_start
+    `));
+
+    let compressed = 0;
+    for (const row of result.rows) {
+      const chunkFqn = `${row.chunk_schema}.${row.chunk_name}`;
+      try {
+        await db.execute(sql.raw(`SELECT compress_chunk('${chunkFqn}')`));
+        compressed++;
+        log.info(`Compressed chunk ${chunkFqn}`);
+      } catch (error) {
+        log.warn(`Failed to compress chunk ${chunkFqn}: ${createErrorString(error)}`);
+      }
+    }
+
+    return createSuccess(compressed);
+  } catch (error) {
+    return createFail(createErrorString(error));
+  }
+}
+
+/**
  * Initialize hypercore compression on all tables if available
  * This should be called on startup after migrations
  */
@@ -261,6 +299,19 @@ export async function initializeHypercore(db: Db): Promise<Result<void>> {
     } else {
       log.info("Compression policy already exists for history_properties table");
     }
+  }
+
+  // Directly compress any eligible chunks on startup.
+  // The bgw scheduler policies are unreliable, so this ensures
+  // compression actually happens on every restart/deploy.
+  log.info("Compressing eligible chunks...");
+  const historyCompressed = await compressEligibleChunks(db, "history", "1 hour");
+  if (isSuccess(historyCompressed)) {
+    log.info(`Compressed ${historyCompressed.output} history chunk(s)`);
+  }
+  const propsCompressed = await compressEligibleChunks(db, "history_properties", "1 day");
+  if (isSuccess(propsCompressed)) {
+    log.info(`Compressed ${propsCompressed.output} history_properties chunk(s)`);
   }
 
   log.info("Hypercore initialization complete");
