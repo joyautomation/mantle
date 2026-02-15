@@ -10,6 +10,7 @@
   "exports": "./main.ts",
   "tasks": {
     "dev": "deno run --inspect --env-file=.env -A --watch main.ts",
+    "dev:fresh": "docker compose up -d postgres redis && deno run --env-file=.env -A main.ts -m && deno task dev",
     "db:generate": "drizzle-kit generate"
   },
   "imports": {
