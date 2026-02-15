@@ -130,28 +130,6 @@ export async function enableHistoryCompression(db: Db): Promise<Result<void>> {
 }
 
 /**
- * Enable compression on the history_properties table
- */
-export async function enableHistoryPropertiesCompression(db: Db): Promise<Result<void>> {
-  try {
-    log.info("Enabling compression on history_properties table...");
-
-    await db.execute(sql`
-      ALTER TABLE history_properties SET (
-        timescaledb.compress,
-        timescaledb.compress_segmentby = 'group_id, node_id, device_id, metric_id, property_id',
-        timescaledb.compress_orderby = 'timestamp DESC NULLS FIRST'
-      )
-    `);
-
-    log.info("Compression enabled on history_properties table");
-    return createSuccess(undefined);
-  } catch (error) {
-    return createFail(createErrorString(error));
-  }
-}
-
-/**
  * Add compression policy for history table (compress chunks older than 1 hour)
  */
 export async function addHistoryCompressionPolicy(db: Db): Promise<Result<void>> {
@@ -169,30 +147,6 @@ export async function addHistoryCompressionPolicy(db: Db): Promise<Result<void>>
     const errorStr = createErrorString(error);
     if (errorStr.includes("already exists")) {
       log.info("Compression policy already exists for history table");
-      return createSuccess(undefined);
-    }
-    return createFail(errorStr);
-  }
-}
-
-/**
- * Add compression policy for history_properties table (compress chunks older than 24 hours)
- */
-export async function addHistoryPropertiesCompressionPolicy(db: Db): Promise<Result<void>> {
-  try {
-    log.info("Adding compression policy for history_properties table...");
-
-    await db.execute(sql`
-      SELECT add_compression_policy('history_properties', INTERVAL '24 hours')
-    `);
-
-    log.info("Compression policy added for history_properties table");
-    return createSuccess(undefined);
-  } catch (error) {
-    // Policy might already exist
-    const errorStr = createErrorString(error);
-    if (errorStr.includes("already exists")) {
-      log.info("Compression policy already exists for history_properties table");
       return createSuccess(undefined);
     }
     return createFail(errorStr);
@@ -279,28 +233,6 @@ export async function initializeHypercore(db: Db): Promise<Result<void>> {
     }
   }
 
-  // Check and enable compression on history_properties table
-  const propsStatus = await getCompressionStatus(db, "history_properties");
-  if (isSuccess(propsStatus)) {
-    if (!propsStatus.output.compressionEnabled) {
-      const enableResult = await enableHistoryPropertiesCompression(db);
-      if (!isSuccess(enableResult)) {
-        log.error(`Failed to enable compression on history_properties: ${enableResult.error}`);
-      }
-    } else {
-      log.info("Compression already enabled on history_properties table");
-    }
-
-    if (!propsStatus.output.policyExists) {
-      const policyResult = await addHistoryPropertiesCompressionPolicy(db);
-      if (!isSuccess(policyResult)) {
-        log.error(`Failed to add compression policy for history_properties: ${policyResult.error}`);
-      }
-    } else {
-      log.info("Compression policy already exists for history_properties table");
-    }
-  }
-
   // Directly compress any eligible chunks on startup.
   // The bgw scheduler policies are unreliable, so this ensures
   // compression actually happens on every restart/deploy.
@@ -309,11 +241,6 @@ export async function initializeHypercore(db: Db): Promise<Result<void>> {
   if (isSuccess(historyCompressed)) {
     log.info(`Compressed ${historyCompressed.output} history chunk(s)`);
   }
-  const propsCompressed = await compressEligibleChunks(db, "history_properties", "1 day");
-  if (isSuccess(propsCompressed)) {
-    log.info(`Compressed ${propsCompressed.output} history_properties chunk(s)`);
-  }
-
   log.info("Hypercore initialization complete");
   return createSuccess(undefined);
 }
