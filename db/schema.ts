@@ -96,3 +96,78 @@ export const hiddenItems = pgTable(
 );
 
 export type HiddenItemRecord = typeof hiddenItems.$inferSelect;
+
+// Alarm Rules Table - defines alarm conditions on individual metrics
+export const alarmRules = pgTable(
+  "alarm_rules",
+  {
+    id: text("id").primaryKey(),
+    groupId: text("group_id").notNull(),
+    nodeId: text("node_id").notNull(),
+    deviceId: text("device_id").notNull().default(""),
+    metricId: text("metric_id").notNull(),
+    name: text("name").notNull(),
+    ruleType: text("rule_type").notNull(), // 'true', 'false', 'above', 'below'
+    threshold: real("threshold"),
+    delaySec: bigint("delay_sec", { mode: "number" }).notNull().default(0),
+    enabled: boolean("enabled").notNull().default(true),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (t) => ({
+    idx_alarm_rules_metric: index("idx_alarm_rules_metric").on(
+      t.groupId,
+      t.nodeId,
+      t.deviceId,
+      t.metricId,
+    ),
+  }),
+);
+
+export type AlarmRuleRecord = typeof alarmRules.$inferSelect;
+
+// Alarm State Table - tracks current state of each alarm rule
+export const alarmState = pgTable("alarm_state", {
+  ruleId: text("rule_id")
+    .primaryKey()
+    .references(() => alarmRules.id, { onDelete: "cascade" }),
+  state: text("state").notNull().default("normal"), // 'normal', 'pending', 'active', 'acknowledged'
+  conditionMetAt: timestamp("condition_met_at", { withTimezone: true }),
+  activatedAt: timestamp("activated_at", { withTimezone: true }),
+  lastNotifiedAt: timestamp("last_notified_at", { withTimezone: true }),
+  lastValue: text("last_value"),
+  updatedAt: timestamp("updated_at", { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+});
+
+export type AlarmStateRecord = typeof alarmState.$inferSelect;
+
+// Alarm History Table - audit log of all alarm state transitions
+export const alarmHistory = pgTable(
+  "alarm_history",
+  {
+    id: text("id").primaryKey(),
+    ruleId: text("rule_id")
+      .notNull()
+      .references(() => alarmRules.id, { onDelete: "cascade" }),
+    fromState: text("from_state").notNull(),
+    toState: text("to_state").notNull(),
+    value: text("value"),
+    timestamp: timestamp("timestamp", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (t) => ({
+    idx_alarm_history_rule_time: index("idx_alarm_history_rule_time").on(
+      t.ruleId,
+      t.timestamp,
+    ),
+  }),
+);
+
+export type AlarmHistoryRecord = typeof alarmHistory.$inferSelect;

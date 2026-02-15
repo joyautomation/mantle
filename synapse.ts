@@ -56,6 +56,7 @@ import {
   unhideNode,
   type HiddenItem,
 } from "./hidden.ts";
+import { evaluateMetric } from "./alarms.ts";
 
 /**
  * Creates and returns a SparkplugHost instance based on the provided arguments or environment variables.
@@ -104,6 +105,19 @@ export function addHistoryEvents(
   ["nbirth", "dbirth", "ndata", "ddata"].forEach((topic) => {
     host.events.on(topic, async (topic: SparkplugTopic, message: UPayload) => {
       recordValues(db, topic, message);
+      // Evaluate alarm rules for each metric update
+      for (const metric of message.metrics ?? []) {
+        if (metric.name) {
+          evaluateMetric(
+            db,
+            topic.groupId,
+            topic.edgeNode,
+            topic.deviceId ?? "",
+            metric.name,
+            convertIfLong(metric.value),
+          );
+        }
+      }
       if (publisher) {
         await Promise.all(
           message.metrics?.map((metric) => {

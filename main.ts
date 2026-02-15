@@ -17,6 +17,8 @@ import {
   compressEligibleChunks,
   initializeHypercore,
 } from "./hypercore.ts";
+import { initializeAlarms, configureWebhook } from "./alarms.ts";
+import { addAlarmsToSchema } from "./alarms-schema.ts";
 import type { UMetric } from "sparkplug-payload/lib/sparkplugbpayload.js";
 
 /**
@@ -94,6 +96,14 @@ const main = createApp(
     addHistoryToSchema(builder, db);
     addMemoryUsageToSchema(builder);
     addHypercoreToSchema(builder, db);
+    addAlarmsToSchema(builder, db);
+
+    // Initialize alarm engine
+    configureWebhook(
+      Deno.env.get("MANTLE_ALARM_WEBHOOK_URL") ?? null,
+      Deno.env.get("MANTLE_ALARM_WEBHOOK_SECRET") ?? null,
+    );
+    await initializeAlarms(db);
 
     // Periodically compress eligible chunks (every hour).
     // The bgw scheduler policies are unreliable, so this ensures
