@@ -55,6 +55,7 @@ const pendingTimers = new Map<string, ReturnType<typeof setTimeout>>();
 /** Webhook configuration */
 let webhookUrl: string | null = null;
 let webhookSecret: string | null = null;
+let spaceShortId: string | null = null;
 
 // --- Helpers ---
 
@@ -133,6 +134,8 @@ async function sendWebhook(transition: AlarmTransition): Promise<void> {
       headers,
       body: JSON.stringify({
         eventId: nanoid(),
+        spaceShortId,
+        transition: transition.toState === "active" ? "active" : "normal",
         ...transition,
       }),
     });
@@ -662,9 +665,10 @@ export async function getAlarmHistory(
 /**
  * Configure the webhook endpoint for alarm notifications.
  */
-export function configureWebhook(url: string | null, secret: string | null): void {
+export function configureWebhook(url: string | null, secret: string | null, shortId: string | null): void {
   webhookUrl = url;
   webhookSecret = secret;
+  spaceShortId = shortId;
   if (url) {
     log.info(`Alarm webhook configured: ${url}`);
   }

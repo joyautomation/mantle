@@ -99,9 +99,12 @@ const main = createApp(
     addAlarmsToSchema(builder, db);
 
     // Initialize alarm engine
+    const dbName = Deno.env.get("MANTLE_DB_NAME") ?? "";
+    const shortId = dbName.startsWith("mantle-") ? dbName.slice(7) : dbName;
     configureWebhook(
       Deno.env.get("MANTLE_ALARM_WEBHOOK_URL") ?? null,
       Deno.env.get("MANTLE_ALARM_WEBHOOK_SECRET") ?? null,
+      shortId || null,
     );
     await initializeAlarms(db);
 
