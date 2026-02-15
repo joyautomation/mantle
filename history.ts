@@ -4,11 +4,8 @@ import {
   history as historyTable,
   historyPropertiesTable,
 } from "./db/schema.ts";
-import type { HistoryPropertyRecord, HistoryRecord } from "./db/schema.ts";
-import type {
-  UPayload,
-  UPropertyValue,
-} from "sparkplug-payload/lib/sparkplugbpayload.js";
+import type { HistoryRecord } from "./db/schema.ts";
+import type { UPayload } from "sparkplug-payload/lib/sparkplugbpayload.js";
 import Long from "long";
 import { log } from "./log.ts";
 import type { getBuilder } from "@joyautomation/conch";
@@ -20,24 +17,6 @@ import {
   isSuccess,
 } from "@joyautomation/dark-matter";
 import { GraphQLError } from "graphql";
-
-export function getPropertyType(property: UPropertyValue) {
-  if (
-    property.type.toLowerCase().startsWith("int") ||
-    property.type.toLowerCase().startsWith("uint")
-  ) {
-    return "intValue";
-  } else if (
-    property.type.toLowerCase() === "float" ||
-    property.type.toLowerCase() === "double"
-  ) {
-    return "floatValue";
-  } else if (property.type.toLowerCase() === "boolean") {
-    return "boolValue";
-  } else {
-    return "stringValue";
-  }
-}
 
 /**
  * Determines the value type of a SparkplugMetric.
@@ -127,43 +106,6 @@ export async function recordValues(
             ? (metric.value as boolean)
             : null,
         };
-        for (
-          const [propertyKey, property] of Object.entries(
-            metric.properties || {},
-          )
-        ) {
-          const valueType = getPropertyType(property);
-          const propertyRecord: HistoryPropertyRecord = {
-            groupId,
-            nodeId,
-            deviceId: deviceId || "",
-            metricId: metric.name || "",
-            timestamp,
-            propertyId: propertyKey,
-            intValue: valueType === "intValue"
-              ? Long.isLong(property.value)
-                ? property.value.toNumber()
-                : (property.value as number)
-              : null,
-            floatValue: valueType === "floatValue"
-              ? (property.value as number)
-              : null,
-            stringValue: valueType === "stringValue"
-              ? `${property.value}`
-              : null,
-            boolValue: valueType === "boolValue"
-              ? (property.value as boolean)
-              : null,
-          };
-          try {
-            await db.insert(historyPropertiesTable).values(propertyRecord);
-          } catch (error) {
-            log.error(
-              `Error recording metric property: ${metric.name}.${propertyKey}`,
-              error,
-            );
-          }
-        }
         try {
           await db.insert(historyTable).values(record);
         } catch (error) {

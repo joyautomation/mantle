@@ -110,7 +110,6 @@ const main = createApp(
     // compression keeps happening even during long-running instances.
     setInterval(async () => {
       await compressEligibleChunks(db, "history", "1 hour");
-      await compressEligibleChunks(db, "history_properties", "1 day");
     }, 60 * 60 * 1000);
 
     return builder;
