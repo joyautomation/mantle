@@ -145,7 +145,7 @@ export function addHistoryEvents(
             const key = JSON.stringify({
               groupId: topic.groupId,
               nodeId: topic.edgeNode,
-              deviceId: topic.deviceId,
+              deviceId: topic.deviceId ?? "",
               metricId: metric.name,
             });
             publisher.set(
@@ -165,7 +165,7 @@ export function addHistoryEvents(
             ...metric,
             groupId: topic.groupId,
             nodeId: topic.edgeNode,
-            deviceId: topic.deviceId,
+            deviceId: topic.deviceId ?? "",
             metricId: metric.name,
           })),
         );
