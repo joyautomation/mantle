@@ -26,6 +26,13 @@ import {
   deleteNodeHistory,
   recordValues,
 } from "./history.ts";
+import {
+  extractProperties,
+  upsertMetricProperties,
+  deleteMetricPropertiesForNode,
+  deleteMetricPropertiesForDevice,
+  deleteMetricPropertiesForMetric,
+} from "./metric-properties.ts";
 import type { Db } from "./db/db.ts";
 import { pubsub } from "./pubsub.ts";
 import type { UPayload } from "sparkplug-payload/lib/sparkplugbpayload.js";
@@ -105,7 +112,7 @@ export function addHistoryEvents(
   ["nbirth", "dbirth", "ndata", "ddata"].forEach((topic) => {
     host.events.on(topic, async (topic: SparkplugTopic, message: UPayload) => {
       recordValues(db, topic, message);
-      // Evaluate alarm rules for each metric update
+      // Evaluate alarm rules and persist metric properties
       for (const metric of message.metrics ?? []) {
         if (metric.name) {
           evaluateMetric(
@@ -116,6 +123,20 @@ export function addHistoryEvents(
             metric.name,
             convertIfLong(metric.value),
           );
+          // Persist Sparkplug B properties (fire-and-forget)
+          if (metric.properties) {
+            const props = extractProperties(metric);
+            if (props) {
+              upsertMetricProperties(
+                db,
+                topic.groupId,
+                topic.edgeNode,
+                topic.deviceId ?? "",
+                metric.name,
+                props,
+              );
+            }
+          }
         }
       }
       if (publisher) {
@@ -596,6 +617,9 @@ export function addHostToSchema(
         // Delete from hidden_items table
         await deleteHiddenItemsForNode(db, args.groupId, args.nodeId);
 
+        // Delete from metric_properties table
+        await deleteMetricPropertiesForNode(db, args.groupId, args.nodeId);
+
         return true;
       },
     })
@@ -629,6 +653,9 @@ export function addHostToSchema(
 
         // Delete from hidden_items table
         await deleteHiddenItemsForDevice(db, args.groupId, args.nodeId, args.deviceId);
+
+        // Delete from metric_properties table
+        await deleteMetricPropertiesForDevice(db, args.groupId, args.nodeId, args.deviceId);
 
         return true;
       },
@@ -674,6 +701,9 @@ export function addHostToSchema(
 
         // Delete from hidden_items table
         await deleteHiddenItemForMetric(db, args.groupId, args.nodeId, args.deviceId || null, args.metricId);
+
+        // Delete from metric_properties table
+        await deleteMetricPropertiesForMetric(db, args.groupId, args.nodeId, args.deviceId || null, args.metricId);
 
         return true;
       },

@@ -18,6 +18,7 @@ import {
 } from "@joyautomation/dark-matter";
 import { log } from "./log.ts";
 import { pubsub } from "./pubsub.ts";
+import { getMetricDescription } from "./metric-properties.ts";
 
 // --- Types ---
 
@@ -34,6 +35,7 @@ export type AlarmTransition = {
   fromState: AlarmStateName;
   toState: AlarmStateName;
   metricPath: string;
+  metricDescription: string | null;
   value: string | null;
   ruleType: AlarmRuleType;
   threshold: number | null;
@@ -191,6 +193,14 @@ async function transitionState(
     timestamp: now,
   });
 
+  const description = await getMetricDescription(
+    db,
+    rule.groupId,
+    rule.nodeId,
+    rule.deviceId,
+    rule.metricId,
+  );
+
   const transition: AlarmTransition = {
     ruleId: rule.id,
     ruleName: rule.name,
@@ -202,6 +212,7 @@ async function transitionState(
       rule.deviceId,
       rule.metricId,
     ),
+    metricDescription: description,
     value,
     ruleType: rule.ruleType as AlarmRuleType,
     threshold: rule.threshold,
@@ -559,12 +570,6 @@ export async function acknowledgeAlarm(
 
     if (ruleRows.length > 0) {
       const rule = ruleRows[0];
-      const cachedKey = metricKey(
-        rule.groupId,
-        rule.nodeId,
-        rule.deviceId,
-        rule.metricId,
-      );
 
       await db.insert(alarmHistory).values({
         id: nanoid(),
@@ -574,6 +579,14 @@ export async function acknowledgeAlarm(
         value: current.lastValue,
         timestamp: now,
       });
+
+      const description = await getMetricDescription(
+        db,
+        rule.groupId,
+        rule.nodeId,
+        rule.deviceId,
+        rule.metricId,
+      );
 
       pubsub.publish("alarmStateChange", {
         ruleId,
@@ -586,6 +599,7 @@ export async function acknowledgeAlarm(
           rule.deviceId,
           rule.metricId,
         ),
+        metricDescription: description,
         value: current.lastValue,
         ruleType: rule.ruleType as AlarmRuleType,
         threshold: rule.threshold,

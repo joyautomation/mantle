@@ -2,6 +2,7 @@ import {
   bigint,
   boolean,
   index,
+  jsonb,
   pgTable,
   primaryKey,
   real,
@@ -96,6 +97,26 @@ export const hiddenItems = pgTable(
 );
 
 export type HiddenItemRecord = typeof hiddenItems.$inferSelect;
+
+// Metric Properties Table - persists Sparkplug B metric properties as JSONB
+// Each property key maps to { value, type, updatedAt }
+export const metricProperties = pgTable(
+  "metric_properties",
+  {
+    groupId: text("group_id").notNull(),
+    nodeId: text("node_id").notNull(),
+    deviceId: text("device_id").notNull().default(""),
+    metricId: text("metric_id").notNull(),
+    properties: jsonb("properties").notNull().default("{}"),
+  },
+  (t) => ({
+    pk: primaryKey({
+      columns: [t.groupId, t.nodeId, t.deviceId, t.metricId],
+    }),
+  }),
+);
+
+export type MetricPropertiesRecord = typeof metricProperties.$inferSelect;
 
 // Alarm Rules Table - defines alarm conditions on individual metrics
 export const alarmRules = pgTable(

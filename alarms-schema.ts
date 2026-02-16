@@ -20,6 +20,7 @@ import type {
   AlarmStateRecord,
   AlarmHistoryRecord,
 } from "./db/schema.ts";
+import { getMetricDescription } from "./metric-properties.ts";
 
 /**
  * Add alarm-related types, queries, mutations, and subscriptions to the GraphQL schema.
@@ -85,6 +86,19 @@ export function addAlarmsToSchema(
         type: AlarmRuleRef,
         resolve: (parent) => parent.rule,
       }),
+      metricDescription: t.field({
+        type: "String",
+        nullable: true,
+        resolve: async (parent) => {
+          return getMetricDescription(
+            db,
+            parent.rule.groupId,
+            parent.rule.nodeId,
+            parent.rule.deviceId,
+            parent.rule.metricId,
+          );
+        },
+      }),
     }),
   });
 
@@ -114,6 +128,7 @@ export function addAlarmsToSchema(
       fromState: t.exposeString("fromState"),
       toState: t.exposeString("toState"),
       metricPath: t.exposeString("metricPath"),
+      metricDescription: t.exposeString("metricDescription", { nullable: true }),
       value: t.exposeString("value", { nullable: true }),
       ruleType: t.exposeString("ruleType"),
       threshold: t.exposeFloat("threshold", { nullable: true }),
