@@ -11,6 +11,8 @@ import { log } from "./log.ts";
 import type { getBuilder } from "@joyautomation/conch";
 import { GraphQLError } from "graphql";
 
+const historianEnabled = Deno.env.get("MANTLE_HISTORIAN_ENABLED") !== "false";
+
 // Types for storage stats
 type TableStorageStats = {
   tableName: string;
@@ -417,6 +419,11 @@ export function addHypercoreToSchema(
       type: StorageStatsRef,
       description: "Get storage statistics including compression info",
       resolve: async () => {
+        if (!historianEnabled) {
+          throw new GraphQLError(
+            "Historian is not enabled for this space.",
+          );
+        }
         const result = await getStorageStats(db);
         if (isSuccess(result)) {
           return result.output;
