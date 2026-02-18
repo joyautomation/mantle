@@ -20,6 +20,8 @@ import {
   type SparkplugTopic,
 } from "@joyautomation/synapse";
 import type { Args } from "@std/cli";
+
+const historianEnabled = Deno.env.get("MANTLE_HISTORIAN_ENABLED") !== "false";
 import {
   deleteDeviceHistory,
   deleteMetricHistory,
@@ -111,7 +113,9 @@ export function addHistoryEvents(
 ) {
   ["nbirth", "dbirth", "ndata", "ddata"].forEach((topic) => {
     host.events.on(topic, async (topic: SparkplugTopic, message: UPayload) => {
-      recordValues(db, topic, message);
+      if (historianEnabled) {
+        recordValues(db, topic, message);
+      }
       // Evaluate alarm rules and persist metric properties
       for (const metric of message.metrics ?? []) {
         if (metric.name) {

@@ -21,6 +21,8 @@ import { initializeAlarms, configureWebhook } from "./alarms.ts";
 import { addAlarmsToSchema } from "./alarms-schema.ts";
 import type { UMetric } from "sparkplug-payload/lib/sparkplugbpayload.js";
 
+const historianEnabled = Deno.env.get("MANTLE_HISTORIAN_ENABLED") !== "false";
+
 /**
  * Internal utility functions exposed for testing purposes
  * @internal
@@ -57,8 +59,10 @@ const main = createApp(
   async (builder, args) => {
     const { db } = await _internal.getDb(args);
 
-    // Initialize hypercore (TimescaleDB compression) if available
-    await initializeHypercore(db);
+    // Initialize hypercore (TimescaleDB compression) if historian is enabled
+    if (historianEnabled) {
+      await initializeHypercore(db);
+    }
 
     const publisherResult = await _internal.getPublisherRetry(args, 5, 1000);
     const subscriberResult = await _internal.getSubscriberRetry(args, 5, 1000);
@@ -111,9 +115,11 @@ const main = createApp(
     // Periodically compress eligible chunks (every hour).
     // The bgw scheduler policies are unreliable, so this ensures
     // compression keeps happening even during long-running instances.
-    setInterval(async () => {
-      await compressEligibleChunks(db, "history", "1 hour");
-    }, 60 * 60 * 1000);
+    if (historianEnabled) {
+      setInterval(async () => {
+        await compressEligibleChunks(db, "history", "1 hour");
+      }, 60 * 60 * 1000);
+    }
 
     return builder;
   }

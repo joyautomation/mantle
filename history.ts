@@ -18,6 +18,8 @@ import {
 } from "@joyautomation/dark-matter";
 import { GraphQLError } from "graphql";
 
+const historianEnabled = Deno.env.get("MANTLE_HISTORIAN_ENABLED") !== "false";
+
 /**
  * Determines the value type of a SparkplugMetric.
  * @param {SparkplugMetric} metric - The SparkplugMetric to analyze.
@@ -510,6 +512,11 @@ export function addHistoryToSchema(
         raw: t.arg.boolean({ defaultValue: false }),
       },
       resolve: async (_parent, args) => {
+        if (!historianEnabled) {
+          throw new GraphQLError(
+            "Historian is not enabled for this space. Enable the Historian add-on to access historical data.",
+          );
+        }
         const result = await getHistory({ ...args, db });
         if (isSuccess(result)) {
           return result.output;
@@ -545,6 +552,11 @@ export function addHistoryToSchema(
     t.field({
       type: UsageStatsRef,
       resolve: async () => {
+        if (!historianEnabled) {
+          throw new GraphQLError(
+            "Historian is not enabled for this space.",
+          );
+        }
         const result = await getUsage({ db });
         if (isSuccess(result)) {
           return result.output;
@@ -552,5 +564,11 @@ export function addHistoryToSchema(
           throw new GraphQLError(result.error);
         }
       },
+    }));
+
+  builder.queryField("historianEnabled", (t) =>
+    t.field({
+      type: "Boolean",
+      resolve: () => historianEnabled,
     }));
 }
