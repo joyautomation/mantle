@@ -12,6 +12,10 @@ import type { getBuilder } from "@joyautomation/conch";
 import { GraphQLError } from "graphql";
 
 const historianEnabled = Deno.env.get("MANTLE_HISTORIAN_ENABLED") !== "false";
+const retentionDays = parseInt(
+  Deno.env.get("MANTLE_RETENTION_DAYS") || "30",
+  10,
+);
 
 // Types for storage stats
 type TableStorageStats = {
@@ -248,6 +252,117 @@ export async function initializeHypercore(db: Db): Promise<Result<void>> {
 }
 
 /**
+ * Get the current retention policy for a hypertable, if any.
+ */
+export async function getRetentionPolicy(
+  db: Db,
+  tableName: string,
+): Promise<Result<{ exists: boolean; intervalDays: number | null }>> {
+  try {
+    const result = await db.execute(sql.raw(`
+      SELECT config->>'drop_after' as drop_after
+      FROM timescaledb_information.jobs
+      WHERE proc_name = 'policy_retention'
+      AND hypertable_name = '${tableName}'
+      LIMIT 1
+    `));
+
+    if (result.rows.length > 0) {
+      const dropAfter = String(result.rows[0].drop_after);
+      const daysMatch = dropAfter.match(/(\d+)\s*days?/i);
+      return createSuccess({
+        exists: true,
+        intervalDays: daysMatch ? parseInt(daysMatch[1], 10) : null,
+      });
+    }
+
+    return createSuccess({ exists: false, intervalDays: null });
+  } catch (error) {
+    return createFail(createErrorString(error));
+  }
+}
+
+/**
+ * Set the retention policy for a hypertable.
+ * Removes any existing policy first, then adds one with the specified interval.
+ */
+export async function setRetentionPolicy(
+  db: Db,
+  tableName: string,
+  days: number,
+): Promise<Result<void>> {
+  try {
+    // Remove existing policy if any
+    try {
+      await db.execute(
+        sql.raw(`SELECT remove_retention_policy('${tableName}')`),
+      );
+      log.info(`Removed existing retention policy for ${tableName}`);
+    } catch {
+      // No existing policy — that's fine
+    }
+
+    // Add new retention policy
+    await db.execute(
+      sql.raw(
+        `SELECT add_retention_policy('${tableName}', INTERVAL '${days} days')`,
+      ),
+    );
+    log.info(
+      `Added retention policy for ${tableName}: drop data older than ${days} days`,
+    );
+    return createSuccess(undefined);
+  } catch (error) {
+    return createFail(createErrorString(error));
+  }
+}
+
+/**
+ * Initialize retention policy on the history table.
+ * Should be called on startup regardless of historian status.
+ */
+export async function initializeRetention(db: Db): Promise<Result<void>> {
+  log.info(`Checking retention policy (configured: ${retentionDays} days)...`);
+
+  const availableResult = await isHypercoreAvailable(db);
+  if (!isSuccess(availableResult)) {
+    log.warn(
+      `Could not check TimescaleDB availability: ${availableResult.error}`,
+    );
+    return createFail(availableResult.error);
+  }
+
+  if (!availableResult.output) {
+    log.info("TimescaleDB not available, skipping retention policy");
+    return createSuccess(undefined);
+  }
+
+  const currentPolicy = await getRetentionPolicy(db, "history");
+  if (!isSuccess(currentPolicy)) {
+    log.error(`Failed to get retention policy: ${currentPolicy.error}`);
+    return createFail(currentPolicy.error);
+  }
+
+  const needsUpdate =
+    !currentPolicy.output.exists ||
+    currentPolicy.output.intervalDays !== retentionDays;
+
+  if (needsUpdate) {
+    const result = await setRetentionPolicy(db, "history", retentionDays);
+    if (!isSuccess(result)) {
+      log.error(`Failed to set retention policy: ${result.error}`);
+      return createFail(result.error);
+    }
+  } else {
+    log.info(
+      `Retention policy already set to ${retentionDays} days, no change needed`,
+    );
+  }
+
+  return createSuccess(undefined);
+}
+
+/**
  * Get storage statistics including compression info
  */
 export async function getStorageStats(db: Db): Promise<Result<StorageStats>> {
@@ -430,6 +545,36 @@ export function addHypercoreToSchema(
         } else {
           throw new GraphQLError(result.error);
         }
+      },
+    })
+  );
+
+  // Retention policy type
+  const RetentionPolicyRef = builder.objectRef<{
+    exists: boolean;
+    intervalDays: number | null;
+    configuredDays: number;
+  }>("RetentionPolicy");
+
+  RetentionPolicyRef.implement({
+    fields: (t) => ({
+      exists: t.exposeBoolean("exists"),
+      intervalDays: t.exposeInt("intervalDays", { nullable: true }),
+      configuredDays: t.exposeInt("configuredDays"),
+    }),
+  });
+
+  // Query: retentionPolicy
+  builder.queryField("retentionPolicy", (t) =>
+    t.field({
+      type: RetentionPolicyRef,
+      description: "Get the current data retention policy configuration",
+      resolve: async () => {
+        const result = await getRetentionPolicy(db, "history");
+        if (isSuccess(result)) {
+          return { ...result.output, configuredDays: retentionDays };
+        }
+        throw new GraphQLError(result.error);
       },
     })
   );
