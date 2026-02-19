@@ -16,6 +16,7 @@ import {
   addHypercoreToSchema,
   compressEligibleChunks,
   initializeHypercore,
+  initializeRetention,
 } from "./hypercore.ts";
 import { initializeAlarms, configureWebhook } from "./alarms.ts";
 import { addAlarmsToSchema } from "./alarms-schema.ts";
@@ -58,6 +59,9 @@ const main = createApp(
   log,
   async (builder, args) => {
     const { db } = await _internal.getDb(args);
+
+    // Always apply retention policy (30 days default, or longer for historian spaces)
+    await initializeRetention(db);
 
     // Initialize hypercore (TimescaleDB compression) if historian is enabled
     if (historianEnabled) {
