@@ -2,6 +2,7 @@ import { nanoid } from "nanoid";
 import {
   createHost,
   flattenHostGroups,
+  getTemplateDefinitions,
   publishNodeCommand,
   publishDeviceCommand,
   publish,
@@ -249,6 +250,20 @@ export function addHostToSchema(
       properties: t.expose("properties", {
         type: [SparkplugMetricPropertyRef],
       }),
+      templateRef: t.field({
+        type: "String",
+        nullable: true,
+        resolve: (parent) =>
+          (parent as SparkplugMetricFlat & { templateRef?: string })
+            .templateRef ?? null,
+      }),
+      templateInstance: t.field({
+        type: "String",
+        nullable: true,
+        resolve: (parent) =>
+          (parent as SparkplugMetricFlat & { templateInstance?: string })
+            .templateInstance ?? null,
+      }),
     }),
   });
   SparkplugMetricPropertyRef.implement({
@@ -369,6 +384,51 @@ export function addHostToSchema(
           return result.output;
         }
         throw new GraphQLError(result.error);
+      },
+    }));
+
+  // Template definition types
+  const TemplateMemberRef = builder.objectRef<{
+    name: string;
+    type: string;
+  }>("TemplateMember");
+  TemplateMemberRef.implement({
+    fields: (t) => ({
+      name: t.exposeString("name"),
+      type: t.exposeString("type"),
+    }),
+  });
+
+  const TemplateDefinitionRef = builder.objectRef<{
+    name: string;
+    version: string | null;
+    members: { name: string; type: string }[];
+  }>("TemplateDefinition");
+  TemplateDefinitionRef.implement({
+    fields: (t) => ({
+      name: t.exposeString("name"),
+      version: t.field({
+        type: "String",
+        nullable: true,
+        resolve: (parent) => parent.version,
+      }),
+      members: t.expose("members", { type: [TemplateMemberRef] }),
+    }),
+  });
+
+  builder.queryField("templateDefinitions", (t) =>
+    t.field({
+      type: [TemplateDefinitionRef],
+      resolve: () => {
+        const defs = getTemplateDefinitions(host);
+        return Array.from(defs.entries()).map(([name, template]) => ({
+          name,
+          version: template.version ?? null,
+          members: (template.metrics ?? []).map((m) => ({
+            name: m.name ?? "",
+            type: m.type ?? "Unknown",
+          })),
+        }));
       },
     }));
   builder.subscriptionField("metricUpdate", (t) =>
