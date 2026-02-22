@@ -5,7 +5,7 @@
     "jsr:@joyautomation/coral@^0.0.12": "0.0.12",
     "jsr:@joyautomation/dark-matter@^0.0.18": "0.0.18",
     "jsr:@joyautomation/dark-matter@^0.0.26": "0.0.26",
-    "jsr:@joyautomation/synapse@^0.0.97": "0.0.97",
+    "jsr:@joyautomation/synapse@^0.0.98": "0.0.98",
     "jsr:@std/assert@1": "1.0.14",
     "jsr:@std/assert@^1.0.13": "1.0.14",
     "jsr:@std/async@^1.0.13": "1.0.14",
@@ -20,7 +20,7 @@
     "jsr:@std/internal@^1.0.7": "1.0.12",
     "jsr:@std/path@^1.1.1": "1.1.2",
     "jsr:@std/testing@^1.0.2": "1.0.15",
-    "npm:@joyautomation/sparkplug-payload@^1.0.6": "1.0.6",
+    "npm:@joyautomation/sparkplug-payload@^1.0.7": "1.0.7",
     "npm:@pothos/core@^4.2.0": "4.12.0_graphql@16.12.0",
     "npm:@types/node@*": "24.2.0",
     "npm:@types/pg@^8.11.10": "8.16.0",
@@ -64,8 +64,8 @@
     "@joyautomation/dark-matter@0.0.26": {
       "integrity": "7276ddefea2448937b72ada91b3adb86efe4f01032c1dd7915900b59201cba2e"
     },
-    "@joyautomation/synapse@0.0.97": {
-      "integrity": "228e7dd259948670f5595131793f0762e67700ebfa8dfc0226124f0bc3341437",
+    "@joyautomation/synapse@0.0.98": {
+      "integrity": "f726cc7a791c59648b158df55983aab92972af872da7d76e8d2ca16f6875afb1",
       "dependencies": [
         "jsr:@joyautomation/coral",
         "jsr:@joyautomation/dark-matter@^0.0.26",
@@ -482,8 +482,8 @@
         "tslib"
       ]
     },
-    "@joyautomation/sparkplug-payload@1.0.6": {
-      "integrity": "sha512-if35b0pHLfBWOkgc6ymhlB5hsIFIyeVdQ11wCOximX+k0Uk/mWsKkowwIfhiLbBiJ/rcQNHHcFjJPutnewZHcA==",
+    "@joyautomation/sparkplug-payload@1.0.7": {
+      "integrity": "sha512-Bl61//Shh/K95+0r8KtyP8S1qfWhZmH1h7RgdoVD1y/w8mf9Zi3JMAYhcI5rPPyrprhU1lbp3kRPYkJx5+6opQ==",
       "dependencies": [
         "@types/long",
         "long@4.0.0",
@@ -1193,12 +1193,12 @@
       "jsr:@joyautomation/conch@^0.0.29",
       "jsr:@joyautomation/coral@^0.0.12",
       "jsr:@joyautomation/dark-matter@^0.0.18",
-      "jsr:@joyautomation/synapse@^0.0.97",
+      "jsr:@joyautomation/synapse@^0.0.98",
       "jsr:@std/assert@1",
       "jsr:@std/cli@^1.0.6",
       "jsr:@std/expect@^1.0.3",
       "jsr:@std/testing@^1.0.2",
-      "npm:@joyautomation/sparkplug-payload@^1.0.6",
+      "npm:@joyautomation/sparkplug-payload@^1.0.7",
       "npm:@pothos/core@^4.2.0",
       "npm:@types/pg@^8.11.10",
       "npm:date-fns@^4.1.0",
