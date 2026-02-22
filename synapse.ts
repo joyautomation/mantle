@@ -250,12 +250,12 @@ export function addHostToSchema(
       properties: t.expose("properties", {
         type: [SparkplugMetricPropertyRef],
       }),
-      templateRef: t.field({
-        type: "String",
+      templateChain: t.field({
+        type: ["String"],
         nullable: true,
         resolve: (parent) =>
-          (parent as SparkplugMetricFlat & { templateRef?: string })
-            .templateRef ?? null,
+          (parent as SparkplugMetricFlat & { templateChain?: string[] })
+            .templateChain ?? null,
       }),
       templateInstance: t.field({
         type: "String",
