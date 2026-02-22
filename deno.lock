@@ -5,13 +5,12 @@
     "jsr:@joyautomation/coral@^0.0.12": "0.0.12",
     "jsr:@joyautomation/dark-matter@^0.0.18": "0.0.18",
     "jsr:@joyautomation/dark-matter@^0.0.26": "0.0.26",
-    "jsr:@joyautomation/synapse@^0.0.93": "0.0.93",
+    "jsr:@joyautomation/synapse@^0.0.94": "0.0.94",
     "jsr:@std/assert@1": "1.0.14",
     "jsr:@std/assert@^1.0.13": "1.0.14",
     "jsr:@std/async@^1.0.13": "1.0.14",
     "jsr:@std/cli@^1.0.6": "1.0.27",
     "jsr:@std/data-structures@^1.0.9": "1.0.9",
-    "jsr:@std/expect@*": "1.0.16",
     "jsr:@std/expect@^1.0.3": "1.0.16",
     "jsr:@std/fmt@^1.0.2": "1.0.9",
     "jsr:@std/fmt@^1.0.9": "1.0.9",
@@ -20,7 +19,6 @@
     "jsr:@std/internal@^1.0.12": "1.0.12",
     "jsr:@std/internal@^1.0.7": "1.0.12",
     "jsr:@std/path@^1.1.1": "1.1.2",
-    "jsr:@std/testing@*": "1.0.15",
     "jsr:@std/testing@^1.0.2": "1.0.15",
     "npm:@joyautomation/sparkplug-payload@^1.0.4": "1.0.5",
     "npm:@joyautomation/sparkplug-payload@^1.0.5": "1.0.5",
@@ -67,8 +65,8 @@
     "@joyautomation/dark-matter@0.0.26": {
       "integrity": "7276ddefea2448937b72ada91b3adb86efe4f01032c1dd7915900b59201cba2e"
     },
-    "@joyautomation/synapse@0.0.93": {
-      "integrity": "96d2260d893fd0c49cf229b40be21ddbf293347f0bccbedcc6b96f70380c732e",
+    "@joyautomation/synapse@0.0.94": {
+      "integrity": "49ee56ae7068f014605e6d488881a5b194d2ac88be3e43428e9a2e4d7ccf024d",
       "dependencies": [
         "jsr:@joyautomation/coral",
         "jsr:@joyautomation/dark-matter@^0.0.26",
@@ -1196,7 +1194,7 @@
       "jsr:@joyautomation/conch@^0.0.29",
       "jsr:@joyautomation/coral@^0.0.12",
       "jsr:@joyautomation/dark-matter@^0.0.18",
-      "jsr:@joyautomation/synapse@^0.0.93",
+      "jsr:@joyautomation/synapse@^0.0.94",
       "jsr:@std/assert@1",
       "jsr:@std/cli@^1.0.6",
       "jsr:@std/expect@^1.0.3",
