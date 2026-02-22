@@ -26,6 +26,7 @@ const historianEnabled = Deno.env.get("MANTLE_HISTORIAN_ENABLED") !== "false";
  * @returns {string} The determined value type as a string.
  */
 export function getValueType(metric: SparkplugMetric) {
+  if (!metric.type) return "floatValue";
   if (
     metric.type.toLowerCase().startsWith("int") ||
     metric.type.toLowerCase().startsWith("uint")
