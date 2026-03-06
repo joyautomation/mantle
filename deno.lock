@@ -5,7 +5,7 @@
     "jsr:@joyautomation/coral@^0.0.12": "0.0.12",
     "jsr:@joyautomation/dark-matter@^0.0.18": "0.0.18",
     "jsr:@joyautomation/dark-matter@^0.0.26": "0.0.26",
-    "jsr:@joyautomation/synapse@^0.0.98": "0.0.98",
+    "jsr:@joyautomation/synapse@^0.0.99": "0.0.99",
     "jsr:@std/assert@1": "1.0.14",
     "jsr:@std/assert@^1.0.13": "1.0.14",
     "jsr:@std/async@^1.0.13": "1.0.14",
@@ -24,7 +24,6 @@
     "npm:@pothos/core@^4.2.0": "4.12.0_graphql@16.12.0",
     "npm:@types/node@*": "24.2.0",
     "npm:@types/pg@^8.11.10": "8.16.0",
-    "npm:date-fns@^3.6.0": "3.6.0",
     "npm:date-fns@^4.1.0": "4.1.0",
     "npm:drizzle-kit@~0.30.4": "0.30.6_esbuild@0.19.12",
     "npm:drizzle-orm@~0.39.1": "0.39.3_@types+pg@8.16.0_pg@8.18.0_postgres@3.4.8",
@@ -64,8 +63,8 @@
     "@joyautomation/dark-matter@0.0.26": {
       "integrity": "7276ddefea2448937b72ada91b3adb86efe4f01032c1dd7915900b59201cba2e"
     },
-    "@joyautomation/synapse@0.0.98": {
-      "integrity": "f726cc7a791c59648b158df55983aab92972af872da7d76e8d2ca16f6875afb1",
+    "@joyautomation/synapse@0.0.99": {
+      "integrity": "aa08235ee52b9f1926bf660a66849036669d35ebf069a47f5d2f9348eca09122",
       "dependencies": [
         "jsr:@joyautomation/coral",
         "jsr:@joyautomation/dark-matter@^0.0.26",
@@ -706,9 +705,6 @@
         "tslib"
       ]
     },
-    "date-fns@3.6.0": {
-      "integrity": "sha512-fRHTG8g/Gif+kSh50gaGEdToemgfj74aRX3swtiouboip5JDLAyDE9F11nHMIcvOaXeOC6D7SpNhi7uFyB7Uww=="
-    },
     "date-fns@4.1.0": {
       "integrity": "sha512-Ukq0owbQXxa/U3EGtsdVBkR1w7KOQ5gIBqdH2hkvknzZPYvBxb/aa6E8L7tmjFtkwZBu3UXBbjIgPo/Ez4xaNg=="
     },
@@ -1193,7 +1189,7 @@
       "jsr:@joyautomation/conch@^0.0.29",
       "jsr:@joyautomation/coral@^0.0.12",
       "jsr:@joyautomation/dark-matter@^0.0.18",
-      "jsr:@joyautomation/synapse@^0.0.98",
+      "jsr:@joyautomation/synapse@^0.0.99",
       "jsr:@std/assert@1",
       "jsr:@std/cli@^1.0.6",
       "jsr:@std/expect@^1.0.3",
