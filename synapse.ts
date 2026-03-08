@@ -66,7 +66,7 @@ import {
   unhideNode,
   type HiddenItem,
 } from "./hidden.ts";
-import { evaluateMetric } from "./alarms.ts";
+import { evaluateMetric, evaluateNodeOffline, evaluateOffline } from "./alarms.ts";
 
 /**
  * Creates and returns a SparkplugHost instance based on the provided arguments or environment variables.
@@ -176,6 +176,20 @@ export function addHistoryEvents(
         );
       }
     });
+  });
+
+  // Offline alarm evaluation: BIRTH clears, DEATH triggers
+  host.events.on("nbirth", (topic: SparkplugTopic) => {
+    evaluateNodeOffline(db, topic.groupId, topic.edgeNode, false);
+  });
+  host.events.on("dbirth", (topic: SparkplugTopic) => {
+    evaluateOffline(db, topic.groupId, topic.edgeNode, topic.deviceId ?? "", false);
+  });
+  host.events.on("ndeath", (topic: SparkplugTopic) => {
+    evaluateNodeOffline(db, topic.groupId, topic.edgeNode, true);
+  });
+  host.events.on("ddeath", (topic: SparkplugTopic) => {
+    evaluateOffline(db, topic.groupId, topic.edgeNode, topic.deviceId ?? "", true);
   });
 }
 

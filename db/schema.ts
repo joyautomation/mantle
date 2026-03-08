@@ -128,7 +128,7 @@ export const alarmRules = pgTable(
     deviceId: text("device_id").notNull().default(""),
     metricId: text("metric_id").notNull(),
     name: text("name").notNull(),
-    ruleType: text("rule_type").notNull(), // 'true', 'false', 'above', 'below'
+    ruleType: text("rule_type").notNull(), // 'true', 'false', 'above', 'below', 'offline'
     threshold: real("threshold"),
     delaySec: bigint("delay_sec", { mode: "number" }).notNull().default(0),
     enabled: boolean("enabled").notNull().default(true),

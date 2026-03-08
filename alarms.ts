@@ -22,7 +22,7 @@ import { getMetricDescription } from "./metric-properties.ts";
 
 // --- Types ---
 
-export type AlarmRuleType = "true" | "false" | "above" | "below";
+export type AlarmRuleType = "true" | "false" | "above" | "below" | "offline";
 export type AlarmStateName =
   | "normal"
   | "pending"
@@ -51,6 +51,12 @@ type CachedRule = AlarmRuleRecord & {
 /** Map from metricKey (groupId|nodeId|deviceId|metricId) to rules targeting that metric */
 const rulesByMetric = new Map<string, CachedRule[]>();
 
+/** Map from nodeKey (groupId|nodeId) to offline rules targeting that node */
+const offlineRulesByNode = new Map<string, CachedRule[]>();
+
+/** Map from deviceKey (groupId|nodeId|deviceId) to offline rules targeting that device */
+const offlineRulesByDevice = new Map<string, CachedRule[]>();
+
 /** Map from ruleId to the pending delay timeout */
 const pendingTimers = new Map<string, ReturnType<typeof setTimeout>>();
 
@@ -76,6 +82,11 @@ function metricPath(
   deviceId: string,
   metricId: string,
 ): string {
+  if (!metricId) {
+    return deviceId
+      ? `${groupId}/${nodeId}/${deviceId}`
+      : `${groupId}/${nodeId}`;
+  }
   return deviceId
     ? `${groupId}/${nodeId}/${deviceId}/${metricId}`
     : `${groupId}/${nodeId}/${metricId}`;
@@ -381,7 +392,158 @@ export async function evaluateMetric(
   }
 }
 
+/**
+ * Evaluate offline alarm rules when a node or device goes offline (NDEATH/DDEATH)
+ * or comes back online (NBIRTH/DBIRTH).
+ */
+export async function evaluateOffline(
+  db: Db,
+  groupId: string,
+  nodeId: string,
+  deviceId: string,
+  isOffline: boolean,
+): Promise<void> {
+  // Find matching rules
+  let rules: CachedRule[] = [];
+
+  if (deviceId) {
+    // Device-level offline rule
+    const deviceKey = `${groupId}|${nodeId}|${deviceId}`;
+    rules = offlineRulesByDevice.get(deviceKey) ?? [];
+  } else {
+    // Node-level offline rule
+    const nodeKey = `${groupId}|${nodeId}`;
+    rules = offlineRulesByNode.get(nodeKey) ?? [];
+  }
+
+  if (rules.length === 0) return;
+
+  for (const rule of rules) {
+    if (!rule.enabled) continue;
+
+    try {
+      const stateRows = await db
+        .select()
+        .from(alarmState)
+        .where(eq(alarmState.ruleId, rule.id));
+      const currentState = stateRows[0];
+      if (!currentState) continue;
+
+      const state = currentState.state as AlarmStateName;
+      const valueStr = isOffline ? "offline" : "online";
+      const now = new Date();
+
+      if (isOffline) {
+        // Node/device went offline — condition met
+        switch (state) {
+          case "normal":
+            if (rule.delaySec > 0) {
+              await transitionState(
+                db,
+                rule,
+                "normal",
+                "pending",
+                valueStr,
+                now,
+              );
+              schedulePendingTimer(
+                db,
+                rule,
+                rule.delaySec * 1000,
+                valueStr,
+              );
+            } else {
+              await transitionState(
+                db,
+                rule,
+                "normal",
+                "active",
+                valueStr,
+                now,
+              );
+            }
+            break;
+          case "pending":
+          case "active":
+          case "acknowledged":
+            // Already alarmed — update last value
+            await db
+              .update(alarmState)
+              .set({ lastValue: valueStr, updatedAt: now })
+              .where(eq(alarmState.ruleId, rule.id));
+            break;
+        }
+      } else {
+        // Node/device came back online — condition cleared
+        switch (state) {
+          case "pending":
+            cancelPendingTimer(rule.id);
+            await transitionState(
+              db,
+              rule,
+              "pending",
+              "normal",
+              valueStr,
+              now,
+            );
+            break;
+          case "active":
+          case "acknowledged":
+            await transitionState(db, rule, state, "normal", valueStr, now);
+            break;
+          case "normal":
+            break;
+        }
+      }
+    } catch (error) {
+      log.warn(
+        `Error evaluating offline alarm "${rule.name}": ${createErrorString(error)}`,
+      );
+    }
+  }
+}
+
+/**
+ * Evaluate offline alarm rules for a node and all its devices.
+ * Called on NDEATH when the entire node goes offline.
+ */
+export async function evaluateNodeOffline(
+  db: Db,
+  groupId: string,
+  nodeId: string,
+  isOffline: boolean,
+): Promise<void> {
+  // Evaluate node-level rules
+  await evaluateOffline(db, groupId, nodeId, "", isOffline);
+
+  // When a node goes offline, all its devices are also offline
+  // Check all device-level offline rules for this node
+  for (const [key, rules] of offlineRulesByDevice.entries()) {
+    const [rGroupId, rNodeId] = key.split("|");
+    if (rGroupId === groupId && rNodeId === nodeId) {
+      for (const rule of rules) {
+        await evaluateOffline(db, groupId, nodeId, rule.deviceId, isOffline);
+      }
+    }
+  }
+}
+
 // --- Rule cache management ---
+
+function addRuleToCacheMap(
+  map: Map<string, CachedRule[]>,
+  key: string,
+  cached: CachedRule,
+): void {
+  const existing = map.get(key) ?? [];
+  const idx = existing.findIndex((r) => r.id === cached.id);
+  if (idx >= 0) {
+    existing[idx] = cached;
+  } else {
+    existing.push(cached);
+  }
+  map.set(key, existing);
+}
 
 function addRuleToCache(rule: AlarmRuleRecord): void {
   const key = metricKey(
@@ -391,26 +553,39 @@ function addRuleToCache(rule: AlarmRuleRecord): void {
     rule.metricId,
   );
   const cached: CachedRule = { ...rule, metricKey: key };
-  const existing = rulesByMetric.get(key) ?? [];
-  // Replace if same ID exists, otherwise append
-  const idx = existing.findIndex((r) => r.id === rule.id);
-  if (idx >= 0) {
-    existing[idx] = cached;
+
+  if (rule.ruleType === "offline") {
+    // Offline rules are cached by node or device
+    if (rule.deviceId) {
+      const deviceKey = `${rule.groupId}|${rule.nodeId}|${rule.deviceId}`;
+      addRuleToCacheMap(offlineRulesByDevice, deviceKey, cached);
+    } else {
+      const nodeKey = `${rule.groupId}|${rule.nodeId}`;
+      addRuleToCacheMap(offlineRulesByNode, nodeKey, cached);
+    }
   } else {
-    existing.push(cached);
+    addRuleToCacheMap(rulesByMetric, key, cached);
   }
-  rulesByMetric.set(key, existing);
+}
+
+function removeRuleFromCacheMap(
+  map: Map<string, CachedRule[]>,
+  ruleId: string,
+): void {
+  for (const [key, rules] of map.entries()) {
+    const filtered = rules.filter((r) => r.id !== ruleId);
+    if (filtered.length === 0) {
+      map.delete(key);
+    } else {
+      map.set(key, filtered);
+    }
+  }
 }
 
 function removeRuleFromCache(ruleId: string): void {
-  for (const [key, rules] of rulesByMetric.entries()) {
-    const filtered = rules.filter((r) => r.id !== ruleId);
-    if (filtered.length === 0) {
-      rulesByMetric.delete(key);
-    } else {
-      rulesByMetric.set(key, filtered);
-    }
-  }
+  removeRuleFromCacheMap(rulesByMetric, ruleId);
+  removeRuleFromCacheMap(offlineRulesByNode, ruleId);
+  removeRuleFromCacheMap(offlineRulesByDevice, ruleId);
   cancelPendingTimer(ruleId);
 }
 
@@ -699,6 +874,8 @@ export async function initializeAlarms(db: Db): Promise<Result<void>> {
     // Load all rules
     const rules = await db.select().from(alarmRules);
     rulesByMetric.clear();
+    offlineRulesByNode.clear();
+    offlineRulesByDevice.clear();
 
     for (const rule of rules) {
       addRuleToCache(rule);
