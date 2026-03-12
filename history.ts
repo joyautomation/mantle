@@ -368,15 +368,15 @@ export async function deleteNodeHistory(
     );
 
     // Delete from history
-    const result = await db.delete(historyTable).where(
+    await db.delete(historyTable).where(
       and(
         eq(historyTable.groupId, groupId),
         eq(historyTable.nodeId, nodeId),
       ),
-    ).returning({ groupId: historyTable.groupId });
+    );
 
-    log.info(`Deleted history for node: ${groupId}/${nodeId}, rows: ${result.length}`);
-    return createSuccess({ deletedCount: result.length });
+    log.info(`Deleted history for node: ${groupId}/${nodeId}`);
+    return createSuccess({ deleted: true });
   } catch (error) {
     log.error(`Error deleting history for node: ${groupId}/${nodeId}`, error);
     return createFail(createErrorString(error));
@@ -403,16 +403,16 @@ export async function deleteDeviceHistory(
     );
 
     // Delete from history
-    const result = await db.delete(historyTable).where(
+    await db.delete(historyTable).where(
       and(
         eq(historyTable.groupId, groupId),
         eq(historyTable.nodeId, nodeId),
         eq(historyTable.deviceId, deviceId),
       ),
-    ).returning({ groupId: historyTable.groupId });
+    );
 
-    log.info(`Deleted history for device: ${groupId}/${nodeId}/${deviceId}, rows: ${result.length}`);
-    return createSuccess({ deletedCount: result.length });
+    log.info(`Deleted history for device: ${groupId}/${nodeId}/${deviceId}`);
+    return createSuccess({ deleted: true });
   } catch (error) {
     log.error(`Error deleting history for device: ${groupId}/${nodeId}/${deviceId}`, error);
     return createFail(createErrorString(error));
@@ -441,17 +441,17 @@ export async function deleteMetricHistory(
     );
 
     // Delete from history
-    const result = await db.delete(historyTable).where(
+    await db.delete(historyTable).where(
       and(
         eq(historyTable.groupId, groupId),
         eq(historyTable.nodeId, nodeId),
         eq(historyTable.deviceId, deviceId || ""),
         eq(historyTable.metricId, metricId),
       ),
-    ).returning({ groupId: historyTable.groupId });
+    );
 
-    log.info(`Deleted history for metric: ${groupId}/${nodeId}/${deviceId || ""}/${metricId}, rows: ${result.length}`);
-    return createSuccess({ deletedCount: result.length });
+    log.info(`Deleted history for metric: ${groupId}/${nodeId}/${deviceId || ""}/${metricId}`);
+    return createSuccess({ deleted: true });
   } catch (error) {
     log.error(`Error deleting history for metric: ${groupId}/${nodeId}/${deviceId || ""}/${metricId}`, error);
     return createFail(createErrorString(error));
