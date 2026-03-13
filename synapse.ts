@@ -278,6 +278,19 @@ export function addHostToSchema(
           (parent as SparkplugMetricFlat & { templateInstance?: string })
             .templateInstance ?? null,
       }),
+      timestamp: t.field({
+        type: "Float",
+        nullable: true,
+        resolve: (parent) => {
+          if (parent.timestamp === null || parent.timestamp === undefined) {
+            return null;
+          }
+          if (Long.isLong(parent.timestamp)) {
+            return parent.timestamp.toNumber();
+          }
+          return parent.timestamp as number;
+        },
+      }),
     }),
   });
   SparkplugMetricPropertyRef.implement({
